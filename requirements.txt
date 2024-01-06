@@ -2,6 +2,7 @@ streamlit>=1.29.0
 yfinance
 pandas
 plotly
+datetime
 matplotlib
 openpyxl
 xlrd
