@@ -6,7 +6,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Lista de ativos utilizados
-lista = list(pd.read_excel('E:\PROGRAMAÇÃO\PYTHON\Monitoramento de Ações\listativos.xls')['Código'].values)
+lista = list(pd.read_excel('listativos.xls')['Código'].values)
 lista.sort()
 lista_ativos = [ativo + '.SA' for ativo in lista]
 
