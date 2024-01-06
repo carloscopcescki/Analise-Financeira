@@ -57,10 +57,9 @@ for ativo, df in dados_ativos.items():
     st.write(f"Dados para {ativo}")
     st.dataframe(df, width=850, height=350)
     today_data = df[df.index.date == datetime.today().date()]
-    if not today_data.empty:
-        st.write(f"**Alta do dia atual:** R$ {today_data['High'].iloc[0]:,.2f}")
-        st.write(f"**Baixa do dia atual:** R$ {today_data['Low'].iloc[0]:,.2f}")
-        st.write(f"**Fechamento do dia atual:** R$ {today_data['Close'].iloc[0]:,.2f}")
-    else:
-        st.write("Não há dados disponíveis para o dia atual.")
+    
+    st.write(f"**Alta do dia atual:** R$ {today_data['High'].iloc[0]:,.2f}")
+    st.write(f"**Baixa do dia atual:** R$ {today_data['Low'].iloc[0]:,.2f}")
+    st.write(f"**Fechamento do dia atual:** R$ {today_data['Close'].iloc[0]:,.2f}")
+    
     st.write("\n---\n")
