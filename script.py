@@ -25,6 +25,11 @@ para_data = st.sidebar.date_input("Para:", data_final)
 
 para_data_correta = para_data + timedelta(1)
 
+# Condição para evitar conflito de datas
+
+if de_data > para_data:
+    st.sidebar.warning("A data de inicio não pode ser superior a data atual")
+
 # Coletar dados para os ativos selecionados
 dados_ativos = {}
 for ativo in selected_ativos:
