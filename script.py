@@ -48,7 +48,7 @@ plt.title("Comparação de Fechamento de Ativos")
 plt.xlabel('Data')
 plt.ylabel('Preço de Fechamento')
 
-# Exibindo o gráfico
+# Exibindo o gráfico de ativos
 st.pyplot(fig)
 
 # Exibindo a tabela com os dados
