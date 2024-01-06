@@ -31,6 +31,10 @@ for ativo in selected_ativos:
     call_api = yf.Ticker(f"{ativo}.SA").history(start=f"{de_data}", end=f"{para_data_correta}")
     dados_ativos[ativo] = pd.DataFrame(call_api)
 
+# Formatar coluna de datas
+for ativo, df in dados_ativos.items():
+    df.index = df.index.strftime('%Y-%m-%d')
+
 # Elaborando o dash
 st.title("Monitoramento de Análise Financeira")
 st.header("Ações")
@@ -56,12 +60,10 @@ st.subheader("Dados dos Ativos Selecionados")
 for ativo, df in dados_ativos.items():
     st.write(f"Dados para {ativo}")
     st.dataframe(df, width=850, height=350)
-    today_data = df[df.index.date == datetime.today().date()]
-    
-    if not today_data.empty and len(today_data) > 0:
-        st.write(f"**Alta do dia atual:** R$ {today_data['High'].iloc[0]:,.2f}")
-        st.write(f"**Baixa do dia atual:** R$ {today_data['Low'].iloc[0]:,.2f}")
-        st.write(f"**Fechamento do dia atual:** R$ {today_data['Close'].iloc[0]:,.2f}")
-    else:
-        st.write("Não há dados disponíveis para o dia atual.")
+    last_data = df.iloc[-1]
+
+    st.write(f"**Alta do último dia disponível:** R$ {last_data['High']:.2f}")
+    st.write(f"**Baixa do último dia disponível:** R$ {last_data['Low']:.2f}")
+    st.write(f"**Fechamento do último dia disponível:** R$ {last_data['Close']:.2f}")
+
     st.write("\n---\n")
