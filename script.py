@@ -58,7 +58,7 @@ for ativo, df in dados_ativos.items():
     st.dataframe(df, width=850, height=350)
     today_data = df[df.index.date == datetime.today().date()]
     
-    if not today_data.empty:
+    if not today_data.empty and len(today_data) > 0:
         st.write(f"**Alta do dia atual:** R$ {today_data['High'].iloc[0]:,.2f}")
         st.write(f"**Baixa do dia atual:** R$ {today_data['Low'].iloc[0]:,.2f}")
         st.write(f"**Fechamento do dia atual:** R$ {today_data['Close'].iloc[0]:,.2f}")
