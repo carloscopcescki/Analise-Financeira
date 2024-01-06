@@ -23,12 +23,10 @@ selected_ativos = st.sidebar.multiselect("Selecione os ativos", lista)
 de_data = st.sidebar.date_input("De:", data_inicio)
 para_data = st.sidebar.date_input("Para:", data_final)
 
-para_data_correta = para_data + timedelta(1)
-
 # Coletar dados para os ativos selecionados
 dados_ativos = {}
 for ativo in selected_ativos:
-    call_api = yf.Ticker(f"{ativo}.SA").history(start=f"{de_data}", end=f"{para_data_correta}")
+    call_api = yf.Ticker(f"{ativo}.SA").history(start=f"{de_data}", end=f"{para_data}")
     dados_ativos[ativo] = pd.DataFrame(call_api)
 
 # Elaborando o dash
