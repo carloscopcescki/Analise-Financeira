@@ -2,7 +2,6 @@ from datetime import date, datetime, timedelta
 import yfinance as yf
 import pandas as pd
 import streamlit as st
-import numpy as np
 import matplotlib.pyplot as plt
 
 # Lista de ativos utilizados
