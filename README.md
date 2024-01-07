@@ -16,7 +16,6 @@ Analisa em forma de gráfico o rendimento da cotação em um determinado períod
 - Pandas
 - Streamlit
 - Matplotlib
-- Numpy
 
 ## Autor
 
