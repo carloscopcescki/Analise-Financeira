@@ -5,4 +5,5 @@ plotly
 datetime
 matplotlib
 openpyxl
+bcb
 xlrd
