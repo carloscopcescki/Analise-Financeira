@@ -9,7 +9,7 @@ from bcb import sgs
 lista = list(pd.read_excel('listativos.xls')['Código'].values)
 lista.sort()
 lista_ativos = [ativo + '.SA' for ativo in lista]
-lista_indices_select = ['CDI', 'IPCA', 'TAXA SELIC', 'POUPANÇA', 'BOVESPA']
+lista_indices_select = ['CDI', 'IPCA', 'SELIC', 'POUPANÇA', 'BOVESPA']
 
 # Definir intervalo de datas
 data_inicio = datetime.today() - timedelta(30)
@@ -124,7 +124,7 @@ else:
         ax_retornos.plot(pd.to_datetime(df_ipca.index), df_retornos_ipca, label="IPCA")
     elif selected_indice == "CDI":
         ax_retornos.plot(pd.to_datetime(df_cdi.index), df_retornos_cdi, label="CDI")
-    elif selected_indice == "TAXA SELIC":
+    elif selected_indice == "SELIC":
         ax_retornos.plot(pd.to_datetime(df_selic.index), df_retornos_selic, label="SELIC")
     elif selected_indice == "POUPANÇA":
         ax_retornos.plot(pd.to_datetime(df_poupanca.index), df_retornos_poupanca, label="POUPANÇA")
