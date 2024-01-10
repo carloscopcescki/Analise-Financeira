@@ -9,7 +9,7 @@ from bcb import sgs
 lista = list(pd.read_excel('listativos.xls')['Código'].values)
 lista.sort()
 lista_ativos = [ativo + '.SA' for ativo in lista]
-lista_indices_select = ['CDI', 'IPCA', 'TAXA SELIC', 'BOVESPA']
+lista_indices_select = ['CDI', 'IPCA', 'TAXA SELIC', 'POUPANÇA', 'BOVESPA']
 
 # Definir intervalo de datas
 data_inicio = datetime.today() - timedelta(30)
@@ -31,21 +31,25 @@ selected_indice = st.sidebar.selectbox("Selecione um indice para comparar", ['']
 ipca_dados = sgs.get(('ipca', 433), start=de_data, end=para_data_correta)
 selic_dados = sgs.get(('selic', 11), start=de_data, end=para_data_correta)
 cdi_dados = sgs.get(('cdi', 12), start=de_data, end=para_data_correta)
+poupanca_dados = sgs.get(('poupanca', 25), start=de_data, end=para_data_correta)
 
 try:
     # Tentar ler os dados 
     df_ipca = pd.DataFrame(ipca_dados)
     df_cdi = pd.DataFrame(cdi_dados)
     df_selic = pd.DataFrame(selic_dados)
+    df_poupanca = pd.DataFrame(poupanca_dados)
 except ValueError as e:     
     st.error(f"Erro ao ler os dados do IPCA: {e}")
     df_ipca = pd.DataFrame()
     df_cdi = pd.DataFrame()
     df_selic = pd.DataFrame()
+    df_poupanca = pd.DataFrame()
 
 df_retornos_ipca = (df_ipca['ipca'].pct_change() + 1).cumprod() - 1
 df_retornos_cdi = (df_cdi['cdi'].pct_change() + 1).cumprod() - 1
 df_retornos_selic = (df_selic['selic'].pct_change() + 1).cumprod() - 1
+df_retornos_poupanca = (df_poupanca['poupanca'].pct_change() + 1).cumprod() - 1
 
 # Condição para evitar conflito de datas
 
@@ -122,6 +126,8 @@ else:
         ax_retornos.plot(pd.to_datetime(df_cdi.index), df_retornos_cdi, label="CDI")
     elif selected_indice == "TAXA SELIC":
         ax_retornos.plot(pd.to_datetime(df_selic.index), df_retornos_selic, label="SELIC")
+    elif selected_indice == "POUPANÇA":
+        ax_retornos.plot(pd.to_datetime(df_poupanca.index), df_retornos_poupanca, label="POUPANÇA")
         # Adicionando legenda e título
     plt.legend()
     plt.title("Comparação de Rendimento de Ativos")
