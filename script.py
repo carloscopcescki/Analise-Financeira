@@ -9,7 +9,7 @@ from bcb import sgs
 lista = list(pd.read_excel('listativos.xls')['Código'].values)
 lista.sort()
 lista_ativos = [ativo + '.SA' for ativo in lista]
-lista_indices_select = ['CDI', 'IPCA', 'SELIC', 'POUPANÇA', 'BOVESPA']
+lista_indices_select = ['CDI', 'IPCA', 'SELIC', 'POUPANÇA', 'BOVESPA', 'DÓLAR','EURO']
 
 # Definir intervalo de datas
 data_inicio = datetime.today() - timedelta(30)
@@ -59,6 +59,8 @@ if de_data > para_data:
 # Coletar dados para os ativos selecionados
 mapa_indices = {
     'BOVESPA': '^BVSP',
+    'DÓLAR': 'BRL=X',
+    'EURO': 'EURBRL=X',
 }
 
 dados_ativos = {}
