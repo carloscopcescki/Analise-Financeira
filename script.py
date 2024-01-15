@@ -25,7 +25,7 @@ de_data = st.sidebar.date_input("De:", data_inicio)
 para_data = st.sidebar.date_input("Para:", data_final)
 para_data_correta = para_data + timedelta(1)
 
-data_intervalo = para_data_correta - de_data
+data_intervalo = (para_data_correta - de_data).total_seconds() / 86400
 
 selected_indice = st.sidebar.selectbox("Selecione um indice para comparar", [''] + lista_indices_select)
 #Importar dados de indices
@@ -78,7 +78,7 @@ for ativo in selected_ativos:
         symbol = f"{ativo}.SA"
     
     # Chamar a API com o símbolo obtido
-    call_api = yf.Ticker(symbol).history(interval=f"{data_intervalo}")
+    call_api = yf.Ticker(symbol).history(period=f"{data_intervalo}d")
     
     # Adicionar os dados ao dicionário
     dados_ativos[ativo] = pd.DataFrame(call_api)
