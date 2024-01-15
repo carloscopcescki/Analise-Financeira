@@ -78,7 +78,7 @@ for ativo in selected_ativos:
         symbol = f"{ativo}.SA"
     
     # Chamar a API com o símbolo obtido
-    call_api = yf.Ticker(symbol).history(period=f"{data_intervalo}d")
+    call_api = yf.Ticker(symbol).history(start=f"{de_data}", end=f"{para_data_correta}")
     
     # Adicionar os dados ao dicionário
     dados_ativos[ativo] = pd.DataFrame(call_api)
