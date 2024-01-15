@@ -99,7 +99,7 @@ fig_cotacoes, ax_cotacoes = plt.subplots(figsize=(12, 6))
 for ativo, df in dados_ativos.items():
     # Ignorar ativos que são iguais aos índices do mapa_indices
     if ativo not in lista_indices_select:
-        ax_cotacoes.plot(df.index, df['Close'], label=ativo)
+        ax_cotacoes.plot(pd.to_datetime(df.index), df['Close'], label=f"{ativo}")
 # Adicionando legenda e título
 plt.legend()
 plt.title("Comparação de Cotações de Ativos")
