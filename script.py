@@ -162,10 +162,15 @@ for ativo, df in dados_ativos.items():
     if len(df) > 1:
         df_retornos = (df['Close'].pct_change() + 1).cumprod() - 1
         rendimento_total = df_retornos.iloc[-1]
+        rendimento_diario = df_retornos.iloc[-1] - df_retornos.iloc[-2]
         
         st.write(f"**Alta do último dia disponível:** R$ {last_data['High']:.2f}")
         st.write(f"**Baixa do último dia disponível:** R$ {last_data['Low']:.2f}")
         st.write(f"**Fechamento do último dia disponível:** R$ {last_data['Close']:.2f}")
+        if rendimento_diario < 0:
+            st.write(f"**Rendimento no dia:** <span style='color:{color_negative}'>{rendimento_diario:.2%}</span>", unsafe_allow_html=True)
+        else:
+            st.write(f"**Rendimento no dia:** <span style='color:{color_positive}'>{rendimento_diario:.2%}</span>", unsafe_allow_html=True)
         if rendimento_total < 0:
             st.write(f"**Rendimento no período:** <span style='color:{color_negative}'>{rendimento_total:.2%}</span>", unsafe_allow_html=True)
         else:
