@@ -25,7 +25,7 @@ de_data = st.sidebar.date_input("De:", data_inicio)
 para_data = st.sidebar.date_input("Para:", data_final)
 para_data_correta = para_data + timedelta(1)
 
-data_intervalo = (para_data_correta - de_data).total_seconds() / 86400
+data_intervalo = (para_data - de_data).total_seconds() / 86400
 
 selected_indice = st.sidebar.selectbox("Selecione um indice para comparar", [''] + lista_indices_select)
 #Importar dados de indices
