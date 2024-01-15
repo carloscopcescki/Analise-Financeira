@@ -94,7 +94,7 @@ st.title("Monitoramento de Análise Financeira")
 st.subheader("Cotação de ativos")
 
 # Plotando o gráfico de cotações
-fig_cotacoes, ax_cotacoes = plt.subplots(figsize=(12, 6))
+fig_cotacoes, ax_cotacoes = plt.subplots(figsize=(50, 100))
 
 for ativo, df in dados_ativos.items():
     # Ignorar ativos que são iguais aos índices do mapa_indices
