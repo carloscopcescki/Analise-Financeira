@@ -4,9 +4,9 @@
 
 https://monitordeativos.streamlit.app/
 
-Analisa em forma de gráfico o rendimento da cotação em um determinado período e exibe todos os dados acerca do ativo em forma de DataFrame
+Analisa em forma de gráfico o rendimento e valor de uma cotação em um determinado período e exibe todos os dados acerca do ativo em forma de DataFrame.
 
-## Ferramenta Utilizadas
+## Linguagem Utilizada
 
 - Python
 
@@ -16,6 +16,7 @@ Analisa em forma de gráfico o rendimento da cotação em um determinado períod
 - Pandas
 - Streamlit
 - Matplotlib
+- Python-BCB
 
 ## Autor
 
