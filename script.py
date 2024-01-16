@@ -167,7 +167,6 @@ for ativo, df in dados_ativos.items():
         st.write(f"**Alta do último dia disponível:** R$ {last_data['High']:.2f}")
         st.write(f"**Baixa do último dia disponível:** R$ {last_data['Low']:.2f}")
         st.write(f"**Fechamento do último dia disponível:** R$ {last_data['Close']:.2f}")
-        st.write(f"**Soma de dividendos:** R$ {dividendos_total:.2f}")
         if rendimento_diario < 0:
             st.write(f"**Rendimento no dia:** <span style='color:{color_negative}'>{rendimento_diario:.2%}</span>", unsafe_allow_html=True)
         else:
