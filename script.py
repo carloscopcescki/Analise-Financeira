@@ -9,7 +9,7 @@ from bcb import sgs
 lista = list(pd.read_excel('listativos.xls')['Código'].values)
 lista.sort()
 lista_ativos = [ativo + '.SA' for ativo in lista]
-lista_indices_select = ['CDI', 'IPCA', 'SELIC', 'POUPANÇA', 'BOVESPA']
+lista_indices_select = ['CDI', 'IPCA', 'SELIC', 'POUPANÇA', 'BOVESPA', 'DÓLAR','EURO']
 
 # Definir intervalo de datas
 data_inicio = datetime.today() - timedelta(30)
@@ -24,6 +24,8 @@ selected_ativos = st.sidebar.multiselect("Selecione os ativos", lista)
 de_data = st.sidebar.date_input("De:", data_inicio)
 para_data = st.sidebar.date_input("Para:", data_final)
 para_data_correta = para_data + timedelta(1)
+
+data_intervalo = (para_data - de_data).total_seconds() / 86400
 
 selected_indice = st.sidebar.selectbox("Selecione um indice para comparar", [''] + lista_indices_select)
 #Importar dados de indices
@@ -40,7 +42,6 @@ try:
     df_selic = pd.DataFrame(selic_dados)
     df_poupanca = pd.DataFrame(poupanca_dados)
 except ValueError as e:     
-    st.error(f"Erro ao ler os dados do IPCA: {e}")
     df_ipca = pd.DataFrame()
     df_cdi = pd.DataFrame()
     df_selic = pd.DataFrame()
@@ -59,10 +60,11 @@ if de_data > para_data:
 # Coletar dados para os ativos selecionados
 mapa_indices = {
     'BOVESPA': '^BVSP',
+    'DÓLAR': 'BRL=X',
+    'EURO': 'EURBRL=X',
 }
 
 dados_ativos = {}
-dados_ativos_diario = {}
 
 selected_ativos.append(selected_indice)
 
@@ -76,11 +78,9 @@ for ativo in selected_ativos:
     
     # Chamar a API com o símbolo obtido
     call_api = yf.Ticker(symbol).history(start=f"{de_data}", end=f"{para_data_correta}")
-    call_api_diario = yf.Ticker(symbol).history(period="1d", interval="5m")
     
     # Adicionar os dados ao dicionário
     dados_ativos[ativo] = pd.DataFrame(call_api)
-    dados_ativos_diario[ativo] = pd.DataFrame(call_api_diario)
     
 # Formatar coluna de datas
 for ativo, df in dados_ativos.items():
@@ -97,8 +97,8 @@ fig_cotacoes, ax_cotacoes = plt.subplots(figsize=(12, 6))
 
 for ativo, df in dados_ativos.items():
     # Ignorar ativos que são iguais aos índices do mapa_indices
-    if ativo not in lista_indices_select:
-        ax_cotacoes.plot(df.index, df['Close'], label=ativo)
+    if ativo not in selected_indice:
+        ax_cotacoes.plot(pd.to_datetime(df.index), df['Close'], label=f"{ativo}")
 # Adicionando legenda e título
 plt.legend()
 plt.title("Comparação de Cotações de Ativos")
@@ -161,10 +161,15 @@ for ativo, df in dados_ativos.items():
     if len(df) > 1:
         df_retornos = (df['Close'].pct_change() + 1).cumprod() - 1
         rendimento_total = df_retornos.iloc[-1]
+        rendimento_diario = df_retornos.iloc[-1] - df_retornos.iloc[-2]
         
         st.write(f"**Alta do último dia disponível:** R$ {last_data['High']:.2f}")
         st.write(f"**Baixa do último dia disponível:** R$ {last_data['Low']:.2f}")
         st.write(f"**Fechamento do último dia disponível:** R$ {last_data['Close']:.2f}")
+        if rendimento_diario < 0:
+            st.write(f"**Rendimento no dia:** <span style='color:{color_negative}'>{rendimento_diario:.2%}</span>", unsafe_allow_html=True)
+        else:
+            st.write(f"**Rendimento no dia:** <span style='color:{color_positive}'>{rendimento_diario:.2%}</span>", unsafe_allow_html=True)
         if rendimento_total < 0:
             st.write(f"**Rendimento no período:** <span style='color:{color_negative}'>{rendimento_total:.2%}</span>", unsafe_allow_html=True)
         else:
