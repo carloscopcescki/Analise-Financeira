@@ -62,6 +62,7 @@ mapa_indices = {
 }
 
 dados_ativos = {}
+dados_ativos_diario = {}
 
 selected_ativos.append(selected_indice)
 
@@ -75,9 +76,11 @@ for ativo in selected_ativos:
     
     # Chamar a API com o símbolo obtido
     call_api = yf.Ticker(symbol).history(start=f"{de_data}", end=f"{para_data_correta}")
+    call_api_diario = yf.Ticker(symbol).history(period="1d", interval="5m")
     
     # Adicionar os dados ao dicionário
     dados_ativos[ativo] = pd.DataFrame(call_api)
+    dados_ativos_diario[ativo] = pd.DataFrame(call_api_diario)
     
 # Formatar coluna de datas
 for ativo, df in dados_ativos.items():
