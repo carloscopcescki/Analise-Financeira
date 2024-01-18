@@ -186,7 +186,8 @@ for ativo in selected_ativos:
         somatoria_por_ano = tabela.groupby('Ano')['Valor'].sum().reset_index()
 
         # Mantendo apenas as últimas linhas
-        somatoria_por_ano = somatoria_por_ano.tail(6)
+        somatoria_por_ano = somatoria_por_ano.tail(7)
+        somatoria_por_ano = somatoria_por_ano.iloc[:-1]
 
         # Calcular o preco_teto para cada ativo e armazenar no dicionário
         
@@ -207,19 +208,20 @@ for ativo, df in dados_ativos.items():
     if len(df) > 1:
         df_retornos = (df['Close'].pct_change() + 1).cumprod() - 1
         rendimento_total = df_retornos.iloc[-1]
-        rendimento_diario = df_retornos.iloc[-1] - df_retornos.iloc[-2]
         
-        st.write(f"**Alta do último dia disponível:** R$ {last_data['High']:.2f}")
-        st.write(f"**Baixa do último dia disponível:** R$ {last_data['Low']:.2f}")
-        st.write(f"**Fechamento do último dia disponível:** R$ {last_data['Close']:.2f}")
+        rendimento_diario = ((df['Close'].iloc[-1] - df['Close'].iloc[-2]) / df['Close'].iloc[-2]) * 100
+        
+        st.write(f"**Alta do dia:** R$ {last_data['High']:.2f}")
+        st.write(f"**Baixa do dia:** R$ {last_data['Low']:.2f}")
+        st.write(f"**Fechamento do dia:** R$ {last_data['Close']:.2f}")
         if ativo in preco_teto_dict:
-            st.write(f"**Preço teto para a ação (Seis últimos anos):** R$ {preco_teto_dict[ativo]:.2f}")
+            st.write(f"**Preço teto (Seis últimos anos):** R$ {preco_teto_dict[ativo]:.2f}")
         else:
             st.warning(f"Não foi possível encontrar o preço teto para {ativo}.")
         if rendimento_diario < 0:
-            st.write(f"**Rendimento no dia:** <span style='color:{color_negative}'>{rendimento_diario:.2%}</span>", unsafe_allow_html=True)
+            st.write(f"**Variação do dia:** <span style='color:{color_negative}'>{rendimento_diario:.2f}%</span>", unsafe_allow_html=True)
         else:
-            st.write(f"**Rendimento no dia:** <span style='color:{color_positive}'>{rendimento_diario:.2%}</span>", unsafe_allow_html=True)
+            st.write(f"**Variação do dia:** <span style='color:{color_positive}'>+{rendimento_diario:.2f}%</span>", unsafe_allow_html=True)
         if rendimento_total < 0:
             st.write(f"**Rendimento no período:** <span style='color:{color_negative}'>{rendimento_total:.2%}</span>", unsafe_allow_html=True)
         else:
