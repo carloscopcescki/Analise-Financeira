@@ -6,4 +6,7 @@ datetime
 matplotlib
 openpyxl
 python-bcb
+bs4
+beautifulsoup4
+requests
 xlrd

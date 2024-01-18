@@ -1,8 +1,10 @@
 from datetime import date, datetime, timedelta
 import yfinance as yf
 import pandas as pd
+import requests
 import streamlit as st
 import matplotlib.pyplot as plt
+from bs4 import BeautifulSoup
 from bcb import sgs
 
 # Lista de ativos utilizados
@@ -150,11 +152,55 @@ if selected_indice in dados_ativos:
 
 selected_ativos.append(selected_indice)
 
-# Exibindo a tabela com os dados
-st.subheader("Dados dos Ativos")
+# Coletar proventos do ativo
+# Request para coletar proventos
+
+preco_teto_dict = {}
+last_data = {}
+
+for ativo in selected_ativos:
+    # Construir a URL dinâmica para cada ativo
+    stock_url = f'https://www.dadosdemercado.com.br/bolsa/acoes/{ativo}/dividendos'
+
+    # Restante do código permanece o mesmo
+    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'}
+
+    response = requests.get(stock_url, headers=headers)
+
+    # Verificando se a requisição foi bem-sucedida
+    if response.status_code == 200:
+        # Parseando o conteúdo HTML
+        soup = BeautifulSoup(response.text, 'html.parser')
+
+        # Encontrando a tabela diretamente usando pandas
+        tabela = pd.read_html(str(soup), decimal=',', thousands='.')[0]
+        tabela = tabela.drop(["Pagamento", "Ex"], axis=1)
+
+        # Convertendo a coluna "Pagamento" para o formato desejado
+        tabela['Registro'] = pd.to_datetime(tabela['Registro'], format='%d/%m/%Y').dt.strftime('%Y-%m-%d')
+
+        # Criando uma nova coluna "Ano" para extrair o ano da coluna "Pagamento"
+        tabela['Ano'] = pd.to_datetime(tabela['Registro']).dt.year
+
+        # Atualizando a variável com os dados da tabela
+        somatoria_por_ano = tabela.groupby('Ano')['Valor'].sum().reset_index()
+
+        # Mantendo apenas as últimas linhas
+        somatoria_por_ano = somatoria_por_ano.tail(6)
+
+        # Calcular o preco_teto para cada ativo e armazenar no dicionário
+        
+        media_prov = (somatoria_por_ano['Valor'].sum()) / 6
+        preco_teto = (media_prov * 100) / 6
+        preco_teto_dict[ativo] = preco_teto
+    
+    else:
+        print(f"Failed to retrieve the page for {ativo}. Status code: {response.status_code}")
+
 for ativo, df in dados_ativos.items():
     st.write(f"Dados para {ativo}")
     st.dataframe(df, width=850, height=350)
+    df = dados_ativos[ativo]
     last_data = df.iloc[-1]
     
     # Calcular os retornos apenas se houver dados disponíveis
@@ -166,6 +212,10 @@ for ativo, df in dados_ativos.items():
         st.write(f"**Alta do último dia disponível:** R$ {last_data['High']:.2f}")
         st.write(f"**Baixa do último dia disponível:** R$ {last_data['Low']:.2f}")
         st.write(f"**Fechamento do último dia disponível:** R$ {last_data['Close']:.2f}")
+        if ativo in preco_teto_dict:
+            st.write(f"**Preço teto para a ação (Seis últimos anos):** R$ {preco_teto_dict[ativo]:.2f}")
+        else:
+            st.warning(f"Não foi possível encontrar o preço teto para {ativo}.")
         if rendimento_diario < 0:
             st.write(f"**Rendimento no dia:** <span style='color:{color_negative}'>{rendimento_diario:.2%}</span>", unsafe_allow_html=True)
         else:
