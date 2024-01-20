@@ -30,8 +30,8 @@ para_data_correta = para_data + timedelta(1)
 data_intervalo = (para_data - de_data).total_seconds() / 86400
 
 selected_indice = st.sidebar.selectbox("Selecione um indice para comparar", [''] + lista_indices_select)
-#Importar dados de indices
 
+#Importar dados de indices
 ipca_dados = sgs.get(('ipca', 433), start=de_data, end=para_data_correta)
 selic_dados = sgs.get(('selic', 11), start=de_data, end=para_data_correta)
 cdi_dados = sgs.get(('cdi', 12), start=de_data, end=para_data_correta)
@@ -194,14 +194,12 @@ for ativo in selected_ativos:
         media_prov = (somatoria_por_ano['Valor'].sum()) / 6
         preco_teto = (media_prov * 100) / 6
         preco_teto_dict[ativo] = preco_teto
-    
+ 
     else:
-        print(f"Failed to retrieve the page for {ativo}. Status code: {response.status_code}")
-
+        print(f"Não foi possível obter o preço teto para {ativo}. Status code: {response.status_code}")
+        
 for ativo, df in dados_ativos.items():
-    st.write(f"Dados para {ativo}")
-    st.dataframe(df, width=850, height=350)
-    df = dados_ativos[ativo]
+    
     last_data = df.iloc[-1]
     
     # Calcular os retornos apenas se houver dados disponíveis
@@ -210,6 +208,8 @@ for ativo, df in dados_ativos.items():
         rendimento_total = df_retornos.iloc[-1]
         
         rendimento_diario = ((df['Close'].iloc[-1] - df['Close'].iloc[-2]) / df['Close'].iloc[-2]) * 100
+        
+        st.subheader(f'{ativo}')
         
         st.write(f"**Alta do dia:** R$ {last_data['High']:.2f}")
         st.write(f"**Baixa do dia:** R$ {last_data['Low']:.2f}")
@@ -229,4 +229,6 @@ for ativo, df in dados_ativos.items():
     else:
         st.write("Não há dados suficientes para calcular retornos.")
     
+    st.dataframe(df, width=850, height=350)
+    df = dados_ativos[ativo]
     st.write("\n---\n")
