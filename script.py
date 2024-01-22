@@ -233,10 +233,6 @@ for ativo, df in dados_ativos.items():
             st.write(f"**Rendimento no período:** <span style='color:{color_positive}'>{rendimento_total:.2%}</span>", unsafe_allow_html=True)
     else:
         st.write("Não há dados suficientes para calcular retornos.")
-
-    with st.expander("Histórico do ativo no período:"):
-    st.dataframe(df, width=850, height=350)
-    df = dados_ativos[ativo]
     
 st.link_button(f"Veja mais sobre {ativo}", f"https://www.fundamentus.com.br/detalhes.php?papel={ativo}")
 st.write("\n---\n")
