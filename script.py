@@ -205,39 +205,42 @@ for ativo in selected_ativos:
         print(f"Não foi possível obter o preço teto para {ativo}. Status code: {response.status_code}")
         
 for ativo, df in dados_ativos.items():
+
+    if ativo > 0:
+        last_data = df.iloc[-1]
     
-    last_data = df.iloc[-1]
-    
-    # Calcular os retornos apenas se houver dados disponíveis
-    if len(df) > 1:
-        df_retornos = (df['Close'].pct_change() + 1).cumprod() - 1
-        rendimento_total = df_retornos.iloc[-1]
+        # Calcular os retornos apenas se houver dados disponíveis
+        if len(df) > 1:
+            df_retornos = (df['Close'].pct_change() + 1).cumprod() - 1
+            rendimento_total = df_retornos.iloc[-1]
         
-        rendimento_diario = ((df['Close'].iloc[-1] - df['Close'].iloc[-2]) / df['Close'].iloc[-2]) * 100
+            rendimento_diario = ((df['Close'].iloc[-1] - df['Close'].iloc[-2]) / df['Close'].iloc[-2]) * 100
         
-        st.subheader(f'{ativo}')
+            st.subheader(f'{ativo}')
         
-        st.write(f"**Alta do dia:** R$ {last_data['High']:.2f}")
-        st.write(f"**Baixa do dia:** R$ {last_data['Low']:.2f}")
-        st.write(f"**Fechamento do dia:** R$ {last_data['Close']:.2f}")
-        if ativo in preco_teto_dict:
-            st.write(f"**Preço teto (Seis últimos anos):** R$ {preco_teto_dict[ativo]:.2f}")
+            st.write(f"**Alta do dia:** R$ {last_data['High']:.2f}")
+            st.write(f"**Baixa do dia:** R$ {last_data['Low']:.2f}")
+            st.write(f"**Fechamento do dia:** R$ {last_data['Close']:.2f}")
+            if ativo in preco_teto_dict:
+                st.write(f"**Preço teto (Seis últimos anos):** R$ {preco_teto_dict[ativo]:.2f}")
+            else:
+                st.warning(f"Não foi possível encontrar o preço teto para {ativo}.")
+            if rendimento_diario < 0:
+                st.write(f"**Variação do dia:** <span style='color:{color_negative}'>{rendimento_diario:.2f}%</span>", unsafe_allow_html=True)
+            else:
+                st.write(f"**Variação do dia:** <span style='color:{color_positive}'>+{rendimento_diario:.2f}%</span>", unsafe_allow_html=True)
+            if rendimento_total < 0:
+                st.write(f"**Rendimento no período:** <span style='color:{color_negative}'>{rendimento_total:.2%}</span>", unsafe_allow_html=True)
+            else:
+                st.write(f"**Rendimento no período:** <span style='color:{color_positive}'>{rendimento_total:.2%}</span>", unsafe_allow_html=True)
         else:
-            st.warning(f"Não foi possível encontrar o preço teto para {ativo}.")
-        if rendimento_diario < 0:
-            st.write(f"**Variação do dia:** <span style='color:{color_negative}'>{rendimento_diario:.2f}%</span>", unsafe_allow_html=True)
-        else:
-            st.write(f"**Variação do dia:** <span style='color:{color_positive}'>+{rendimento_diario:.2f}%</span>", unsafe_allow_html=True)
-        if rendimento_total < 0:
-            st.write(f"**Rendimento no período:** <span style='color:{color_negative}'>{rendimento_total:.2%}</span>", unsafe_allow_html=True)
-        else:
-            st.write(f"**Rendimento no período:** <span style='color:{color_positive}'>{rendimento_total:.2%}</span>", unsafe_allow_html=True)
+            st.write("Não há dados suficientes para calcular retornos.")
     else:
-        st.write("Não há dados suficientes para calcular retornos.")
+        st.warning("Não há dados disponíveis para o ativo.")
+        
+with st.expander("Histórico do ativo no período:"):
+    st.dataframe(df, width=850, height=350)
+    df = dados_ativos[ativo]
     
-    with st.expander("Histórico do ativo no período:"):
-        st.dataframe(df, width=850, height=350)
-        df = dados_ativos[ativo]
-    
-    st.link_button(f"Veja mais sobre {ativo}", f"https://www.fundamentus.com.br/detalhes.php?papel={ativo}")
-    st.write("\n---\n")
+st.link_button(f"Veja mais sobre {ativo}", f"https://www.fundamentus.com.br/detalhes.php?papel={ativo}")
+st.write("\n---\n")
