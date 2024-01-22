@@ -239,5 +239,4 @@ for ativo, df in dados_ativos.items():
         df = dados_ativos[ativo]
 
     st.link_button(f"Veja mais sobre {ativo}", f"https://www.fundamentus.com.br/detalhes.php?papel={ativo}")
-
-st.write("\n---\n")
+    st.write("\n---\n")
