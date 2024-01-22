@@ -111,35 +111,40 @@ plt.ylabel('Preço de Fechamento')
 st.pyplot(fig_cotacoes)
 
 # Plotando o gráfico de retornos
-if selected_indice == "":
-    st.warning("Selecione o índice para analisar o rendimento")
-else:
-    st.subheader("Rendimento de ativos")
-    fig_retornos, ax_retornos = plt.subplots(figsize=(12, 6))
-    dados_retornos_completo = {}
-    for ativo, df in dados_ativos.items():
-        # Calcular os retornos apenas se houver dados disponíveis
-        if len(df) > 1:
-            df_retornos = (df['Close'].pct_change() + 1).cumprod() - 1
-            dados_retornos_completo[ativo] = df_retornos  
-            ax_retornos.plot(pd.to_datetime(df_retornos.index), df_retornos, label=f"{ativo}")
+st.subheader("Rendimento de ativos")
 
-    # Adicionando legenda e título
-    if selected_indice == "IPCA":
-        ax_retornos.plot(pd.to_datetime(df_ipca.index), df_retornos_ipca, label="IPCA")
-    elif selected_indice == "CDI":
-        ax_retornos.plot(pd.to_datetime(df_cdi.index), df_retornos_cdi, label="CDI")
-    elif selected_indice == "SELIC":
-        ax_retornos.plot(pd.to_datetime(df_selic.index), df_retornos_selic, label="SELIC")
-    elif selected_indice == "POUPANÇA":
-        ax_retornos.plot(pd.to_datetime(df_poupanca.index), df_retornos_poupanca, label="POUPANÇA")
+with st.expander("Gráfico de rendimento:"):
+    if selected_indice == "":
+        st.warning("Selecione o índice para analisar o rendimento")
+    else:
+        st.subheader("Rendimento de ativos")
+        fig_retornos, ax_retornos = plt.subplots(figsize=(12, 6))
+        dados_retornos_completo = {}
+        for ativo, df in dados_ativos.items():
+            # Calcular os retornos apenas se houver dados disponíveis
+            if len(df) > 1:
+                df_retornos = (df['Close'].pct_change() + 1).cumprod() - 1
+                dados_retornos_completo[ativo] = df_retornos  
+                ax_retornos.plot(pd.to_datetime(df_retornos.index), df_retornos, label=f"{ativo}")
+
         # Adicionando legenda e título
-    plt.legend()
-    plt.title("Comparação de Rendimento de Ativos")
-    plt.xlabel('Data')
-    plt.ylabel('Rendimento')
-   # Exibindo o gráfico de retornos
-    st.pyplot(fig_retornos)
+        if selected_indice == "IPCA":
+            ax_retornos.plot(pd.to_datetime(df_ipca.index), df_retornos_ipca, label="IPCA")
+        elif selected_indice == "CDI":
+            ax_retornos.plot(pd.to_datetime(df_cdi.index), df_retornos_cdi, label="CDI")
+        elif selected_indice == "SELIC":
+            ax_retornos.plot(pd.to_datetime(df_selic.index), df_retornos_selic, label="SELIC")
+        elif selected_indice == "POUPANÇA":
+            ax_retornos.plot(pd.to_datetime(df_poupanca.index), df_retornos_poupanca, label="POUPANÇA")
+            # Adicionando legenda e título
+        plt.legend()
+        plt.title("Comparação de Rendimento de Ativos")
+        plt.xlabel('Data')
+        plt.ylabel('Rendimento')
+       # Exibindo o gráfico de retornos
+        st.pyplot(fig_retornos)
+
+st.write("\n---\n")
 
 # Definir cores de rendimento positivo ou negativo
 color_positive = 'green'
