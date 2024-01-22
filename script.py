@@ -234,5 +234,10 @@ for ativo, df in dados_ativos.items():
     else:
         st.write("Não há dados suficientes para calcular retornos.")
     
-st.link_button(f"Veja mais sobre {ativo}", f"https://www.fundamentus.com.br/detalhes.php?papel={ativo}")
+    with st.expander("Histórico do ativo no período:"):
+    st.dataframe(df, width=850, height=350)
+    df = dados_ativos[ativo]
+
+    st.link_button(f"Veja mais sobre {ativo}", f"https://www.fundamentus.com.br/detalhes.php?papel={ativo}")
+
 st.write("\n---\n")
