@@ -96,6 +96,7 @@ st.subheader("Cotação de ativos")
 
 with st.expander("Gráfico de cotação:"):
     # Plotando o gráfico de cotações
+    st.subheader("Cotação")
     fig_cotacoes, ax_cotacoes = plt.subplots(figsize=(12, 6))
 
     for ativo, df in dados_ativos.items():
@@ -118,7 +119,7 @@ with st.expander("Gráfico de rendimento:"):
     if selected_indice == "":
         st.warning("Selecione o índice para analisar o rendimento")
     else:
-        st.subheader("Rendimento de ativos")
+        st.subheader("Rendimento")
         fig_retornos, ax_retornos = plt.subplots(figsize=(12, 6))
         dados_retornos_completo = {}
         for ativo, df in dados_ativos.items():
