@@ -17,6 +17,7 @@ Analisa em forma de gráfico o rendimento e valor de uma cotação em um determi
 - Streamlit
 - Matplotlib
 - Python-BCB
+- BeautifulSoup
 
 ## Autor
 
