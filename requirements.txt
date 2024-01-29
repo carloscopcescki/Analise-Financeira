@@ -7,6 +7,7 @@ matplotlib
 openpyxl
 python-bcb
 bs4
+numpy
 beautifulsoup4
 requests
 xlrd

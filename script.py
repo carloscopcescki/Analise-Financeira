@@ -1,6 +1,7 @@
 from datetime import date, datetime, timedelta
 import yfinance as yf
 import pandas as pd
+import numpy as np
 import requests
 import streamlit as st
 import matplotlib.pyplot as plt
@@ -48,6 +49,8 @@ except ValueError as e:
     df_cdi = pd.DataFrame()
     df_selic = pd.DataFrame()
     df_poupanca = pd.DataFrame()
+
+    st.warning("Houve um erro no carregamento de dados, recarregue a página ou insira um novo ativo/fii")
 
 df_retornos_ipca = (df_ipca['ipca'].pct_change() + 1).cumprod() - 1
 df_retornos_cdi = (df_cdi['cdi'].pct_change() + 1).cumprod() - 1
