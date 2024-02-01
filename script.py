@@ -5,6 +5,7 @@ import numpy as np
 import requests
 import streamlit as st
 import matplotlib.pyplot as plt
+import matplotlib.ticker as mtick
 from bs4 import BeautifulSoup
 from bcb import sgs
 
