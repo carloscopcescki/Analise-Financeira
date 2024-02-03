@@ -5,6 +5,7 @@ import numpy as np
 import requests
 import streamlit as st
 import matplotlib.pyplot as plt
+import matplotlib.ticker as mtick
 from bs4 import BeautifulSoup
 from bcb import sgs
 
@@ -14,8 +15,8 @@ lista.sort()
 lista_ativos = [ativo + '.SA' for ativo in lista]
 lista_indices_select = ['CDI', 'IPCA', 'SELIC', 'POUPANÇA', 'BOVESPA', 'DÓLAR','EURO']
 
-# Definir intervalo de datas
-data_inicio = datetime.today() - timedelta(30)
+# Definir intervalo de datas (1 ano)
+data_inicio = datetime.today() - timedelta(365)
 data_final = datetime.today()
 
 # Criar sidebar vazio
@@ -147,6 +148,7 @@ with st.expander("Gráfico de rendimento:"):
         plt.xlabel('Data')
         plt.ylabel('Rendimento')
        # Exibindo o gráfico de retornos
+        ax_retornos.yaxis.set_major_formatter(mtick.PercentFormatter(1.0))
         st.pyplot(fig_retornos)
 
 st.write("\n---\n")
