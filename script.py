@@ -33,7 +33,7 @@ data_intervalo = (para_data - de_data).total_seconds() / 86400
 selected_indice = st.sidebar.selectbox("Selecione um indice para comparar", [''] + lista_indices_select)
 
 #Importar dados de indices
-ipca_dados = sgs.get(('ipca', 433), start=de_data, end=para_data_correta)
+ipca_dados = sgs.get(('ipca', 7478), start=de_data, end=para_data_correta)
 selic_dados = sgs.get(('selic', 11), start=de_data, end=para_data_correta)
 cdi_dados = sgs.get(('cdi', 12), start=de_data, end=para_data_correta)
 poupanca_dados = sgs.get(('poupanca', 25), start=de_data, end=para_data_correta)
