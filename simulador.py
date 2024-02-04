@@ -2,7 +2,10 @@ import yfinance as yf
 import pandas as pd
 import numpy as np
 import streamlit as st
+import matplotlib.ticker as mtick
 from datetime import date, datetime, timedelta
+import matplotlib.pyplot as plt
+
 
 # Coletar a lista de ativos/fii's
 lista = list(pd.read_excel('listativos.xls')['Código'].values)
@@ -19,7 +22,7 @@ st.sidebar.header("Defina a data de aporte e a data limite para analisar o rendi
 
 # Definir titulos
 
-st.title("Simulador de carteira de investimentos")
+st.title("Simulador de rentabilidade de ativo")
 
 # Date input de datas
 inicio = st.sidebar.date_input("De:", data_inicio)
@@ -57,16 +60,27 @@ def simulador_carteira(inicio, fim, carteira):
     
     dado_consolidado = pd.concat([ibov, pl], axis=1, join='inner')
     dado_consolidado_adj = dado_consolidado / dado_consolidado.iloc[0]
-    st.line_chart(dado_consolidado_adj[['IBOV', 'PL Total']])
     
+    # Plotar o gráfico com Matplotlib
+    fig, ax = plt.subplots(figsize=(12, 6))
+    plt.title("Carteira x Bovespa")
+    ax.plot(dado_consolidado_adj[['IBOV', 'PL Total']])
+    ax.set_xlabel('Data')
+    ax.set_ylabel('Rendimento')
+    ax.legend(['BOVESPA', 'CARTEIRA'])
+    
+    # Exibir o gráfico comparativo
+    ax.yaxis.set_major_formatter(mtick.PercentFormatter(1.0))
+    st.pyplot(fig)
+
 # Carteira de ativos
 carteira = {}
 
-ativo = st.selectbox("Selecione um ativo", lista)
-preco = st.text_input("Insira o valor em R$ a ser investido")
+ativo = st.selectbox("Selecione um ativo", [''] + lista)
+preco = st.text_input(f"Insira o valor em R$ a ser investido em {ativo}")
 
-if st.button("Adicionar Ativo") and ativo and preco:
-    carteira_sa = {ativo + '.SA': valor for ativo, valor in carteira.items()}
-    simulador_carteira(inicio, fim, carteira_sa)
+if st.button("Comparar rendimento") and ativo and preco:
+    carteira[ativo] = float(preco)
+    simulador_carteira(inicio, fim, carteira)  # Chama a função para plotar o gráfico
 else:
     st.warning("Preencha ambos os campos 'Ativo' e 'Preço' antes de adicionar à carteira.")
