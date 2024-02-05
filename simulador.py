@@ -21,12 +21,15 @@ st.sidebar.empty()
 st.sidebar.header("Defina a data de aporte e a data limite para analisar o rendimento")
 
 # Definir titulos
-
 st.title("Simulador de rentabilidade de ativo")
 
 # Date input de datas
 inicio = st.sidebar.date_input("De:", data_inicio)
 fim = st.sidebar.date_input("Para:", data_final)
+
+# Definir quantidade de ativos em carteira
+st.sidebar.header("Quantidade de ativos em carteira")
+qtd_ativo = st.sidebar.number_input("Insira a quantidade:", min_value=0, step=1)
 
 # Função para simular carteira
 def simulador_carteira(inicio, fim, carteira):
@@ -34,7 +37,10 @@ def simulador_carteira(inicio, fim, carteira):
         st.warning("Adicione ativos à carteira antes de simular.")
         return None
     
-    carteira_sa = {ativo + '.SA': valor for ativo, valor in carteira.items()}
+    carteira_sa = {}
+    for valor, ativo in carteira.items():
+        ativo_sa = ativo + '.SA'
+        carteira_sa[ativo_sa] = float(valor)  # Convertendo o valor para float
     
     try:
         precos_cotacao = yf.download(list(carteira_sa.keys()), start=inicio, end=fim, progress=False)['Adj Close']
@@ -47,9 +53,12 @@ def simulador_carteira(inicio, fim, carteira):
         return None
     
     primeiro_preco = precos_cotacao.iloc[0]
-    carteira_df = pd.Series(data=carteira, index=(carteira.keys()))
+    
+    # Certifique-se de que todos os valores são numéricos antes de realizar a operação de divisão
+    carteira_df = pd.Series(data=carteira_sa, name='Carteira')
+    
     qtd_ativos = round(carteira_df / primeiro_preco, 0)
-    pl = pd.DataFrame(data=(precos_cotacao.values * qtd_ativos.values), index=precos_cotacao.index, columns=list(carteira.keys()))
+    pl = pd.DataFrame(data=(precos_cotacao.values * qtd_ativos.values), index=precos_cotacao.index, columns=list(carteira_sa.keys()))
     pl['PL Total'] = pl.sum(axis='columns')
     
     try:
@@ -75,12 +84,23 @@ def simulador_carteira(inicio, fim, carteira):
 
 # Carteira de ativos
 carteira = {}
+contador = 0
 
-ativo = st.selectbox("Selecione um ativo", [''] + lista)
-preco = st.text_input(f"Insira o valor em R$ a ser investido em {ativo}")
+try:
+    while contador < qtd_ativo:
+        ativo = st.selectbox(f"Selecione o ativo {contador + 1}", [''] + lista, key=f"select_ativo_{contador}")
+        preco = st.text_input(f"Insira o valor em R$ a ser investido em {ativo}", key=f"input_preco_{contador}")
 
-if st.button("Comparar rendimento") and ativo and preco:
-    carteira[ativo] = float(preco)
-    simulador_carteira(inicio, fim, carteira)  # Chama a função para plotar o gráfico
+        if ativo != '' and preco != '':
+            preco_float = float(preco)
+            carteira[preco_float] = ativo
+            contador += 1
+
+except Exception as e:
+    st.warning("Selecione o ativo e insira o valor aportado")
+
+if qtd_ativo != 0:
+    if st.button("Comparar rendimento") and carteira:
+        simulador_carteira(inicio, fim, carteira)
 else:
-    st.warning("Preencha ambos os campos 'Ativo' e 'Preço' antes de adicionar à carteira.")
+    st.warning("Informe a quantidade de ativos em sua carteira")
