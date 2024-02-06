@@ -35,7 +35,7 @@ selected_indice = st.sidebar.selectbox("Selecione um indice para comparar", ['']
 
 # Simulador de carteira
 st.sidebar.header("Simulador de carteira")
-st.sidebar.write("[Clique para simular uma carteira de investimentos](https://simulador-carteira.streamlit.app/)")
+st.sidebar.link_button(f"Simular", f"https://simulador-carteira.streamlit.app/")
 
 #Importar dados de indices
 ipca_dados = sgs.get(('ipca', 7478), start=de_data, end=para_data_correta)
