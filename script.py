@@ -198,13 +198,13 @@ for ativo in selected_ativos:
         somatoria_por_ano = tabela.groupby('Ano')['Valor'].sum().reset_index()
 
         # Mantendo apenas as últimas linhas
-        somatoria_por_ano = somatoria_por_ano.tail(7)
+        somatoria_por_ano = somatoria_por_ano.tail(6)
         somatoria_por_ano = somatoria_por_ano.iloc[:-1]
 
         # Calcular o preco_teto para cada ativo e armazenar no dicionário
         
-        media_prov = (somatoria_por_ano['Valor'].sum()) / 6
-        preco_teto = (media_prov * 100) / 6
+        media_prov = (somatoria_por_ano['Valor'].sum()) / 5
+        preco_teto = (media_prov * 100) / 5
         preco_teto_dict[ativo] = preco_teto
  
     else:
