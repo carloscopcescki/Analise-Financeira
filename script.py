@@ -230,7 +230,7 @@ for ativo, df in dados_ativos.items():
         st.write(f"**Baixa do dia:** R$ {last_data['Low']:.2f}")
         st.write(f"**Fechamento do dia:** R$ {last_data['Close']:.2f}")
         if ativo in preco_teto_dict:
-            st.write(f"**Preço teto (Seis últimos anos):** R$ {preco_teto_dict[ativo]:.2f}")
+            st.write(f"**Preço teto:** R$ {preco_teto_dict[ativo]:.2f}")
         else:
             st.warning(f"Não foi possível encontrar o preço teto para {ativo}.")
         if rendimento_diario < 0:
