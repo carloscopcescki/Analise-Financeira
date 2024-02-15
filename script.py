@@ -38,6 +38,11 @@ st.sidebar.write("\n---\n")
 st.sidebar.header("Simulador de carteira")
 st.sidebar.link_button(f"Simular", f"https://simulador-carteira.streamlit.app/")
 
+# Calculadora de Juros Compostos
+st.sidebar.write("\n---\n")
+st.sidebar.header("Calculadora de Juros Compostos")
+st.sidebar.link_button(f"Calcular", f"https://calculadora-juros-compostos.streamlit.app/")
+
 #Importar dados de indices
 ipca_dados = sgs.get(('ipca', 433), start=de_data, end=para_data_correta)
 selic_dados = sgs.get(('selic', 11), start=de_data, end=para_data_correta)
