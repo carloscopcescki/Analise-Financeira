@@ -39,10 +39,10 @@ st.sidebar.header("Simulador de carteira")
 st.sidebar.link_button(f"Simular", f"https://simulador-carteira.streamlit.app/")
 
 #Importar dados de indices
-ipca_dados = sgs.get(('ipca', 7478), start=de_data, end=para_data_correta)
+ipca_dados = sgs.get(('ipca', 433), start=de_data, end=para_data_correta)
 selic_dados = sgs.get(('selic', 11), start=de_data, end=para_data_correta)
-cdi_dados = sgs.get(('cdi', 4390), start=de_data, end=para_data_correta)
-poupanca_dados = sgs.get(('poupanca', 25), start=de_data, end=para_data_correta)
+cdi_dados = sgs.get(('cdi', 12), start=de_data, end=para_data_correta)
+poupanca_dados = sgs.get(('poupanca', 195), start=de_data, end=para_data_correta)
 
 try:
     # Tentar ler os dados 
