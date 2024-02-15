@@ -189,13 +189,6 @@ last_data = {}
 
 for ativo in selected_ativos:
     
-    # Obter o total de proventos em 1 ano e dividend yield
-    
-    somatoria_dy = somatoria_por_ano.tail(2)
-    somatoria_dy = somatoria_por_ano.iloc[-1]
-    total_provento = somatoria_dy['Valor'].sum()
-    dividend_yield = (total_provento / valor_ativo) * 100
-    
     # Construir a URL dinâmica para cada ativo
     stock_url = f'https://www.dadosdemercado.com.br/bolsa/acoes/{ativo}/dividendos'
 
