@@ -217,7 +217,11 @@ for ativo in selected_ativos:
         
         # Obter o total de proventos em 1 ano
         
-        valor_ativo = df.iloc[-2]
+        if len(df) >= 2:
+            valor_ativo = df.iloc[-2]
+        else:
+            st.warning("Não há dados suficientes para calcular retornos.")
+        
         valor_ativo = df.iloc[:-1]
         somatoria_dy = somatoria_por_ano.tail(2)
         somatoria_dy = somatoria_por_ano.iloc[-1]
