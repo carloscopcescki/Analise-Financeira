@@ -177,8 +177,17 @@ selected_ativos.append(selected_indice)
 
 preco_teto_dict = {}
 last_data = {}
+valor_ativo = {}
 
 for ativo in selected_ativos:
+    
+    # Obter o total de proventos em 1 ano e dividend yield
+    valor_ativo = df.iloc[-1]
+    somatoria_dy = somatoria_por_ano.tail(2)
+    somatoria_dy = somatoria_por_ano.iloc[-1]
+    total_provento = somatoria_dy['Valor'].sum()
+    dividend_yield = (total_provento / valor_ativo['Close']) * 100
+    
     # Construir a URL dinâmica para cada ativo
     stock_url = f'https://www.dadosdemercado.com.br/bolsa/acoes/{ativo}/dividendos'
 
@@ -214,19 +223,6 @@ for ativo in selected_ativos:
         media_prov = (somatoria_por_ano['Valor'].sum()) / 5
         preco_teto = (media_prov * 100) / 5
         preco_teto_dict[ativo] = preco_teto
-        
-        # Obter o total de proventos em 1 ano
-        
-        if len(df) >= 2:
-            valor_ativo = df.iloc[-2]
-        else:
-            st.warning("Não há dados suficientes para calcular retornos.")
-        
-        valor_ativo = df.iloc[:-1]
-        somatoria_dy = somatoria_por_ano.tail(2)
-        somatoria_dy = somatoria_por_ano.iloc[-1]
-        total_provento = somatoria_dy['Valor'].sum()
-        dividend_yield = (total_provento / valor_ativo['Close']) * 100
         
     else:
         print(f"Não foi possível obter o preço teto para {ativo}. Status code: {response.status_code}")
