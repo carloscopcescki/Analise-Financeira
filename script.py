@@ -243,7 +243,7 @@ for ativo, df in dados_ativos.items():
         # st.write(f"**Dividend Yield:** {dividend_yield:.2f}%")
         if ativo in preco_teto_dict:
             st.write(f"**Preço teto:** R$ {preco_teto_dict[ativo]:.2f}")
-            st.write("**Dividend Yield:** {dividend_yield:.2f}%")
+            st.write(f"**Dividend Yield:** {dividend_yield:.2f}%")
         else:
             st.warning(f"Não foi possível encontrar o preço teto para {ativo}.")
         if rendimento_diario < 0:
