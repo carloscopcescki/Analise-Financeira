@@ -34,6 +34,7 @@ data_intervalo = (para_data - de_data).total_seconds() / 86400
 selected_indice = st.sidebar.selectbox("Selecione um indice para comparar", [''] + lista_indices_select)
 
 # Simulador de carteira
+st.sidebar.write("\n---\n")
 st.sidebar.header("Simulador de carteira")
 st.sidebar.link_button(f"Simular", f"https://simulador-carteira.streamlit.app/")
 
@@ -210,12 +211,22 @@ for ativo in selected_ativos:
         media_prov = (somatoria_por_ano['Valor'].sum()) / 5
         preco_teto = (media_prov * 100) / 5
         preco_teto_dict[ativo] = preco_teto
- 
+        
+        # Obter o total de proventos em 1 ano
+        
+        #somatoria_dy = somatoria_por_ano.tail(2)
+        #somatoria_dy = somatoria_por_ano.iloc[-1]
+        #total_provento = somatoria_dy['Valor'].sum()
+        #dividend_yield = (total_provento / last_data['Close']) * 100
+        
     else:
         print(f"Não foi possível obter o preço teto para {ativo}. Status code: {response.status_code}")
         
 for ativo, df in dados_ativos.items():
     last_data = df.iloc[-1]
+    
+    # Cálculo de Dividend Yield
+    # dividend_yield = (total_provento / last_data['Close']) * 100
     
     # Calcular os retornos apenas se houver dados disponíveis
     if len(df) > 1:
@@ -226,9 +237,8 @@ for ativo, df in dados_ativos.items():
         
         st.subheader(f'{ativo}')
         
-        st.write(f"**Alta do dia:** R$ {last_data['High']:.2f}")
-        st.write(f"**Baixa do dia:** R$ {last_data['Low']:.2f}")
-        st.write(f"**Fechamento do dia:** R$ {last_data['Close']:.2f}")
+        st.write(f"**Valor do ativo:** R$ {last_data['Close']:.2f}")
+        # st.write(f"**Dividend Yield:** {dividend_yield:.2f}%")
         if ativo in preco_teto_dict:
             st.write(f"**Preço teto:** R$ {preco_teto_dict[ativo]:.2f}")
         else:
