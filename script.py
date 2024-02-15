@@ -217,10 +217,9 @@ for ativo in selected_ativos:
         preco_teto_dict[ativo] = preco_teto
 
         # Obter o dividend yield
-        if len(call_api) > 1:
-            valor_ativo = call_api['Close'].iloc[-1]
-            somatoria_por_ano = somatoria_dy.tail(2)
-            somatoria_por_ano = somatoria_por_ano.iloc[-1]
+        if len(dados_ativos[ativo]) > 1:
+            valor_ativo = dados_ativos[ativo]['Close'].iloc[-1]
+            somatoria_por_ano = somatoria_por_ano.tail(2)
             total_provento = somatoria_por_ano['Valor'].sum()
             dividend_yield = (total_provento / valor_ativo) * 100
         
