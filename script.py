@@ -95,15 +95,6 @@ for ativo in selected_ativos:
     
     # Adicionar os dados ao dicionário
     dados_ativos[ativo] = pd.DataFrame(call_api)
-    
-    # Obter o dividend yield
-    if len(call_api) > 1:
-        valor_ativo = call_api['Close'].iloc[-1]
-
-    somatoria_por_ano = somatoria_dy.tail(2)
-    somatoria_por_ano = somatoria_por_ano.iloc[-1]
-    total_provento = somatoria_por_ano['Valor'].sum()
-    dividend_yield = (total_provento / valor_ativo) * 100
 
 # Formatar coluna de datas
 for ativo, df in dados_ativos.items():
@@ -188,6 +179,15 @@ preco_teto_dict = {}
 last_data = {}
 
 for ativo in selected_ativos:
+
+    # Obter o dividend yield
+    if len(call_api) > 1:
+        valor_ativo = call_api['Close'].iloc[-1]
+
+    somatoria_por_ano = somatoria_dy.tail(2)
+    somatoria_por_ano = somatoria_por_ano.iloc[-1]
+    total_provento = somatoria_por_ano['Valor'].sum()
+    dividend_yield = (total_provento / valor_ativo) * 100
     
     # Construir a URL dinâmica para cada ativo
     stock_url = f'https://www.dadosdemercado.com.br/bolsa/acoes/{ativo}/dividendos'
