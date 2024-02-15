@@ -217,11 +217,11 @@ for ativo in selected_ativos:
         preco_teto_dict[ativo] = preco_teto
 
         # Obter o dividend yield
-        if len(dados_ativos[ativo]) > 1:
-            valor_ativo = dados_ativos[ativo]['Close'].iloc[-1]
-            somatoria_por_ano = somatoria_por_ano.tail(2)
-            total_provento = somatoria_por_ano['Valor'].sum()
-            dividend_yield = (total_provento / valor_ativo) * 100
+        #if len(dados_ativos[ativo]) > 1:
+            #valor_ativo = dados_ativos[ativo]['Close'].iloc[-1]
+            #somatoria_por_ano = somatoria_por_ano.tail(2)
+            #total_provento = somatoria_por_ano['Valor'].sum()
+            #dividend_yield = (total_provento / valor_ativo) * 100
         
     else:
         print(f"Não foi possível obter o preço teto para {ativo}. Status code: {response.status_code}")
@@ -239,7 +239,7 @@ for ativo, df in dados_ativos.items():
         st.subheader(f'{ativo}')
         
         st.write(f"**Valor do ativo:** R$ {last_data['Close']:.2f}")
-        st.write(f"**Dividend Yield:** {dividend_yield:.2f}%")
+        #st.write(f"**Dividend Yield:** {dividend_yield:.2f}%")
         if ativo in preco_teto_dict:
             st.write(f"**Preço teto:** R$ {preco_teto_dict[ativo]:.2f}")
         else:
