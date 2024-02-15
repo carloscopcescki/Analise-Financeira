@@ -95,7 +95,10 @@ for ativo in selected_ativos:
     
     # Adicionar os dados ao dicionário
     dados_ativos[ativo] = pd.DataFrame(call_api)
-    
+
+if len(call_api) > 1:
+        valor_ativo = call_api['Close'].iloc[-1]
+
 # Formatar coluna de datas
 for ativo, df in dados_ativos.items():
     # Verificar se o índice é do tipo datetime antes de formatar
@@ -182,7 +185,7 @@ valor_ativo = {}
 for ativo in selected_ativos:
     
     # Obter o total de proventos em 1 ano e dividend yield
-    valor_ativo = call_api['Close'].iloc[-1]
+    
     somatoria_dy = somatoria_por_ano.tail(2)
     somatoria_dy = somatoria_por_ano.iloc[-1]
     total_provento = somatoria_dy['Valor'].sum()
