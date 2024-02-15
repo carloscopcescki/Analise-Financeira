@@ -39,7 +39,6 @@ st.sidebar.header("Simulador de carteira")
 st.sidebar.link_button(f"Simular", f"https://simulador-carteira.streamlit.app/")
 
 # Calculadora de Juros Compostos
-st.sidebar.write("\n---\n")
 st.sidebar.header("Calculadora de Juros Compostos")
 st.sidebar.link_button(f"Calcular", f"https://calculadora-juros-compostos.streamlit.app/")
 
