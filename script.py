@@ -176,7 +176,6 @@ selected_ativos.append(selected_indice)
 # Request para coletar proventos
 
 preco_teto_dict = {}
-valor_ativo = df.iloc[-1]
 last_data = {}
 
 for ativo in selected_ativos:
@@ -217,7 +216,8 @@ for ativo in selected_ativos:
         preco_teto_dict[ativo] = preco_teto
         
         # Obter o total de proventos em 1 ano
-    
+        
+        valor_ativo = df.iloc[-1]
         somatoria_dy = somatoria_por_ano.tail(2)
         somatoria_dy = somatoria_por_ano.iloc[-1]
         total_provento = somatoria_dy['Valor'].sum()
