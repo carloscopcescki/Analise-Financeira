@@ -35,12 +35,10 @@ selected_indice = st.sidebar.selectbox("Selecione um indice para comparar", ['']
 
 # Simulador de carteira
 st.sidebar.write("\n---\n")
-st.sidebar.header("Simulador de carteira")
-st.sidebar.link_button(f"Simular", f"https://simulador-carteira.streamlit.app/")
+st.sidebar.link_button(f"Simulador de Carteira", f"https://simulador-carteira.streamlit.app/")
 
 # Calculadora de Juros Compostos
-st.sidebar.header("Calculadora de Juros Compostos")
-st.sidebar.link_button(f"Calcular", f"https://calculadora-juros-compostos.streamlit.app/")
+st.sidebar.link_button(f"Calculadora de Juros Compostos", f"https://calculadora-juros-compostos.streamlit.app/")
 
 #Importar dados de indices
 ipca_dados = sgs.get(('ipca', 433), start=de_data, end=para_data_correta)
