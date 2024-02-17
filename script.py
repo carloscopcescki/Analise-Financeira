@@ -155,6 +155,11 @@ with st.expander("Gráfico de rendimento:"):
        # Exibindo o gráfico de retornos
         ax_retornos.yaxis.set_major_formatter(mtick.PercentFormatter(1.0))
         st.pyplot(fig_retornos)
+              
+#with st.expander("6 Categorias de Empresas"):       
+    #st.image('6categoriesofcompanies.jpeg', caption="As 6 categorias de empresas, segundo Peter Lynch")
+    #st.link_button("Veja mais sobre", "https://investidoremvalor.com/6-categorias-de-empresas-peter-lynch/")
+
 
 st.write("\n---\n")
 
