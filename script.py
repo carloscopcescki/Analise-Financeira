@@ -13,7 +13,7 @@ from bcb import sgs
 lista = list(pd.read_excel('listativos.xls')['Código'].values)
 lista.sort()
 lista_ativos = [ativo + '.SA' for ativo in lista]
-lista_indices_select = ['CDI', 'IPCA', 'SELIC', 'POUPANÇA', 'BOVESPA', 'DÓLAR','EURO']
+lista_indices_select = ['CDI', 'IPCA', 'SELIC', 'POUPANÇA', 'BOVESPA', 'DÓLAR','EURO','S&P 500', 'DOW JONES', 'NASDAQ']
 
 # Definir intervalo de datas (1 ano)
 data_inicio = datetime.today() - timedelta(365)
@@ -35,14 +35,16 @@ selected_indice = st.sidebar.selectbox("Selecione um indice para comparar", ['']
 
 # Simulador de carteira
 st.sidebar.write("\n---\n")
-st.sidebar.header("Simulador de carteira")
-st.sidebar.link_button(f"Simular", f"https://simulador-carteira.streamlit.app/")
+st.sidebar.link_button(f"Simulador de Carteira", f"https://simulador-carteira.streamlit.app/")
+
+# Calculadora de Juros Compostos
+st.sidebar.link_button(f"Calculadora de Juros Compostos", f"https://calculadora-juros-compostos.streamlit.app/")
 
 #Importar dados de indices
-ipca_dados = sgs.get(('ipca', 7478), start=de_data, end=para_data_correta)
+ipca_dados = sgs.get(('ipca', 433), start=de_data, end=para_data_correta)
 selic_dados = sgs.get(('selic', 11), start=de_data, end=para_data_correta)
 cdi_dados = sgs.get(('cdi', 12), start=de_data, end=para_data_correta)
-poupanca_dados = sgs.get(('poupanca', 25), start=de_data, end=para_data_correta)
+poupanca_dados = sgs.get(('poupanca', 195), start=de_data, end=para_data_correta)
 
 try:
     # Tentar ler os dados 
@@ -73,6 +75,9 @@ mapa_indices = {
     'BOVESPA': '^BVSP',
     'DÓLAR': 'BRL=X',
     'EURO': 'EURBRL=X',
+    'S&P 500': '^GSPC',
+    'DOW JONES': '^DJI',
+    'NASDAQ': '^IXIC',
 }
 
 dados_ativos = {}
@@ -92,7 +97,7 @@ for ativo in selected_ativos:
     
     # Adicionar os dados ao dicionário
     dados_ativos[ativo] = pd.DataFrame(call_api)
-    
+
 # Formatar coluna de datas
 for ativo, df in dados_ativos.items():
     # Verificar se o índice é do tipo datetime antes de formatar
@@ -181,6 +186,7 @@ preco_teto_dict = {}
 last_data = {}
 
 for ativo in selected_ativos:
+    
     # Construir a URL dinâmica para cada ativo
     stock_url = f'https://www.dadosdemercado.com.br/bolsa/acoes/{ativo}/dividendos'
 
@@ -216,22 +222,19 @@ for ativo in selected_ativos:
         media_prov = (somatoria_por_ano['Valor'].sum()) / 5
         preco_teto = (media_prov * 100) / 5
         preco_teto_dict[ativo] = preco_teto
-        
-        # Obter o total de proventos em 1 ano
-        
-        #somatoria_dy = somatoria_por_ano.tail(2)
-        #somatoria_dy = somatoria_por_ano.iloc[-1]
-        #total_provento = somatoria_dy['Valor'].sum()
-        #dividend_yield = (total_provento / last_data['Close']) * 100
+
+        # Obter o dividend yield
+        #if len(dados_ativos[ativo]) > 1:
+            #valor_ativo = dados_ativos[ativo]['Close'].iloc[-1]
+            #somatoria_por_ano = somatoria_por_ano.tail(2)
+            #total_provento = somatoria_por_ano['Valor'].sum()
+            #dividend_yield = (total_provento / valor_ativo) * 100
         
     else:
         print(f"Não foi possível obter o preço teto para {ativo}. Status code: {response.status_code}")
-        
+
 for ativo, df in dados_ativos.items():
     last_data = df.iloc[-1]
-    
-    # Cálculo de Dividend Yield
-    # dividend_yield = (total_provento / last_data['Close']) * 100
     
     # Calcular os retornos apenas se houver dados disponíveis
     if len(df) > 1:
@@ -243,7 +246,7 @@ for ativo, df in dados_ativos.items():
         st.subheader(f'{ativo}')
         
         st.write(f"**Valor do ativo:** R$ {last_data['Close']:.2f}")
-        # st.write(f"**Dividend Yield:** {dividend_yield:.2f}%")
+        #st.write(f"**Dividend Yield:** {dividend_yield:.2f}%")
         if ativo in preco_teto_dict:
             st.write(f"**Preço teto:** R$ {preco_teto_dict[ativo]:.2f}")
         else:
