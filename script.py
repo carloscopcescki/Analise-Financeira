@@ -3,6 +3,7 @@ import yfinance as yf
 import pandas as pd
 import numpy as np
 import requests
+import plotly.express as px
 import streamlit as st
 import matplotlib.pyplot as plt
 import matplotlib.ticker as mtick
@@ -161,11 +162,6 @@ with st.expander("Gráfico de rendimento:"):
         ax_retornos.yaxis.set_major_formatter(mtick.PercentFormatter(1.0))
         st.pyplot(fig_retornos)
               
-#with st.expander("6 Categorias de Empresas"):       
-    #st.image('6categoriesofcompanies.jpeg', caption="As 6 categorias de empresas, segundo Peter Lynch")
-    #st.link_button("Veja mais sobre", "https://investidoremvalor.com/6-categorias-de-empresas-peter-lynch/")
-
-
 st.write("\n---\n")
 
 # Definir cores de rendimento positivo ou negativo
@@ -222,13 +218,6 @@ for ativo in selected_ativos:
         media_prov = (somatoria_por_ano['Valor'].sum()) / 5
         preco_teto = (media_prov * 100) / 5
         preco_teto_dict[ativo] = preco_teto
-
-        # Obter o dividend yield
-        #if len(dados_ativos[ativo]) > 1:
-            #valor_ativo = dados_ativos[ativo]['Close'].iloc[-1]
-            #somatoria_por_ano = somatoria_por_ano.tail(2)
-            #total_provento = somatoria_por_ano['Valor'].sum()
-            #dividend_yield = (total_provento / valor_ativo) * 100
         
     else:
         print(f"Não foi possível obter o preço teto para {ativo}. Status code: {response.status_code}")
@@ -243,10 +232,10 @@ for ativo, df in dados_ativos.items():
         
         rendimento_diario = ((df['Close'].iloc[-1] - df['Close'].iloc[-2]) / df['Close'].iloc[-2]) * 100
         
+        st.image(f'https://raw.githubusercontent.com/thefintz/icones-b3/main/icones/{ativo}.png', width=85)
         st.subheader(f'{ativo}')
-        
         st.write(f"**Valor do ativo:** R$ {last_data['Close']:.2f}")
-        #st.write(f"**Dividend Yield:** {dividend_yield:.2f}%")
+        #st.write(f"**Dividend Yield:** {dividend_yield}")
         if ativo in preco_teto_dict:
             st.write(f"**Preço teto:** R$ {preco_teto_dict[ativo]:.2f}")
         else:

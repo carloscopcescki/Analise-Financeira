@@ -6,7 +6,9 @@ datetime
 matplotlib
 openpyxl
 python-bcb
+plotly.express
 bs4
+investpy
 numpy
 beautifulsoup4
 requests
