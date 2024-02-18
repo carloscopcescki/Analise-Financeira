@@ -1,9 +1,7 @@
 from datetime import date, datetime, timedelta
 import yfinance as yf
 import pandas as pd
-import numpy as np
 import requests
-import plotly.express as px
 import streamlit as st
 import matplotlib.pyplot as plt
 import matplotlib.ticker as mtick
@@ -180,22 +178,45 @@ selected_ativos.append(selected_indice)
 
 preco_teto_dict = {}
 last_data = {}
+yield_dict = {}
+pl_dict = {}
+pvp_dict = {}
 
 for ativo in selected_ativos:
     
     # Construir a URL dinâmica para cada ativo
     stock_url = f'https://www.dadosdemercado.com.br/bolsa/acoes/{ativo}/dividendos'
-
+    url_fundamentus = f'https://investidor10.com.br/acoes/{ativo}/'
+    
     # Restante do código permanece o mesmo
     headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'}
 
     response = requests.get(stock_url, headers=headers)
-
+    dados_fundamentus = requests.get(url_fundamentus, headers=headers, timeout=5).text
+    
     # Verificando se a requisição foi bem-sucedida
     if response.status_code == 200:
         # Parseando o conteúdo HTML
         soup = BeautifulSoup(response.text, 'html.parser')
+        soup_valuation = BeautifulSoup(dados_fundamentus, 'html.parser')
+        
+        # Obter dados de valuation
+        valuation = soup_valuation.find_all('div', class_ = '_card-body')
 
+        preco_lucro = valuation[2].find('span').text
+        preco_vp = valuation[3].find('span').text
+        dividend_yield = valuation[4].find('span').text
+        
+        table_valuation = pd.DataFrame(columns=['P/L', 'P/VP', 'DY'])
+
+        table_valuation['P/L'] = [preco_lucro]
+        table_valuation['P/VP'] = [preco_vp]
+        table_valuation['DY'] = [dividend_yield]
+        
+        yield_dict[ativo] = dividend_yield
+        pvp_dict[ativo] = preco_vp 
+        pl_dict[ativo] = preco_lucro
+        
         # Encontrando a tabela diretamente usando pandas
         tabela = pd.read_html(str(soup), decimal=',', thousands='.')[0]
         tabela = tabela.drop(["Pagamento", "Ex"], axis=1)
@@ -220,7 +241,7 @@ for ativo in selected_ativos:
         preco_teto_dict[ativo] = preco_teto
         
     else:
-        print(f"Não foi possível obter o preço teto para {ativo}. Status code: {response.status_code}")
+        print(f"Não foi possível obter indicadores de valuation para {ativo}. Status code: {response.status_code}")
 
 for ativo, df in dados_ativos.items():
     last_data = df.iloc[-1]
@@ -235,15 +256,26 @@ for ativo, df in dados_ativos.items():
         st.image(f'https://raw.githubusercontent.com/thefintz/icones-b3/main/icones/{ativo}.png', width=85)
         st.subheader(f'{ativo}')
         st.write(f"**Valor do ativo:** R$ {last_data['Close']:.2f}")
-        #st.write(f"**Dividend Yield:** {dividend_yield}")
-        if ativo in preco_teto_dict:
-            st.write(f"**Preço teto:** R$ {preco_teto_dict[ativo]:.2f}")
-        else:
-            st.warning(f"Não foi possível encontrar o preço teto para {ativo}.")
         if rendimento_diario < 0:
             st.write(f"**Variação do dia:** <span style='color:{color_negative}'>{rendimento_diario:.2f}%</span>", unsafe_allow_html=True)
         else:
             st.write(f"**Variação do dia:** <span style='color:{color_positive}'>+{rendimento_diario:.2f}%</span>", unsafe_allow_html=True)
+        if ativo in preco_teto_dict:
+            st.write(f"**Preço teto:** R$ {preco_teto_dict[ativo]:.2f}")
+        else:
+            st.warning(f"Não foi possível obter o preço teto para {ativo}.")
+        if ativo in pl_dict:
+            st.write(f"**P/L:** {pl_dict[ativo]}")
+        else:
+            st.warning(f"Não foi possível obter P/L para {ativo}.")
+        if ativo in pvp_dict:
+            st.write(f"**P/VP:** {pvp_dict[ativo]}")
+        else:
+            st.warning(f"Não foi possível obter P/VP para {ativo}.")
+        if ativo in yield_dict:
+            st.write(f"**Dividend Yield:** {yield_dict[ativo]}")
+        else:
+            st.warning(f"Não foi possível obter dividend yield para {ativo}.")
         if rendimento_total < 0:
             st.write(f"**Rendimento no período:** <span style='color:{color_negative}'>{rendimento_total:.2%}</span>", unsafe_allow_html=True)
         else:
