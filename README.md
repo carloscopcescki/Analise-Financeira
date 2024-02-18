@@ -2,7 +2,7 @@
 
 # Sobre o projeto
 
-[https://monitoramento-ativo.streamlit.app/](https://monitoramento-ativo.streamlit.app/)
+[https://monitor-ativos.streamlit.app/](https://monitor-ativos.streamlit.app/)
 
 Analisa em forma de gráfico o rendimento e valor de uma cotação em um determinado período e exibe todos os dados acerca do ativo em forma de DataFrame.
 
