@@ -260,6 +260,10 @@ for ativo, df in dados_ativos.items():
             st.write(f"**Variação do dia:** <span style='color:{color_negative}'>{rendimento_diario:.2f}%</span>", unsafe_allow_html=True)
         else:
             st.write(f"**Variação do dia:** <span style='color:{color_positive}'>+{rendimento_diario:.2f}%</span>", unsafe_allow_html=True)
+        if rendimento_total < 0:
+            st.write(f"**Rendimento no período:** <span style='color:{color_negative}'>{rendimento_total:.2%}</span>", unsafe_allow_html=True)
+        else:
+            st.write(f"**Rendimento no período:** <span style='color:{color_positive}'>{rendimento_total:.2%}</span>", unsafe_allow_html=True)
         if ativo in preco_teto_dict:
             st.write(f"**Preço teto:** R$ {preco_teto_dict[ativo]:.2f}")
         else:
@@ -276,10 +280,6 @@ for ativo, df in dados_ativos.items():
             st.write(f"**Dividend Yield:** {yield_dict[ativo]}")
         else:
             st.warning(f"Não foi possível obter dividend yield para {ativo}.")
-        if rendimento_total < 0:
-            st.write(f"**Rendimento no período:** <span style='color:{color_negative}'>{rendimento_total:.2%}</span>", unsafe_allow_html=True)
-        else:
-            st.write(f"**Rendimento no período:** <span style='color:{color_positive}'>{rendimento_total:.2%}</span>", unsafe_allow_html=True)
     else:
         st.write("Não há dados suficientes para calcular retornos.")
     
