@@ -8,11 +8,11 @@ Analisa em forma de gráfico o rendimento e valor de uma cotação em um determi
 
 [https://simulador-carteira.streamlit.app/](https://simulador-carteira.streamlit.app/)
 
-Compara o rendimento de uma carteira fictícia de investimentos com o indice Bovespa
+Compara o rendimento de uma carteira fictícia de investimentos com o indice Bovespa.
 
 [https://calculadora-juros-compostos.streamlit.app/](https://calculadora-juros-compostos.streamlit.app/)
 
-Calcula o juros compostos do valor inicial investido
+Calcula o juros compostos do valor inicial investido.
 
 ## Linguagem Utilizada
 
