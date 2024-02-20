@@ -287,7 +287,7 @@ for ativo, df in dados_ativos.items():
         st.dataframe(df, width=850, height=350)
         df = dados_ativos[ativo]
 
-    if ativo in selected_ativos:
+    if ativo in pvp_dict:
         st.link_button(f"Veja mais sobre {ativo}", f"https://statusinvest.com.br/acoes/{ativo}")
     else:
         st.link_button(f"Veja mais sobre {ativo}", f"https://statusinvest.com.br/fundos-imobiliarios/{ativo}")
