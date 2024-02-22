@@ -39,6 +39,13 @@ st.sidebar.link_button(f"Simulador de Carteira", f"https://simulador-carteira.st
 # Calculadora de Juros Compostos
 st.sidebar.link_button(f"Calculadora de Juros Compostos", f"https://calculadora-juros-compostos.streamlit.app/")
 
+# Sobre
+st.sidebar.title("Sobre")
+st.sidebar.info('Aplicativo simples utilizando Streamlit para elaborar'
+                'monitor de ativos financeiros, simulação de carteira e juros compostos.\n'
+                '\n\n'
+                'Veja o código em https://github.com/carloscopcescki/analise-financeira/blob/main/script.py')
+
 #Importar dados de indices
 ipca_dados = sgs.get(('ipca', 433), start=de_data, end=para_data_correta)
 selic_dados = sgs.get(('selic', 11), start=de_data, end=para_data_correta)
