@@ -33,7 +33,7 @@ data_intervalo = (para_data - de_data).total_seconds() / 86400
 selected_indice = st.sidebar.selectbox("Selecione um indice para comparar", [''] + lista_indices_select)
 
 # Sobre
-st.sidebar.write("---\n")
+st.sidebar.write("\n---\n")
 st.sidebar.title("Sobre")
 st.sidebar.info('Aplicativo simples utilizando Streamlit para realizar o'
                 '\nmonitoramento de ativos financeiros, simulação de carteira'
