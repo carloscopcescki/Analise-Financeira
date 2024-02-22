@@ -45,7 +45,7 @@ st.sidebar.title("Sobre")
 st.sidebar.info('Aplicativo simples utilizando Streamlit para realizar o'
                 '\nmonitoramento de ativos financeiros, simulação de carteira'
                 '\ne cálculo de juros compostos.\n'
-                'Veja o código em https://github.com/carloscopcescki/analise-financeira/blob/main/script.py')
+                '\nVeja o código em https://github.com/carloscopcescki/analise-financeira/blob/main/script.py')
 
 #Importar dados de indices
 ipca_dados = sgs.get(('ipca', 433), start=de_data, end=para_data_correta)
