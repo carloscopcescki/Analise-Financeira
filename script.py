@@ -42,9 +42,9 @@ st.sidebar.link_button(f"Calculadora de Juros Compostos", f"https://calculadora-
 # Sobre
 st.sidebar.write("\n---\n")
 st.sidebar.title("Sobre")
-st.sidebar.info('Aplicativo simples utilizando Streamlit para realizar'
-                '\nmonitoramento de ativos financeiros.\n'
-                '\n\n'
+st.sidebar.info('Aplicativo simples utilizando Streamlit para realizar o'
+                '\nmonitoramento de ativos financeiros, simulação de carteira'
+                '\ne cálculo de juros compostos.\n'
                 'Veja o código em https://github.com/carloscopcescki/analise-financeira/blob/main/script.py')
 
 #Importar dados de indices
