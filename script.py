@@ -32,13 +32,6 @@ data_intervalo = (para_data - de_data).total_seconds() / 86400
 
 selected_indice = st.sidebar.selectbox("Selecione um indice para comparar", [''] + lista_indices_select)
 
-# Simulador de carteira
-st.sidebar.write("\n---\n")
-st.sidebar.link_button(f"Simulador de Carteira", f"https://simulador-carteira.streamlit.app/")
-
-# Calculadora de Juros Compostos
-st.sidebar.link_button(f"Calculadora de Juros Compostos", f"https://calculadora-juros-compostos.streamlit.app/")
-
 # Sobre
 st.sidebar.write("\n---\n")
 st.sidebar.title("Sobre")
@@ -46,6 +39,13 @@ st.sidebar.info('Aplicativo simples utilizando Streamlit para realizar o'
                 '\nmonitoramento de ativos financeiros, simulação de carteira'
                 '\ne cálculo de juros compostos.\n'
                 '\nVeja o código em: https://github.com/carloscopcescki/analise-financeira/blob/main/script.py')
+
+# Simulador de carteira
+st.sidebar.write("\n---\n")
+st.sidebar.link_button(f"Simulador de Carteira", f"https://simulador-carteira.streamlit.app/")
+
+# Calculadora de Juros Compostos
+st.sidebar.link_button(f"Calculadora de Juros Compostos", f"https://calculadora-juros-compostos.streamlit.app/")
 
 #Importar dados de indices
 ipca_dados = sgs.get(('ipca', 433), start=de_data, end=para_data_correta)
