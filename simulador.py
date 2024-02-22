@@ -31,6 +31,14 @@ fim = st.sidebar.date_input("Para:", data_final)
 st.sidebar.header("Quantidade de ativos em carteira")
 qtd_ativo = st.sidebar.number_input("Insira a quantidade:", min_value=0, step=1)
 
+# Sobre
+st.sidebar.write("\n---\n")
+st.sidebar.title("Sobre")
+st.sidebar.info('Simulador simples para analisar o rendimento de uma carteira'
+                '\nde ativos em um período selecionado.\n'
+                '\n\n'
+                'Veja o código em https://github.com/carloscopcescki/Analise-Financeira/blob/main/simulador.py')
+
 # Função para simular carteira
 def simulador_carteira(inicio, fim, carteira):
     if not carteira:
