@@ -40,9 +40,10 @@ st.sidebar.link_button(f"Simulador de Carteira", f"https://simulador-carteira.st
 st.sidebar.link_button(f"Calculadora de Juros Compostos", f"https://calculadora-juros-compostos.streamlit.app/")
 
 # Sobre
+st.sidebar.write("\n---\n")
 st.sidebar.title("Sobre")
-st.sidebar.info('Aplicativo simples utilizando Streamlit para elaborar'
-                '\nmonitor de ativos financeiros, simulação de carteira e juros compostos.\n'
+st.sidebar.info('Aplicativo simples utilizando Streamlit para realizar'
+                '\nmonitoramento de ativos financeiros.\n'
                 '\n\n'
                 'Veja o código em https://github.com/carloscopcescki/analise-financeira/blob/main/script.py')
 
