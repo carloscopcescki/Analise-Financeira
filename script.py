@@ -20,7 +20,7 @@ data_final = datetime.today()
 
 # Criar sidebar vazio
 st.sidebar.empty()
-st.sidebar.header("Insira os dados")
+st.sidebar.title("Insira os dados")
 
 # Selecionar os ativos e período
 selected_ativos = st.sidebar.multiselect("Selecione os ativos", lista)
