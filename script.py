@@ -296,7 +296,7 @@ for ativo, df in dados_ativos.items():
         df = dados_ativos[ativo]
 
     if ativo in pvp_dict:
-        st.link_button(f"Veja mais sobre {ativo}", f"https://statusinvest.com.br/acoes/{ativo}")
+        st.link_button(f"Veja mais sobre {ativo}", f"https://investidor10.com.br/acoes/{ativo}/")
     else:
-        st.link_button(f"Veja mais sobre {ativo}", f"https://statusinvest.com.br/fundos-imobiliarios/{ativo}")
+        st.link_button(f"Veja mais sobre {ativo}", f"https://investidor10.com.br/fiis/{ativo}/")
     st.write("\n---\n")
