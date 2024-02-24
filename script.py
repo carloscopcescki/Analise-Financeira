@@ -20,7 +20,7 @@ data_final = datetime.today()
 
 # Criar sidebar vazio
 st.sidebar.empty()
-st.sidebar.header("Insira os dados")
+st.sidebar.title("Insira os dados")
 
 # Selecionar os ativos e período
 selected_ativos = st.sidebar.multiselect("Selecione os ativos", lista)
@@ -31,6 +31,14 @@ para_data_correta = para_data + timedelta(1)
 data_intervalo = (para_data - de_data).total_seconds() / 86400
 
 selected_indice = st.sidebar.selectbox("Selecione um indice para comparar", [''] + lista_indices_select)
+
+# Sobre
+st.sidebar.write("\n---\n")
+st.sidebar.title("Sobre")
+st.sidebar.info('Aplicativo simples utilizando Streamlit para realizar o'
+                '\nmonitoramento de ativos financeiros, simulação de carteira'
+                '\ne cálculo de juros compostos.\n'
+                '\nVeja o código em: https://github.com/carloscopcescki/analise-financeira/blob/main/script.py')
 
 # Simulador de carteira
 st.sidebar.write("\n---\n")
@@ -287,5 +295,8 @@ for ativo, df in dados_ativos.items():
         st.dataframe(df, width=850, height=350)
         df = dados_ativos[ativo]
 
-    st.link_button(f"Veja mais sobre {ativo}", f"https://www.fundamentus.com.br/detalhes.php?papel={ativo}")
+    if ativo in pvp_dict:
+        st.link_button(f"Veja mais sobre {ativo}", f"https://statusinvest.com.br/acoes/{ativo}")
+    else:
+        st.link_button(f"Veja mais sobre {ativo}", f"https://statusinvest.com.br/fundos-imobiliarios/{ativo}")
     st.write("\n---\n")
