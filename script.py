@@ -6,13 +6,13 @@ import streamlit as st
 import matplotlib.pyplot as plt
 import matplotlib.ticker as mtick
 from bs4 import BeautifulSoup
-from bcb import sgs
+#from bcb import sgs
 
 # Lista de ativos utilizados
 lista = list(pd.read_excel('listativos.xls')['Código'].values)
 lista.sort()
 lista_ativos = [ativo + '.SA' for ativo in lista]
-lista_indices_select = ['CDI', 'IPCA', 'SELIC', 'POUPANÇA', 'BOVESPA', 'DÓLAR','EURO','S&P 500', 'DOW JONES', 'NASDAQ']
+lista_indices_select = ['BOVESPA', 'DÓLAR','EURO','S&P 500', 'DOW JONES', 'NASDAQ']
 
 # Definir intervalo de datas (1 ano)
 data_inicio = datetime.today() - timedelta(365)
@@ -48,29 +48,29 @@ st.sidebar.link_button(f"Simulador de Carteira", f"https://simulador-carteira.st
 st.sidebar.link_button(f"Calculadora de Juros Compostos", f"https://calculadora-juros-compostos.streamlit.app/")
 
 #Importar dados de indices
-ipca_dados = sgs.get(('ipca', 433), start=de_data, end=para_data_correta)
-selic_dados = sgs.get(('selic', 11), start=de_data, end=para_data_correta)
-cdi_dados = sgs.get(('cdi', 12), start=de_data, end=para_data_correta)
-poupanca_dados = sgs.get(('poupanca', 195), start=de_data, end=para_data_correta)
+#ipca_dados = sgs.get(('ipca', 433), start=de_data, end=para_data_correta)
+#selic_dados = sgs.get(('selic', 11), start=de_data, end=para_data_correta)
+#cdi_dados = sgs.get(('cdi', 12), start=de_data, end=para_data_correta)
+#poupanca_dados = sgs.get(('poupanca', 195), start=de_data, end=para_data_correta)
 
-try:
+#try:
     # Tentar ler os dados 
-    df_ipca = pd.DataFrame(ipca_dados)
-    df_cdi = pd.DataFrame(cdi_dados)
-    df_selic = pd.DataFrame(selic_dados)
-    df_poupanca = pd.DataFrame(poupanca_dados)
-except ValueError as e:     
-    df_ipca = pd.DataFrame()
-    df_cdi = pd.DataFrame()
-    df_selic = pd.DataFrame()
-    df_poupanca = pd.DataFrame()
+    #df_ipca = pd.DataFrame(ipca_dados)
+    #df_cdi = pd.DataFrame(cdi_dados)
+    #df_selic = pd.DataFrame(selic_dados)
+    #df_poupanca = pd.DataFrame(poupanca_dados)
+#except ValueError as e:     
+    #df_ipca = pd.DataFrame()
+    #df_cdi = pd.DataFrame()
+    #df_selic = pd.DataFrame()
+    #df_poupanca = pd.DataFrame()
 
-    st.warning("Houve um erro no carregamento de dados, recarregue a página ou insira um novo ativo/fii")
+    #st.warning("Houve um erro no carregamento de dados, recarregue a página ou insira um novo ativo/fii")
 
-df_retornos_ipca = (df_ipca['ipca'].pct_change() + 1).cumprod() - 1
-df_retornos_cdi = (df_cdi['cdi'].pct_change() + 1).cumprod() - 1
-df_retornos_selic = (df_selic['selic'].pct_change() + 1).cumprod() - 1
-df_retornos_poupanca = (df_poupanca['poupanca'].pct_change() + 1).cumprod() - 1
+#df_retornos_ipca = (df_ipca['ipca'].pct_change() + 1).cumprod() - 1
+#df_retornos_cdi = (df_cdi['cdi'].pct_change() + 1).cumprod() - 1
+#df_retornos_selic = (df_selic['selic'].pct_change() + 1).cumprod() - 1
+#df_retornos_poupanca = (df_poupanca['poupanca'].pct_change() + 1).cumprod() - 1
 
 # Condição para evitar conflito de datas
 
