@@ -151,14 +151,14 @@ with st.expander("Gráfico de rendimento:"):
                 ax_retornos.plot(pd.to_datetime(df_retornos.index), df_retornos, label=f"{ativo}")
 
         # Adicionando legenda e título
-        #if selected_indice == "IPCA":
-            #ax_retornos.plot(pd.to_datetime(df_ipca.index), df_retornos_ipca, label="IPCA")
-        #elif selected_indice == "CDI":
-            #ax_retornos.plot(pd.to_datetime(df_cdi.index), df_retornos_cdi, label="CDI")
-        #elif selected_indice == "SELIC":
-            #ax_retornos.plot(pd.to_datetime(df_selic.index), df_retornos_selic, label="SELIC")
-        #elif selected_indice == "POUPANÇA":
-            #ax_retornos.plot(pd.to_datetime(df_poupanca.index), df_retornos_poupanca, label="POUPANÇA")
+        if selected_indice == "IPCA":
+            ax_retornos.plot(pd.to_datetime(df_ipca.index), df_retornos_ipca, label="IPCA")
+        elif selected_indice == "CDI":
+            ax_retornos.plot(pd.to_datetime(df_cdi.index), df_retornos_cdi, label="CDI")
+        elif selected_indice == "SELIC":
+            ax_retornos.plot(pd.to_datetime(df_selic.index), df_retornos_selic, label="SELIC")
+        elif selected_indice == "POUPANÇA":
+            ax_retornos.plot(pd.to_datetime(df_poupanca.index), df_retornos_poupanca, label="POUPANÇA")
             # Adicionando legenda e título
         plt.legend()
         plt.title("Comparação de Rendimento de Ativos")
