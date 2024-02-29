@@ -92,6 +92,9 @@ for ativo, df in dados_ativos.items():
 # Elaborando o dash
 st.title("Monitoramento de Análise Financeira")
 
+if ativo == '':
+    st.warning("Selecione um ativo ou fundo imobiliário")
+
 # Definir cores de rendimento positivo ou negativo
 color_positive = 'green'
 color_negative = 'red'
