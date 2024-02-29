@@ -289,8 +289,7 @@ for ativo, df in dados_ativos.items():
         st.link_button(f"Veja mais sobre {ativo}", f"https://investidor10.com.br/fiis/{ativo}/")
         
     st.write("\n---\n")
-
-
+    
     # Plotando o gráfico de cotações
     st.subheader("Cotação")
     fig_cotacoes, ax_cotacoes = plt.subplots(figsize=(12, 6))
@@ -316,7 +315,20 @@ else:
     dados_retornos_completo = {}
 
     # Carregar dados do índice
-    indice = yf.download(selected_indice, start=f"{de_data}", end=f"{para_data_correta}")
+    
+    if selected_indice == "BOVESPA":
+        indice = yf.download('^BVSP', start=f"{de_data}", end=f"{para_data_correta}")
+    elif selected_indice == "DÓLAR":
+        indice = yf.download('BRL=X', start=f"{de_data}", end=f"{para_data_correta}")
+    elif selected_indice == "EURO":
+        indice = yf.download('EURBRL=X', start=f"{de_data}", end=f"{para_data_correta}")
+    elif selected_indice == "S&P 500":
+        indice = yf.download('^GSPC', start=f"{de_data}", end=f"{para_data_correta}")
+    elif selected_indice == "DOW JONES":
+        indice = yf.download('^DJI', start=f"{de_data}", end=f"{para_data_correta}")
+    elif selected_indice == "NASDAQ":
+        indice = yf.download('^IXIC', start=f"{de_data}", end=f"{para_data_correta}")
+    
     indice_retornos = (indice['Close'].pct_change() + 1).cumprod() - 1
     dados_retornos_completo[selected_indice] = indice_retornos
     ax_retornos.plot(pd.to_datetime(indice_retornos.index), indice_retornos, label=selected_indice)
