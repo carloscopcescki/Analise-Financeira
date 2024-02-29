@@ -206,8 +206,9 @@ elif ativo != '':
     name_dict_fii[ativo] = name_fii
     liquidez_dict[ativo] = liquidez_fii
 
-for ativo, df in dados_ativos.items():
-    if ativo != '':
+if ativo != '':
+    for ativo, df in dados_ativos.items():
+        
         last_data = df.iloc[-1]
         
         # Calcular os retornos apenas se houver dados disponíveis
@@ -273,79 +274,79 @@ for ativo, df in dados_ativos.items():
                 else:
                     st.write("**Preço Teto**")
                     st.write("N/A")
-        
-    else:
-        st.write("Não há dados suficientes para calcular retornos.")
-        
-    with st.expander("Histórico de dividendos:"):
-        if ativo in dados_div:
-            st.dataframe(tabela, width=850, height=350)
-            tabela = dados_div[ativo]
+            
         else:
-            st.warning("Não foi possível obter a tabela de proventos")
+            st.write("Não há dados suficientes para calcular retornos.")
+            
+        with st.expander("Histórico de dividendos:"):
+            if ativo in dados_div:
+                st.dataframe(tabela, width=850, height=350)
+                tabela = dados_div[ativo]
+            else:
+                st.warning("Não foi possível obter a tabela de proventos")
+            
+        if ativo in pvp_dict:
+            st.link_button(f"Veja mais sobre {ativo}", f"https://investidor10.com.br/acoes/{ativo}/")
+        else:
+            st.link_button(f"Veja mais sobre {ativo}", f"https://investidor10.com.br/fiis/{ativo}/")
+            
+        st.write("\n---\n")
         
-    if ativo in pvp_dict:
-        st.link_button(f"Veja mais sobre {ativo}", f"https://investidor10.com.br/acoes/{ativo}/")
+        # Plotando o gráfico de cotações
+        st.subheader("Cotação")
+        fig_cotacoes, ax_cotacoes = plt.subplots(figsize=(12, 6))
+
+        for ativo, df in dados_ativos.items():
+            # Ignorar ativos que são iguais aos índices do mapa_indices
+            if ativo not in selected_indice:
+                ax_cotacoes.plot(pd.to_datetime(df.index), df['Close'], label=f"{ativo}")
+        # Adicionando legenda e título
+        plt.legend()
+        plt.title("Comparação de Cotações de Ativos")
+        plt.xlabel('Data')
+        plt.ylabel('Preço de Fechamento')
+
+        # Exibindo o gráfico de cotações
+        st.pyplot(fig_cotacoes)
+
+    if selected_indice == "":
+        st.warning("Selecione o índice para analisar o rendimento")
     else:
-        st.link_button(f"Veja mais sobre {ativo}", f"https://investidor10.com.br/fiis/{ativo}/")
+        st.subheader("Rendimento")
+        fig_retornos, ax_retornos = plt.subplots(figsize=(12, 6))
+        dados_retornos_completo = {}
+
+        # Carregar dados do índice
         
-    st.write("\n---\n")
-    
-    # Plotando o gráfico de cotações
-    st.subheader("Cotação")
-    fig_cotacoes, ax_cotacoes = plt.subplots(figsize=(12, 6))
+        if selected_indice == "BOVESPA":
+            indice = yf.download('^BVSP', start=f"{de_data}", end=f"{para_data_correta}")
+        elif selected_indice == "DÓLAR":
+            indice = yf.download('BRL=X', start=f"{de_data}", end=f"{para_data_correta}")
+        elif selected_indice == "EURO":
+            indice = yf.download('EURBRL=X', start=f"{de_data}", end=f"{para_data_correta}")
+        elif selected_indice == "S&P 500":
+            indice = yf.download('^GSPC', start=f"{de_data}", end=f"{para_data_correta}")
+        elif selected_indice == "DOW JONES":
+            indice = yf.download('^DJI', start=f"{de_data}", end=f"{para_data_correta}")
+        elif selected_indice == "NASDAQ":
+            indice = yf.download('^IXIC', start=f"{de_data}", end=f"{para_data_correta}")
+        
+        indice_retornos = (indice['Close'].pct_change() + 1).cumprod() - 1
+        dados_retornos_completo[selected_indice] = indice_retornos
+        ax_retornos.plot(pd.to_datetime(indice_retornos.index), indice_retornos, label=selected_indice)
 
-    for ativo, df in dados_ativos.items():
-        # Ignorar ativos que são iguais aos índices do mapa_indices
-        if ativo not in selected_indice:
-            ax_cotacoes.plot(pd.to_datetime(df.index), df['Close'], label=f"{ativo}")
-    # Adicionando legenda e título
-    plt.legend()
-    plt.title("Comparação de Cotações de Ativos")
-    plt.xlabel('Data')
-    plt.ylabel('Preço de Fechamento')
+        for ativo, df in dados_ativos.items():
+            # Calcular os retornos apenas se houver dados disponíveis
+            if len(df) > 1:
+                df_retornos = (df['Close'].pct_change() + 1).cumprod() - 1
+                dados_retornos_completo[ativo] = df_retornos  
+                ax_retornos.plot(pd.to_datetime(df_retornos.index), df_retornos, label=ativo)
 
-    # Exibindo o gráfico de cotações
-    st.pyplot(fig_cotacoes)
+        ax_retornos.legend()
+        ax_retornos.set_title("Comparação de Rendimento de Ativos e Índice")
+        ax_retornos.set_xlabel('Data')
+        ax_retornos.set_ylabel('Rendimento')
+        ax_retornos.yaxis.set_major_formatter(mtick.PercentFormatter(1.0))
+        st.pyplot(fig_retornos)
 
-if selected_indice == "":
-    st.warning("Selecione o índice para analisar o rendimento")
-else:
-    st.subheader("Rendimento")
-    fig_retornos, ax_retornos = plt.subplots(figsize=(12, 6))
-    dados_retornos_completo = {}
-
-    # Carregar dados do índice
-    
-    if selected_indice == "BOVESPA":
-        indice = yf.download('^BVSP', start=f"{de_data}", end=f"{para_data_correta}")
-    elif selected_indice == "DÓLAR":
-        indice = yf.download('BRL=X', start=f"{de_data}", end=f"{para_data_correta}")
-    elif selected_indice == "EURO":
-        indice = yf.download('EURBRL=X', start=f"{de_data}", end=f"{para_data_correta}")
-    elif selected_indice == "S&P 500":
-        indice = yf.download('^GSPC', start=f"{de_data}", end=f"{para_data_correta}")
-    elif selected_indice == "DOW JONES":
-        indice = yf.download('^DJI', start=f"{de_data}", end=f"{para_data_correta}")
-    elif selected_indice == "NASDAQ":
-        indice = yf.download('^IXIC', start=f"{de_data}", end=f"{para_data_correta}")
-    
-    indice_retornos = (indice['Close'].pct_change() + 1).cumprod() - 1
-    dados_retornos_completo[selected_indice] = indice_retornos
-    ax_retornos.plot(pd.to_datetime(indice_retornos.index), indice_retornos, label=selected_indice)
-
-    for ativo, df in dados_ativos.items():
-        # Calcular os retornos apenas se houver dados disponíveis
-        if len(df) > 1:
-            df_retornos = (df['Close'].pct_change() + 1).cumprod() - 1
-            dados_retornos_completo[ativo] = df_retornos  
-            ax_retornos.plot(pd.to_datetime(df_retornos.index), df_retornos, label=ativo)
-
-    ax_retornos.legend()
-    ax_retornos.set_title("Comparação de Rendimento de Ativos e Índice")
-    ax_retornos.set_xlabel('Data')
-    ax_retornos.set_ylabel('Rendimento')
-    ax_retornos.yaxis.set_major_formatter(mtick.PercentFormatter(1.0))
-    st.pyplot(fig_retornos)
-
-    st.write("\n---\n")
+st.write("\n---\n")
