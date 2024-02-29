@@ -36,7 +36,7 @@ st.sidebar.empty()
 st.sidebar.title("Insira os dados")
 
 # Selecionar os ativos e período
-ativo = st.sidebar.selectbox("Escolha um ativo", lista)
+ativo = st.sidebar.selectbox("Escolha um ativo",[''] + lista)
 de_data = st.sidebar.date_input("De:", data_inicio)
 para_data = st.sidebar.date_input("Para:", data_final)
 para_data_correta = para_data + timedelta(1)
