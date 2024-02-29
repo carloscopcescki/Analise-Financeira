@@ -307,8 +307,8 @@ for ativo, df in dados_ativos.items():
 
     # Plotando o gráfico de retornos
 
-    indice = yf.Ticker(f'{selected_indice}').history(start=f"{de_data}", end=f"{para_data_correta}")
-
+    indice = yf.download(f'{selected_indice}', start=f"{de_data}", end=f"{para_data_correta}")
+    
     if selected_indice == "":
         st.warning("Selecione o índice para analisar o rendimento")
     else:
@@ -319,7 +319,7 @@ for ativo, df in dados_ativos.items():
     # Calcular os retornos do índice
     indice_retornos = (indice.pct_change() + 1).cumprod() - 1
     dados_retornos_completo[selected_indice] = indice_retornos
-    ax_retornos.plot(pd.to_datetime(indice_retornos.index), indice_retornos, label=f"{selected_indice}", linestyle='--')
+    ax_retornos.plot(pd.to_datetime(indice_retornos.index), indice_retornos, label=f"{selected_indice}")
     
     for ativo, df in dados_ativos.items():
         # Calcular os retornos apenas se houver dados disponíveis
