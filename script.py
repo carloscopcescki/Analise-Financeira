@@ -99,51 +99,75 @@ color_negative = 'red'
 if selected_indice in dados_ativos:
     del dados_ativos[selected_indice]
 
-
-# Coletar proventos do ativo
-# Request para coletar proventos
-
+# Dicionário para valuation
 preco_teto_dict = {}
 last_data = {}
 yield_dict = {}
 pl_dict = {}
 pvp_dict = {}
 dados_div = {}
-#name_dict = {}
+name_dict = {}
+
+yield_dict_fii = {}
+pvp_dict_fii = {}
+name_dict_fii = {}
+liquidez_dict = {}
 
 # Construir a URL dinâmica para cada ativo
 stock_url = (f'https://www.dadosdemercado.com.br/bolsa/acoes/{ativo}/dividendos')
 url_fundamentus = (f'https://investidor10.com.br/acoes/{ativo}/')
+url_fundamentus_fii = (f'https://investidor10.com.br/fiis/{ativo}/')
     
 # Restante do código permanece o mesmo
 headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'}
 
 response = requests.get(stock_url, headers=headers)
 dados_fundamentus = requests.get(url_fundamentus, headers=headers, timeout=5).text
-    
+dados_fundamentus_fii = requests.get(url_fundamentus_fii, headers=headers, timeout=5).text
+
 # Verificando se a requisição foi bem-sucedida
 if response.status_code == 200:
     # Parseando o conteúdo HTML
     soup = BeautifulSoup(response.text, 'html.parser')
     soup_valuation = BeautifulSoup(dados_fundamentus, 'html.parser')
+    soup_fii = BeautifulSoup(dados_fundamentus_fii, 'html.parser')
         
     # Obter dados de valuation        
     valuation = soup_valuation.find_all('div', class_='_card-body')
+    valuation_fii = soup_fii.find_all('div', class_='_card-body')
     
-    #name = soup_valuation.find('h2').get_text()
-    
+    # Obter valores de valuation para ações
+    name = soup_valuation.find('h2').get_text()
     preco_lucro = valuation[2].find('span').text
     preco_vp = valuation[3].find('span').text
     dividend_yield = valuation[4].find('span').text
-        
-    table_valuation = pd.DataFrame(columns=['P/L', 'P/VP', 'DY','EMPRESA'])
     
-    #table_valuation['EMPRESA'] = [name]
+    # Obter valores de valuation para fii's
+    name_fii = soup_fii.find('h2').get_text()
+    preco_vp_fii = valuation_fii[2].find('span').text
+    dividend_yield_fii = valuation[1].find('span').text
+    liquidez_fii = valuation[3].find('span').text
+    
+    # Tabela valuation para fii
+    table_valuation_fii = pd.DataFrame(columns=['P/VP', 'DY', 'EMPRESA', 'LIQUIDEZ'])
+    table_valuation_fii['P/VP'] = [preco_vp_fii]
+    table_valuation_fii['DY'] = [dividend_yield_fii]
+    table_valuation_fii['EMPRESA'] = [name_fii]
+    table_valuation_fii['LIQUIDEZ'] = [liquidez_fii]
+    
+    yield_dict_fii[ativo] = dividend_yield_fii
+    pvp_dict_fii[ativo] = preco_vp_fii
+    name_dict_fii[ativo] = name_fii
+    liquidez_dict[ativo] = liquidez_fii
+    
+    # Tabela valuation para ações
+    table_valuation = pd.DataFrame(columns=['P/L', 'P/VP', 'DY','EMPRESA'])
+    table_valuation['EMPRESA'] = [name]
     table_valuation['P/L'] = [preco_lucro]
     table_valuation['P/VP'] = [preco_vp]
     table_valuation['DY'] = [dividend_yield]
     
-    #name_dict[ativo] = name    
+    name_dict[ativo] = name    
     yield_dict[ativo] = dividend_yield
     pvp_dict[ativo] = preco_vp 
     pl_dict[ativo] = preco_lucro
@@ -194,9 +218,12 @@ for ativo, df in dados_ativos.items():
         with colimg:
             st.image(f'https://raw.githubusercontent.com/thefintz/icones-b3/main/icones/{ativo}.png', width=85)
         
-        #with colname:
-            #st.subheader(f'{name_dict[ativo]}')
-        
+        with colname:
+            if ativo in name_dict:
+                st.subheader(f'{name_dict[ativo]}')
+            else:
+                st.subheader(f'{name_dict_fii[ativo]}')
+                
         st.subheader(f'{ativo}')
         
         col1, col2, col3, col4, col5, col6 = st.columns(6)
@@ -216,22 +243,22 @@ for ativo, df in dados_ativos.items():
                 st.write("**P/L**")
                 st.write(f"{pl_dict[ativo]}")
             else:
-                st.write("**P/L**")
-                st.write("N/A")
+                st.write("**LIQUIDEZ DIÁRIA**")
+                st.write(f"{liquidez_dict[ativo]}")
         with col4:
             if ativo in pvp_dict:
                 st.write("**P/VP**")
                 st.write(f"{pvp_dict[ativo]}")
             else:
                 st.write("**P/VP**")
-                st.write("N/A")
+                st.write(f"{pvp_dict_fii[ativo]}")
         with col5:
             if ativo in yield_dict:
                 st.write("**DY**")
                 st.write(f"{yield_dict[ativo]}")
             else:
                 st.write("**DY**")
-                st.write("N/A")
+                st.write(f"{yield_dict_fii[ativo]}")
         with col6:
             if ativo in preco_teto_dict:
                 st.write("**Preço Teto**")
