@@ -5,7 +5,6 @@ import requests
 import streamlit as st
 import matplotlib.pyplot as plt
 import matplotlib.ticker as mtick
-import fundamentus
 from bs4 import BeautifulSoup
 from streamlit_extras.metric_cards import style_metric_cards
 from streamlit_extras.grid import grid
