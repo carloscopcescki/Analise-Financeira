@@ -124,29 +124,27 @@ headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/
 response = requests.get(stock_url, headers=headers)
 dados_fundamentus = requests.get(url_fundamentus, headers=headers, timeout=5).text
 dados_fundamentus_fii = requests.get(url_fundamentus_fii, headers=headers, timeout=5).text
-
-if dados_fundamentus_fii.status_code == 200:
     
-    soup_fii = BeautifulSoup(dados_fundamentus_fii, 'html.parser')
-    valuation_fii = soup_fii.find_all('div', class_='_card-body')
+soup_fii = BeautifulSoup(dados_fundamentus_fii, 'html.parser')
+valuation_fii = soup_fii.find_all('div', class_='_card-body')
     
-    # Obter valores de valuation para fii's
-    name_fii = soup_fii.find('h2').get_text()
-    preco_vp_fii = valuation_fii[2].find('span').text
-    dividend_yield_fii = valuation_fii[1].find('span').text
-    liquidez_fii = valuation_fii[3].find('span').text
+# Obter valores de valuation para fii's
+name_fii = soup_fii.find('h2').get_text()
+preco_vp_fii = valuation_fii[2].find('span').text
+dividend_yield_fii = valuation_fii[1].find('span').text
+liquidez_fii = valuation_fii[3].find('span').text
     
-    # Tabela valuation para fii
-    table_valuation_fii = pd.DataFrame(columns=['P/VP', 'DY', 'EMPRESA', 'LIQUIDEZ'])
-    table_valuation_fii['P/VP'] = [preco_vp_fii]
-    table_valuation_fii['DY'] = [dividend_yield_fii]
-    table_valuation_fii['EMPRESA'] = [name_fii]
-    table_valuation_fii['LIQUIDEZ'] = [liquidez_fii]
+# Tabela valuation para fii
+table_valuation_fii = pd.DataFrame(columns=['P/VP', 'DY', 'EMPRESA', 'LIQUIDEZ'])
+table_valuation_fii['P/VP'] = [preco_vp_fii]
+table_valuation_fii['DY'] = [dividend_yield_fii]
+table_valuation_fii['EMPRESA'] = [name_fii]
+table_valuation_fii['LIQUIDEZ'] = [liquidez_fii]
     
-    yield_dict_fii[ativo] = dividend_yield_fii
-    pvp_dict_fii[ativo] = preco_vp_fii
-    name_dict_fii[ativo] = name_fii
-    liquidez_dict[ativo] = liquidez_fii
+yield_dict_fii[ativo] = dividend_yield_fii
+pvp_dict_fii[ativo] = preco_vp_fii
+name_dict_fii[ativo] = name_fii
+liquidez_dict[ativo] = liquidez_fii
     
 # Verificando se a requisição foi bem-sucedida
 if response.status_code == 200:
