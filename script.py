@@ -167,7 +167,9 @@ if response.status_code == 200:
     # Criando uma nova coluna "Ano" para extrair o ano da coluna "Pagamento"
     tabela['Ano'] = pd.to_datetime(tabela['Registro']).dt.year.astype(str) 
     tabela['Ano'] = tabela['Ano'].str.replace(',', '')
-        
+
+    tabela = tabela.rename({"Registro": "Data com"}, inplace=True)
+    
     dados_div[ativo] = pd.DataFrame(tabela) 
         
     # Atualizando a variável com os dados da tabela
