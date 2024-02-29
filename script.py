@@ -307,7 +307,7 @@ for ativo, df in dados_ativos.items():
 
     # Plotando o gráfico de retornos
 
-    indice = yf.download(f'{selected_indice}', start={de_data}, end={para_data_correta}, progress=False)['Adj Close'].rename(mapa_indices[ativo])
+    indice = yf.Ticker(f'{selected_indice}').history(start=f"{de_data}", end=f"{para_data_correta}")
 
     if selected_indice == "":
         st.warning("Selecione o índice para analisar o rendimento")
