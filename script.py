@@ -92,9 +92,6 @@ for ativo, df in dados_ativos.items():
 # Elaborando o dash
 st.title("Monitoramento de Análise Financeira")
 
-if ativo == '':
-    st.warning("Selecione um ativo ou fundo imobiliário")
-
 # Definir cores de rendimento positivo ou negativo
 color_positive = 'green'
 color_negative = 'red'
@@ -128,6 +125,9 @@ headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/
 response = requests.get(stock_url, headers=headers)
 dados_fundamentus = requests.get(url_fundamentus, headers=headers, timeout=5).text
     
+if ativo == '':
+    st.warning("Selecione um ativo ou fundo imobiliário")
+
 # Verificando se a requisição foi bem-sucedida
 if response.status_code == 200:
     # Parseando o conteúdo HTML
@@ -182,7 +182,7 @@ if response.status_code == 200:
     preco_teto = (media_prov * 100) / 5
     preco_teto_dict[ativo] = preco_teto
 
-else:
+elif ativo != '':
     dados_fundamentus_fii = requests.get(url_fundamentus_fii, headers=headers, timeout=5).text
     
     soup_fii = BeautifulSoup(dados_fundamentus_fii, 'html.parser')
