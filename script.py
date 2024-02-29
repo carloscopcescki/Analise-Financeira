@@ -221,8 +221,10 @@ for ativo, df in dados_ativos.items():
         with colname:
             if ativo in name_dict:
                 st.subheader(f'{name_dict[ativo]}')
-            else:
+            elif ativo in name_dict_fii:
                 st.subheader(f'{name_dict_fii[ativo]}')
+            else:
+                st.write("N/A")
                 
         st.subheader(f'{ativo}')
         
