@@ -309,7 +309,7 @@ for ativo, df in dados_ativos.items():
 
 if selected_indice == "":
     st.warning("Selecione o índice para analisar o rendimento")
-else:
+elif selected_indice != '' and ativo != '':
     st.subheader("Rendimento")
     fig_retornos, ax_retornos = plt.subplots(figsize=(12, 6))
     dados_retornos_completo = {}
