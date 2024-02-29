@@ -313,7 +313,7 @@ else:
     dados_retornos_completo = {}
 
     # Carregar dados do índice
-    indice = yf.download(selected_indice, start="2023-01-01", end="2024-01-01")
+    indice = yf.download(selected_indice, start=f"{de_data}", end=f"{para_data_correta}")
     indice_retornos = (indice['Close'].pct_change() + 1).cumprod() - 1
     dados_retornos_completo[selected_indice] = indice_retornos
     ax_retornos.plot(pd.to_datetime(indice_retornos.index), indice_retornos, label=selected_indice)
