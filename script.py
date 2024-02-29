@@ -72,6 +72,7 @@ dados_ativos = {}
 if ativo in mapa_indices:
     # Se o ativo estiver no mapa_indices, use o valor mapeado diretamente
     symbol = mapa_indices[ativo]
+    selected_indice = mapa_indices[ativo]
 else:
     # Caso contrário, acrescente o sufixo ".SA"
     symbol = f"{ativo}.SA"
@@ -305,26 +306,34 @@ for ativo, df in dados_ativos.items():
     st.pyplot(fig_cotacoes)
 
     # Plotando o gráfico de retornos
-    
+
+    indice = yf.download(f'{selected_indice}', start={de_data}, end={para_data_correta}, progress=False)['Adj Close'].rename(mapa_indices[ativo])
+
     if selected_indice == "":
         st.warning("Selecione o índice para analisar o rendimento")
     else:
         st.subheader("Rendimento")
         fig_retornos, ax_retornos = plt.subplots(figsize=(12, 6))
         dados_retornos_completo = {}
-        for ativo, df in dados_ativos.items():
-            # Calcular os retornos apenas se houver dados disponíveis
-            if len(df) > 1:
-                df_retornos = (df['Close'].pct_change() + 1).cumprod() - 1
-                dados_retornos_completo[ativo] = df_retornos  
-                ax_retornos.plot(pd.to_datetime(df_retornos.index), df_retornos, label=f"{ativo}")
+    
+    # Calcular os retornos do índice
+    indice_retornos = (indice.pct_change() + 1).cumprod() - 1
+    dados_retornos_completo[selected_indice] = indice_retornos
+    ax_retornos.plot(pd.to_datetime(indice_retornos.index), indice_retornos, label=f"{selected_indice}", linestyle='--')
+    
+    for ativo, df in dados_ativos.items():
+        # Calcular os retornos apenas se houver dados disponíveis
+        if len(df) > 1:
+            df_retornos = (df['Close'].pct_change() + 1).cumprod() - 1
+            dados_retornos_completo[ativo] = df_retornos  
+            ax_retornos.plot(pd.to_datetime(df_retornos.index), df_retornos, label=f"{ativo}")
 
-        plt.legend()
-        plt.title("Comparação de Rendimento de Ativos")
-        plt.xlabel('Data')
-        plt.ylabel('Rendimento')
+    plt.legend()
+    plt.title("Comparação de Rendimento de Ativos e Índice")
+    plt.xlabel('Data')
+    plt.ylabel('Rendimento')
     # Exibindo o gráfico de retornos
-        ax_retornos.yaxis.set_major_formatter(mtick.PercentFormatter(1.0))
-        st.pyplot(fig_retornos)
+    ax_retornos.yaxis.set_major_formatter(mtick.PercentFormatter(1.0))
+    st.pyplot(fig_retornos)
     
     st.write("\n---\n")
