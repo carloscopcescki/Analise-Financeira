@@ -305,35 +305,31 @@ for ativo, df in dados_ativos.items():
     # Exibindo o gráfico de cotações
     st.pyplot(fig_cotacoes)
 
-    # Plotando o gráfico de retornos
+if selected_indice == "":
+    st.warning("Selecione o índice para analisar o rendimento")
+else:
+    st.subheader("Rendimento")
+    fig_retornos, ax_retornos = plt.subplots(figsize=(12, 6))
+    dados_retornos_completo = {}
 
-    indice = yf.download(f'{selected_indice}', start=f"{de_data}", end=f"{para_data_correta}")
-    
-    if selected_indice == "":
-        st.warning("Selecione o índice para analisar o rendimento")
-    else:
-        st.subheader("Rendimento")
-        fig_retornos, ax_retornos = plt.subplots(figsize=(12, 6))
-        dados_retornos_completo = {}
-    
-    # Calcular os retornos do índice
-    indice_retornos = (indice.pct_change() + 1).cumprod() - 1
+    # Carregar dados do índice
+    indice = yf.download(selected_indice, start="2023-01-01", end="2024-01-01")
+    indice_retornos = (indice['Close'].pct_change() + 1).cumprod() - 1
     dados_retornos_completo[selected_indice] = indice_retornos
-    ax_retornos.plot(pd.to_datetime(indice_retornos.index), indice_retornos, label=f"{selected_indice}")
-    
+    ax_retornos.plot(pd.to_datetime(indice_retornos.index), indice_retornos, label=selected_indice)
+
     for ativo, df in dados_ativos.items():
         # Calcular os retornos apenas se houver dados disponíveis
         if len(df) > 1:
             df_retornos = (df['Close'].pct_change() + 1).cumprod() - 1
             dados_retornos_completo[ativo] = df_retornos  
-            ax_retornos.plot(pd.to_datetime(df_retornos.index), df_retornos, label=f"{ativo}")
+            ax_retornos.plot(pd.to_datetime(df_retornos.index), df_retornos, label=ativo)
 
-    plt.legend()
-    plt.title("Comparação de Rendimento de Ativos e Índice")
-    plt.xlabel('Data')
-    plt.ylabel('Rendimento')
-    # Exibindo o gráfico de retornos
+    ax_retornos.legend()
+    ax_retornos.set_title("Comparação de Rendimento de Ativos e Índice")
+    ax_retornos.set_xlabel('Data')
+    ax_retornos.set_ylabel('Rendimento')
     ax_retornos.yaxis.set_major_formatter(mtick.PercentFormatter(1.0))
     st.pyplot(fig_retornos)
-    
+
     st.write("\n---\n")
