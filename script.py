@@ -207,71 +207,72 @@ elif ativo != '':
     liquidez_dict[ativo] = liquidez_fii
 
 for ativo, df in dados_ativos.items():
-    last_data = df.iloc[-1]
-    
-    # Calcular os retornos apenas se houver dados disponíveis
-    if len(df) > 1:
+    if ativo != '':
+        last_data = df.iloc[-1]
         
-        df_retornos = (df['Close'].pct_change() + 1).cumprod() - 1
-        rendimento_total = df_retornos.iloc[-1]
-        
-        rendimento_diario = ((df['Close'].iloc[-1] - df['Close'].iloc[-2]) / df['Close'].iloc[-2]) * 100
-        
-        colimg, colname = st.columns(2)
-        
-        with colimg:
-            st.image(f'https://raw.githubusercontent.com/thefintz/icones-b3/main/icones/{ativo}.png', width=85)
-        
-        with colname:
-            if ativo in name_dict:
-                st.subheader(f'{name_dict[ativo]}')
-            elif ativo in name_dict_fii:
-                st.subheader(f'{name_dict_fii[ativo]}')
-            else:
-                st.write("N/A")
-                
-        st.subheader(f'{ativo}')
-        
-        col1, col2, col3, col4, col5, col6 = st.columns(6)
-        
-        with col1:
-            st.write("**Cotação:**")
-            st.write(f"R$ {last_data['Close']:.2f}")
-        with col2:
-            if rendimento_total < 0:
-                st.write("**Rendimento**")
-                st.write(f"<span style='color:{color_negative}'>{rendimento_total:.2%}</span>", unsafe_allow_html=True)
-            else:
-                st.write("**Rendimento**")
-                st.write(f"<span style='color:{color_positive}'>{rendimento_total:.2%}</span>", unsafe_allow_html=True)
-        with col3:
-            if ativo in pl_dict:
-                st.write("**P/L**")
-                st.write(f"{pl_dict[ativo]}")
-            else:
-                st.write("**LIQUIDEZ DIÁRIA**")
-                st.write(f"{liquidez_dict[ativo]}")
-        with col4:
-            if ativo in pvp_dict:
-                st.write("**P/VP**")
-                st.write(f"{pvp_dict[ativo]}")
-            else:
-                st.write("**P/VP**")
-                st.write(f"{pvp_dict_fii[ativo]}")
-        with col5:
-            if ativo in yield_dict:
-                st.write("**DY**")
-                st.write(f"{yield_dict[ativo]}")
-            else:
-                st.write("**DY**")
-                st.write(f"{yield_dict_fii[ativo]}")
-        with col6:
-            if ativo in preco_teto_dict:
-                st.write("**Preço Teto**")
-                st.write(f"R$ {preco_teto_dict[ativo]:.2f}")
-            else:
-                st.write("**Preço Teto**")
-                st.write("N/A")
+        # Calcular os retornos apenas se houver dados disponíveis
+        if len(df) > 1:
+            
+            df_retornos = (df['Close'].pct_change() + 1).cumprod() - 1
+            rendimento_total = df_retornos.iloc[-1]
+            
+            rendimento_diario = ((df['Close'].iloc[-1] - df['Close'].iloc[-2]) / df['Close'].iloc[-2]) * 100
+            
+            colimg, colname = st.columns(2)
+            
+            with colimg:
+                st.image(f'https://raw.githubusercontent.com/thefintz/icones-b3/main/icones/{ativo}.png', width=85)
+            
+            with colname:
+                if ativo in name_dict:
+                    st.subheader(f'{name_dict[ativo]}')
+                elif ativo in name_dict_fii:
+                    st.subheader(f'{name_dict_fii[ativo]}')
+                else:
+                    st.write("N/A")
+                    
+            st.subheader(f'{ativo}')
+            
+            col1, col2, col3, col4, col5, col6 = st.columns(6)
+            
+            with col1:
+                st.write("**Cotação:**")
+                st.write(f"R$ {last_data['Close']:.2f}")
+            with col2:
+                if rendimento_total < 0:
+                    st.write("**Rendimento**")
+                    st.write(f"<span style='color:{color_negative}'>{rendimento_total:.2%}</span>", unsafe_allow_html=True)
+                else:
+                    st.write("**Rendimento**")
+                    st.write(f"<span style='color:{color_positive}'>{rendimento_total:.2%}</span>", unsafe_allow_html=True)
+            with col3:
+                if ativo in pl_dict:
+                    st.write("**P/L**")
+                    st.write(f"{pl_dict[ativo]}")
+                else:
+                    st.write("**LIQUIDEZ DIÁRIA**")
+                    st.write(f"{liquidez_dict[ativo]}")
+            with col4:
+                if ativo in pvp_dict:
+                    st.write("**P/VP**")
+                    st.write(f"{pvp_dict[ativo]}")
+                else:
+                    st.write("**P/VP**")
+                    st.write(f"{pvp_dict_fii[ativo]}")
+            with col5:
+                if ativo in yield_dict:
+                    st.write("**DY**")
+                    st.write(f"{yield_dict[ativo]}")
+                else:
+                    st.write("**DY**")
+                    st.write(f"{yield_dict_fii[ativo]}")
+            with col6:
+                if ativo in preco_teto_dict:
+                    st.write("**Preço Teto**")
+                    st.write(f"R$ {preco_teto_dict[ativo]:.2f}")
+                else:
+                    st.write("**Preço Teto**")
+                    st.write("N/A")
         
     else:
         st.write("Não há dados suficientes para calcular retornos.")
@@ -309,7 +310,7 @@ for ativo, df in dados_ativos.items():
 
 if selected_indice == "":
     st.warning("Selecione o índice para analisar o rendimento")
-elif selected_indice != '' and ativo != '':
+else:
     st.subheader("Rendimento")
     fig_retornos, ax_retornos = plt.subplots(figsize=(12, 6))
     dados_retornos_completo = {}
