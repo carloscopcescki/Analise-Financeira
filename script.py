@@ -125,7 +125,7 @@ response = requests.get(stock_url, headers=headers)
 dados_fundamentus = requests.get(url_fundamentus, headers=headers, timeout=5).text
 dados_fundamentus_fii = requests.get(url_fundamentus_fii, headers=headers, timeout=5).text
 
-if dados_fundamentus.status_code == 200:
+if dados_fundamentus_fii.status_code == 200:
     
     soup_fii = BeautifulSoup(dados_fundamentus_fii, 'html.parser')
     valuation_fii = soup_fii.find_all('div', class_='_card-body')
