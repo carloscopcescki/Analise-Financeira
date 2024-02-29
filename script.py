@@ -18,7 +18,15 @@ with open("style.css") as f:
 lista = list(pd.read_excel('listativos.xls')['Código'].values)
 lista.sort()
 lista_ativos = [ativo + '.SA' for ativo in lista]
-lista_indices_select = ['BOVESPA', 'DÓLAR','EURO','S&P 500', 'DOW JONES', 'NASDAQ']
+
+mapa_indices = {
+    'BOVESPA': '^BVSP',
+    'DÓLAR': 'BRL=X',
+    'EURO': 'EURBRL=X',
+    'S&P 500': '^GSPC',
+    'DOW JONES': '^DJI',
+    'NASDAQ': '^IXIC',
+}
 
 # Definir intervalo de datas (1 ano)
 data_inicio = datetime.today() - timedelta(365)
@@ -29,14 +37,14 @@ st.sidebar.empty()
 st.sidebar.title("Insira os dados")
 
 # Selecionar os ativos e período
-ativo = st.sidebar.selectbox("Selecione os ativos", [''] + lista)
+ativo = st.sidebar.selectbox("Escolha um ativo", [''] + lista)
 de_data = st.sidebar.date_input("De:", data_inicio)
 para_data = st.sidebar.date_input("Para:", data_final)
 para_data_correta = para_data + timedelta(1)
 
 data_intervalo = (para_data - de_data).total_seconds() / 86400
 
-selected_indice = st.sidebar.selectbox("Selecione um indice para comparar", [''] + lista_indices_select)
+selected_indice = st.sidebar.selectbox("Selecione um indice para comparar", [''] + list(mapa_indices.keys()))
 
 # Sobre
 st.sidebar.write("\n---\n")
@@ -59,14 +67,6 @@ if de_data > para_data:
     st.sidebar.warning("A data de inicio não pode ser superior a data atual")
 
 # Coletar dados para os ativos selecionados
-mapa_indices = {
-    'BOVESPA': '^BVSP',
-    'DÓLAR': 'BRL=X',
-    'EURO': 'EURBRL=X',
-    'S&P 500': '^GSPC',
-    'DOW JONES': '^DJI',
-    'NASDAQ': '^IXIC',
-}
 
 dados_ativos = {}
 
@@ -78,7 +78,7 @@ else:
     symbol = f"{ativo}.SA"
     
     # Chamar a API com o símbolo obtido
-    call_api = yf.Ticker(symbol).history(start=f"{de_data}", end=f"{para_data_correta}")
+    call_api = yf.Ticker(f'{symbol}').history(start=f"{de_data}", end=f"{para_data_correta}")
     
     # Adicionar os dados ao dicionário
     dados_ativos[ativo] = pd.DataFrame(call_api)
@@ -110,10 +110,11 @@ yield_dict = {}
 pl_dict = {}
 pvp_dict = {}
 dados_div = {}
-    
+#name_dict = {}
+
 # Construir a URL dinâmica para cada ativo
-stock_url = f'https://www.dadosdemercado.com.br/bolsa/acoes/{ativo}/dividendos'
-url_fundamentus = f'https://investidor10.com.br/acoes/{ativo}/'
+stock_url = (f'https://www.dadosdemercado.com.br/bolsa/acoes/{ativo}/dividendos')
+url_fundamentus = (f'https://investidor10.com.br/acoes/{ativo}/')
     
 # Restante do código permanece o mesmo
 headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'}
@@ -129,21 +130,21 @@ if response.status_code == 200:
         
     # Obter dados de valuation        
     valuation = soup_valuation.find_all('div', class_='_card-body')
-    #name = soup.find('h2', class_='name-company').text
+    
+    #name = soup_valuation.find('h2').get_text()
+    
     preco_lucro = valuation[2].find('span').text
     preco_vp = valuation[3].find('span').text
     dividend_yield = valuation[4].find('span').text
         
-    table_valuation = pd.DataFrame(columns=['EMPRESA','P/L', 'P/VP', 'DY'])
-
-    #table_valuation.loc[0] = [name, preco_lucro, preco_vp, dividend_yield]
+    table_valuation = pd.DataFrame(columns=['P/L', 'P/VP', 'DY','EMPRESA'])
     
-    #table_valuation['NOME'] = [name]
+    #table_valuation['EMPRESA'] = [name]
     table_valuation['P/L'] = [preco_lucro]
     table_valuation['P/VP'] = [preco_vp]
     table_valuation['DY'] = [dividend_yield]
-        
-    #name[ativo] = name  
+    
+    #name_dict[ativo] = name    
     yield_dict[ativo] = dividend_yield
     pvp_dict[ativo] = preco_vp 
     pl_dict[ativo] = preco_lucro
@@ -195,7 +196,7 @@ for ativo, df in dados_ativos.items():
             st.image(f'https://raw.githubusercontent.com/thefintz/icones-b3/main/icones/{ativo}.png', width=85)
         
         #with colname:
-            #st.write(f"{name[ativo]}")
+            #st.subheader(f'{name_dict[ativo]}')
         
         st.subheader(f'{ativo}')
         
@@ -216,32 +217,39 @@ for ativo, df in dados_ativos.items():
                 st.write("**P/L**")
                 st.write(f"{pl_dict[ativo]}")
             else:
-                st.warning(f"Não foi possível obter P/L para {ativo}.")
+                st.write("**P/L**")
+                st.write("N/A")
         with col4:
             if ativo in pvp_dict:
                 st.write("**P/VP**")
                 st.write(f"{pvp_dict[ativo]}")
             else:
-                st.warning(f"Não foi possível obter P/VP para {ativo}.")
+                st.write("**P/VP**")
+                st.write("N/A")
         with col5:
             if ativo in yield_dict:
                 st.write("**DY**")
                 st.write(f"{yield_dict[ativo]}")
             else:
-                st.warning(f"Não foi possível obter dividend yield para {ativo}.")
+                st.write("**DY**")
+                st.write("N/A")
         with col6:
             if ativo in preco_teto_dict:
                 st.write("**Preço Teto**")
                 st.write(f"R$ {preco_teto_dict[ativo]:.2f}")
             else:
-                st.warning(f"Não foi possível obter o preço teto para {ativo}.")
+                st.write("**Preço Teto**")
+                st.write("N/A")
         
     else:
         st.write("Não há dados suficientes para calcular retornos.")
         
     with st.expander("Histórico de dividendos:"):
-        st.dataframe(tabela, width=850, height=350)
-        tabela = dados_div[ativo]
+        if ativo in dados_div:
+            st.dataframe(tabela, width=850, height=350)
+            tabela = dados_div[ativo]
+        else:
+            st.warning("Não foi possível obter a tabela de proventos")
         
     if ativo in pvp_dict:
         st.link_button(f"Veja mais sobre {ativo}", f"https://investidor10.com.br/acoes/{ativo}/")
@@ -250,9 +258,7 @@ for ativo, df in dados_ativos.items():
         
     st.write("\n---\n")
 
-st.subheader(F"Cotação {ativo}")
 
-with st.expander("Gráfico de cotação:"):
     # Plotando o gráfico de cotações
     st.subheader("Cotação")
     fig_cotacoes, ax_cotacoes = plt.subplots(figsize=(12, 6))
@@ -270,10 +276,8 @@ with st.expander("Gráfico de cotação:"):
     # Exibindo o gráfico de cotações
     st.pyplot(fig_cotacoes)
 
-# Plotando o gráfico de retornos
-st.subheader(f"Rendimento {ativo}")
-
-with st.expander("Gráfico de rendimento:"):
+    # Plotando o gráfico de retornos
+    
     if selected_indice == "":
         st.warning("Selecione o índice para analisar o rendimento")
     else:
@@ -291,8 +295,8 @@ with st.expander("Gráfico de rendimento:"):
         plt.title("Comparação de Rendimento de Ativos")
         plt.xlabel('Data')
         plt.ylabel('Rendimento')
-       # Exibindo o gráfico de retornos
+    # Exibindo o gráfico de retornos
         ax_retornos.yaxis.set_major_formatter(mtick.PercentFormatter(1.0))
         st.pyplot(fig_retornos)
-              
-st.write("\n---\n")
+    
+    st.write("\n---\n")
