@@ -125,28 +125,16 @@ response = requests.get(stock_url, headers=headers)
 dados_fundamentus = requests.get(url_fundamentus, headers=headers, timeout=5).text
 dados_fundamentus_fii = requests.get(url_fundamentus_fii, headers=headers, timeout=5).text
 
-# Verificando se a requisição foi bem-sucedida
-if response.status_code == 200:
-    # Parseando o conteúdo HTML
-    soup = BeautifulSoup(response.text, 'html.parser')
-    soup_valuation = BeautifulSoup(dados_fundamentus, 'html.parser')
-    soup_fii = BeautifulSoup(dados_fundamentus_fii, 'html.parser')
-        
-    # Obter dados de valuation        
-    valuation = soup_valuation.find_all('div', class_='_card-body')
-    valuation_fii = soup_fii.find_all('div', class_='_card-body')
+if dados_fundamentus.status_code == 200:
     
-    # Obter valores de valuation para ações
-    name = soup_valuation.find('h2').get_text()
-    preco_lucro = valuation[2].find('span').text
-    preco_vp = valuation[3].find('span').text
-    dividend_yield = valuation[4].find('span').text
+    soup_fii = BeautifulSoup(dados_fundamentus_fii, 'html.parser')
+    valuation_fii = soup_fii.find_all('div', class_='_card-body')
     
     # Obter valores de valuation para fii's
     name_fii = soup_fii.find('h2').get_text()
     preco_vp_fii = valuation_fii[2].find('span').text
-    dividend_yield_fii = valuation[1].find('span').text
-    liquidez_fii = valuation[3].find('span').text
+    dividend_yield_fii = valuation_fii[1].find('span').text
+    liquidez_fii = valuation_fii[3].find('span').text
     
     # Tabela valuation para fii
     table_valuation_fii = pd.DataFrame(columns=['P/VP', 'DY', 'EMPRESA', 'LIQUIDEZ'])
@@ -159,6 +147,21 @@ if response.status_code == 200:
     pvp_dict_fii[ativo] = preco_vp_fii
     name_dict_fii[ativo] = name_fii
     liquidez_dict[ativo] = liquidez_fii
+    
+# Verificando se a requisição foi bem-sucedida
+if response.status_code == 200:
+    # Parseando o conteúdo HTML
+    soup = BeautifulSoup(response.text, 'html.parser')
+    soup_valuation = BeautifulSoup(dados_fundamentus, 'html.parser')
+        
+    # Obter dados de valuation        
+    valuation = soup_valuation.find_all('div', class_='_card-body')
+    
+    # Obter valores de valuation para ações
+    name = soup_valuation.find('h2').get_text()
+    preco_lucro = valuation[2].find('span').text
+    preco_vp = valuation[3].find('span').text
+    dividend_yield = valuation[4].find('span').text
     
     # Tabela valuation para ações
     table_valuation = pd.DataFrame(columns=['P/L', 'P/VP', 'DY','EMPRESA'])
