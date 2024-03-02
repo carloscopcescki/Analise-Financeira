@@ -160,9 +160,6 @@ if response.status_code == 200:
     tabela = tabela.drop(["Ex"], axis=1)
     tabela.set_index('Tipo', inplace=True)
 
-    # Convertendo a coluna "Pagamento" para o formato desejado
-    tabela['Registro'] = pd.to_datetime(tabela['Registro'], format='%d/%m/%Y').dt.strftime('%Y-%m-%d')
-    tabela['Pagamento'] = pd.to_datetime(tabela['Pagamento'], format='%d/%m/%Y').dt.strftime('%Y-%m-%d')
     
     # Criando uma nova coluna "Ano" para extrair o ano da coluna "Pagamento"
     tabela['Ano'] = pd.to_datetime(tabela['Registro']).dt.year.astype(str) 
