@@ -209,11 +209,10 @@ if ativo != '' and tipo == 'Ações':
 
     # Mantendo apenas as últimas linhas
     somatoria_por_ano = somatoria_por_ano.tail(6)
-    somatoria_por_ano = somatoria_por_ano.iloc[:-1]
 
     # Calcular o preco_teto para cada ativo e armazenar no dicionário
         
-    media_prov = (somatoria_por_ano['Valor'].sum()) / 5
+    media_prov = (somatoria_por_ano['Valor'].sum()) / 6
     preco_teto = (media_prov * 100) / 5
     preco_teto_dict[ativo] = preco_teto
 
@@ -351,11 +350,11 @@ if ativo != '' and tipo != '':
                 tabela = dados_div[ativo]              
 
                 # Plotar gráfico de barras do total de proventos distribuídos por ano
-                st.subheader("Total de Proventos Distribuídos por Ano")
+                st.subheader("Dividendos distribuídos por ano")
                 fig_proventos, ax_proventos = plt.subplots(figsize=(10, 6))
                 bars = ax_proventos.bar(somatoria_por_ano['Ano'], somatoria_por_ano['Valor'], color='palegreen')
                 ax_proventos.set_xlabel('Ano')
-                ax_proventos.set_ylabel('Total de Proventos (R$)')
+                ax_proventos.set_ylabel('Valor (R$)')
                 ax_proventos.set_title('Total de Proventos Distribuídos por Ano')
 
                 # Adicionar texto com o valor por ano em cada barra
