@@ -9,14 +9,10 @@ from bs4 import BeautifulSoup
 from streamlit_extras.metric_cards import style_metric_cards
 from streamlit_extras.grid import grid
 
-# Habilitar o css
-with open("style.css") as f:
-    st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
-# Lista de ativos utilizados
-lista = list(pd.read_excel('listativos.xls')['Código'].values)
-lista.sort()
-lista_ativos = [ativo + '.SA' for ativo in lista]
+# Elaborando o dash
+st.title("Monitoramento de Análise Financeira")
+
 
 mapa_indices = {
     'BOVESPA': '^BVSP',
@@ -27,6 +23,8 @@ mapa_indices = {
     'NASDAQ': '^IXIC',
 }
 
+tipo_invest = ['Ações', 'Fundos Imobiliários', 'BDR']
+
 # Definir intervalo de datas (1 ano)
 data_inicio = datetime.today() - timedelta(365)
 data_final = datetime.today()
@@ -35,8 +33,44 @@ data_final = datetime.today()
 st.sidebar.empty()
 st.sidebar.title("Insira os dados")
 
+tipo = st.sidebar.selectbox('Selecione um tipo de renda variável',[''] + tipo_invest)
+
 # Selecionar os ativos e período
-ativo = st.sidebar.selectbox("Escolha um ativo",[''] + lista)
+
+ativo = ''
+
+if tipo == 'Fundos Imobiliários':
+    # Lista de Fundos Imobiliários utilizados
+    listafii = list(pd.read_excel('listafii.xls')['Código'].values)
+    listafii.sort()
+    lista_fiis = [ativo + '.SA' for ativo in listafii]
+    ativo = st.sidebar.selectbox("Escolha um ativo",[''] + listafii)
+    
+if tipo == 'Ações':
+    # Lista de ações utilizadas
+    lista = list(pd.read_excel('listativos.xls')['Código'].values)
+    lista.sort()
+    lista_ativos = [ativo + '.SA' for ativo in lista]
+    ativo = st.sidebar.selectbox("Escolha um ativo",[''] + lista)
+    
+if tipo == 'BDR':
+    listabdr = list(pd.read_excel('listabdr.xls')['Código'].values)
+    listabdr.sort()
+    lista_bdrs = [ativo + '.SA' for ativo in listabdr]
+    ativo = st.sidebar.selectbox("Escolha uma ativo",[''] + listabdr)
+    
+if tipo == '':
+    st.warning("Selecione um tipo de renda variável")
+
+if ativo == '' and tipo == 'Fundo Imobiliário':
+    st.warning("Selecione um fundo imobiliário")
+
+if ativo == '' and tipo == 'Ações':
+    st.warning("Selecione uma ação")
+
+if ativo == '' and tipo == 'BDR':
+    st.warning("Selecione uma BDR")
+        
 de_data = st.sidebar.date_input("De:", data_inicio)
 para_data = st.sidebar.date_input("Para:", data_final)
 para_data_correta = para_data + timedelta(1)
@@ -89,9 +123,6 @@ for ativo, df in dados_ativos.items():
     if isinstance(df.index, pd.DatetimeIndex):
         df.index = df.index.strftime('%Y-%m-%d')
 
-# Elaborando o dash
-st.title("Monitoramento de Análise Financeira")
-
 # Definir cores de rendimento positivo ou negativo
 color_positive = 'green'
 color_negative = 'red'
@@ -114,23 +145,28 @@ pvp_dict_fii = {}
 name_dict_fii = {}
 liquidez_dict = {}
 
+yield_dict_bdr = {}
+pvp_dict_bdr = {}
+name_dict_bdr = {}
+pl_dict_bdr = {}
+
 # Construir a URL dinâmica para cada ativo
-stock_url = (f'https://www.dadosdemercado.com.br/bolsa/acoes/{ativo}/dividendos')
 url_fundamentus = (f'https://investidor10.com.br/acoes/{ativo}/')
 url_fundamentus_fii = (f'https://investidor10.com.br/fiis/{ativo}/')
+url_fundamentus_bdr = (f'https://investidor10.com.br/bdrs/{ativo}/')
     
 # Restante do código permanece o mesmo
 headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'}
 
-response = requests.get(stock_url, headers=headers)
 dados_fundamentus = requests.get(url_fundamentus, headers=headers, timeout=5).text
-    
-if ativo == '':
-    st.warning("Selecione um ativo ou fundo imobiliário")
+dados_fundamentus_fii = requests.get(url_fundamentus_fii, headers=headers, timeout=5).text
+dados_fundamentus_bdr = requests.get(url_fundamentus_bdr, headers=headers, timeout=5).text
 
 # Verificando se a requisição foi bem-sucedida
-if response.status_code == 200:
+if ativo != '' and tipo == 'Ações':
     # Parseando o conteúdo HTML
+    stock_url = (f'https://www.dadosdemercado.com.br/bolsa/acoes/{ativo}/dividendos')
+    response = requests.get(stock_url, headers=headers)
     soup = BeautifulSoup(response.text, 'html.parser')
     soup_valuation = BeautifulSoup(dados_fundamentus, 'html.parser')
         
@@ -180,9 +216,7 @@ if response.status_code == 200:
     preco_teto = (media_prov * 100) / 5
     preco_teto_dict[ativo] = preco_teto
 
-elif ativo != '':
-    dados_fundamentus_fii = requests.get(url_fundamentus_fii, headers=headers, timeout=5).text
-    
+elif ativo != '' and tipo == 'Fundos Imobiliários': 
     soup_fii = BeautifulSoup(dados_fundamentus_fii, 'html.parser')
     valuation_fii = soup_fii.find_all('div', class_='_card-body')
         
@@ -204,7 +238,30 @@ elif ativo != '':
     name_dict_fii[ativo] = name_fii
     liquidez_dict[ativo] = liquidez_fii
 
-if ativo != '':
+elif ativo != '' and tipo == 'BDR':
+    
+    soup_bdr = BeautifulSoup(dados_fundamentus_bdr, 'html.parser')      
+    valuation_bdr = soup_bdr.find_all('div', class_='_card-body')
+        
+    # Obter valores de valuation para ações
+    name_bdr = soup_bdr.find('h2').get_text()
+    preco_lucro_bdr = valuation_bdr[2].find('span').text
+    preco_vp_bdr = valuation_bdr[3].find('span').text
+    dividend_yield_bdr = valuation_bdr[4].find('span').text
+        
+    # Tabela valuation para ações
+    table_valuation_bdr = pd.DataFrame(columns=['P/L', 'P/VP', 'DY','EMPRESA'])
+    table_valuation_bdr['EMPRESA'] = [name_bdr]
+    table_valuation_bdr['P/L'] = [preco_lucro_bdr]
+    table_valuation_bdr['P/VP'] = [preco_vp_bdr]
+    table_valuation_bdr['DY'] = [dividend_yield_bdr]
+        
+    name_dict_bdr[ativo] = name_bdr    
+    yield_dict_bdr[ativo] = dividend_yield_bdr
+    pvp_dict_bdr[ativo] = preco_vp_bdr 
+    pl_dict_bdr[ativo] = preco_lucro_bdr    
+
+if ativo != '' and tipo != '':
     for ativo, df in dados_ativos.items():
         
         last_data = df.iloc[-1]
@@ -227,6 +284,8 @@ if ativo != '':
                     st.subheader(f'{name_dict[ativo]}')
                 elif ativo in name_dict_fii:
                     st.subheader(f'{name_dict_fii[ativo]}')
+                elif ativo in name_dict_bdr:
+                    st.subheader(f'{name_dict_bdr[ativo]}')
                 else:
                     st.write("N/A")
                     
@@ -248,23 +307,32 @@ if ativo != '':
                 if ativo in pl_dict:
                     st.write("**P/L**")
                     st.write(f"{pl_dict[ativo]}")
-                else:
+                elif ativo in pl_dict_bdr:
+                    st.write("**P/L**")
+                    st.write(f"{pl_dict_bdr[ativo]}")
+                elif ativo in liquidez_dict:
                     st.write("**LIQUIDEZ DIÁRIA**")
                     st.write(f"{liquidez_dict[ativo]}")
             with col4:
                 if ativo in pvp_dict:
                     st.write("**P/VP**")
                     st.write(f"{pvp_dict[ativo]}")
-                else:
+                elif ativo in pvp_dict_fii:
                     st.write("**P/VP**")
                     st.write(f"{pvp_dict_fii[ativo]}")
+                elif ativo in pvp_dict_bdr:
+                    st.write("**P/VP**")
+                    st.write(f"{pvp_dict_bdr[ativo]}")
             with col5:
                 if ativo in yield_dict:
                     st.write("**DY**")
                     st.write(f"{yield_dict[ativo]}")
-                else:
+                elif ativo in yield_dict_fii:
                     st.write("**DY**")
                     st.write(f"{yield_dict_fii[ativo]}")
+                elif ativo in yield_dict_bdr:
+                    st.write("**DY**")
+                    st.write(f"{yield_dict_bdr[ativo]}")
             with col6:
                 if ativo in preco_teto_dict:
                     st.write("**Preço Teto**")
@@ -285,8 +353,10 @@ if ativo != '':
             
         if ativo in pvp_dict:
             st.link_button(f"Veja mais sobre {ativo}", f"https://investidor10.com.br/acoes/{ativo}/")
-        else:
+        elif ativo in pvp_dict_fii:
             st.link_button(f"Veja mais sobre {ativo}", f"https://investidor10.com.br/fiis/{ativo}/")
+        elif ativo in pvp_dict_bdr:
+            st.link_button(f"Veja mais sobre {ativo}", f"https://investidor10.com.br/bdrs/{ativo}/")
             
         st.write("\n---\n")
         
