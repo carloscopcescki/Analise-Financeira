@@ -348,7 +348,27 @@ if ativo != '' and tipo != '':
         with st.expander("Histórico de dividendos:"):
             if ativo in dados_div:
                 st.dataframe(tabela, width=850, height=350)
-                tabela = dados_div[ativo]
+                tabela = dados_div[ativo]              
+
+                # Plotar gráfico de barras do total de proventos distribuídos por ano
+                st.subheader("Total de Proventos Distribuídos por Ano")
+                fig_proventos, ax_proventos = plt.subplots(figsize=(10, 6))
+                bars = ax_proventos.bar(somatoria_por_ano['Ano'], somatoria_por_ano['Valor'], color='palegreen')
+                ax_proventos.set_xlabel('Ano')
+                ax_proventos.set_ylabel('Total de Proventos (R$)')
+                ax_proventos.set_title('Total de Proventos Distribuídos por Ano')
+
+                # Adicionar texto com o valor por ano em cada barra
+                for bar in bars:
+                    height = bar.get_height()
+                    ax_proventos.annotate(f'R$ {height:.2f}', 
+                                        xy=(bar.get_x() + bar.get_width() / 2, height),
+                                        xytext=(0, 3),  # 3 points vertical offset
+                                        textcoords="offset points",
+                                        ha='center', va='bottom')
+
+                st.pyplot(fig_proventos)
+            
             else:
                 st.warning("Não foi possível obter a tabela de proventos")
             
