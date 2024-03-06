@@ -21,7 +21,6 @@ mapa_indices = {
     'S&P 500': '^GSPC',
     'DOW JONES': '^DJI',
     'NASDAQ': '^IXIC',
-    'BITCOIN': 'BTC-USD'
 }
 
 tipo_invest = ['Ações', 'Fundos Imobiliários', 'BDR']
