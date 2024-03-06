@@ -151,13 +151,21 @@ pvp_dict_bdr = {}
 name_dict_bdr = {}
 pl_dict_bdr = {}
 
+preco_teto_dict_fii = {}
+
 # Construir a URL dinâmica para cada ativo
 url_fundamentus = (f'https://investidor10.com.br/acoes/{ativo}/')
 url_fundamentus_fii = (f'https://investidor10.com.br/fiis/{ativo}/')
 url_fundamentus_bdr = (f'https://investidor10.com.br/bdrs/{ativo}/')
     
 # Restante do código permanece o mesmo
-headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'}
+headers = { 
+    'User-Agent'      : 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36', 
+    'Accept'          : 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8', 
+    'Accept-Language' : 'en-US,en;q=0.5',
+    'DNT'             : '1', # Do Not Track Request Header 
+    'Connection'      : 'close'
+}
 
 dados_fundamentus = requests.get(url_fundamentus, headers=headers, timeout=5).text
 dados_fundamentus_fii = requests.get(url_fundamentus_fii, headers=headers, timeout=5).text
@@ -217,6 +225,9 @@ if ativo != '' and tipo == 'Ações':
     preco_teto_dict[ativo] = preco_teto
 
 elif ativo != '' and tipo == 'Fundos Imobiliários': 
+    stock_fii_url = (f'https://www.fundamentus.com.br/fii_proventos.php?papel={ativo}&tipo=2')
+    response_fii = requests.get(stock_fii_url, headers=headers, timeout=5).text
+    soup_proventos = BeautifulSoup(response_fii, 'html.parser')
     soup_fii = BeautifulSoup(dados_fundamentus_fii, 'html.parser')
     valuation_fii = soup_fii.find_all('div', class_='_card-body')
         
@@ -238,6 +249,40 @@ elif ativo != '' and tipo == 'Fundos Imobiliários':
     name_dict_fii[ativo] = name_fii
     liquidez_dict[ativo] = liquidez_fii
 
+    tabela_fii = soup_proventos.find('table')
+    proventos_fii = pd.DataFrame(columns=['Última Data Com', 'Tipo', 'Data de Pagamento', 'Valor'])
+        
+    for row in tabela_fii.tbody.find_all('tr'):
+        columns = row.find_all('td')
+        if (columns != []):
+            ult_data_table = columns[0].text.strip(' ')
+            tipo_table = columns[1].text.strip(' ')
+            data_pag_table = columns[2].text.strip(' ')
+            valor_table = columns[3].text.strip(' ')
+            proventos_fii = pd.concat([proventos_fii, pd.DataFrame.from_records([{'Última Data Com': ult_data_table, 'Tipo': tipo_table, 'Data de Pagamento': data_pag_table, 'Valor': valor_table}])])
+    
+    proventos_fii.head(20)
+    proventos_fii['Valor'] = [x.replace(',','.') for x in proventos_fii['Valor']]
+    proventos_fii = proventos_fii.astype({'Valor': float})
+    proventos_fii.set_index('Tipo', inplace=True)
+    proventos_fii = proventos_fii.rename(columns={'Última Data Com': 'Registro', 'Data de Pagamento': 'Pagamento'})
+
+    proventos_fii['Ano'] = pd.to_datetime(proventos_fii['Registro']).dt.year.astype(str) 
+    proventos_fii['Ano'] = proventos_fii['Ano'].str.replace(',', '')
+           
+    # Calcular o preço teto do fundo imobiliário
+    
+    somatoria_por_ano_fii = proventos_fii.groupby('Ano')['Valor'].sum().reset_index()
+
+    # Mantendo apenas as últimas linhas
+    somatoria_por_ano_fii = somatoria_por_ano_fii.tail(6)
+
+    # Calcular o preco_teto para cada ativo e armazenar no dicionário
+        
+    media_prov_fii = (somatoria_por_ano_fii['Valor'].sum()) / 6
+    preco_teto_fii = (media_prov_fii * 100) / 5
+    preco_teto_dict_fii[ativo] = preco_teto_fii
+       
 elif ativo != '' and tipo == 'BDR':
     
     soup_bdr = BeautifulSoup(dados_fundamentus_bdr, 'html.parser')      
@@ -337,6 +382,9 @@ if ativo != '' and tipo != '':
                 if ativo in preco_teto_dict:
                     st.write("**Preço Teto**")
                     st.write(f"R$ {preco_teto_dict[ativo]:.2f}")
+                elif ativo in preco_teto_dict_fii:
+                    st.write("**Preço Teto**")
+                    st.write(f"R$ {preco_teto_dict_fii[ativo]:.2f}")
                 else:
                     st.write("**Preço Teto**")
                     st.write("N/A")
@@ -345,7 +393,7 @@ if ativo != '' and tipo != '':
             st.write("Não há dados suficientes para calcular retornos.")
             
         with st.expander("Histórico de dividendos:"):
-            if ativo in dados_div:
+            if ativo in dados_div and tipo == "Ações":
                 st.dataframe(tabela, width=850, height=350)
                 tabela = dados_div[ativo]              
 
@@ -368,6 +416,28 @@ if ativo != '' and tipo != '':
 
                 st.pyplot(fig_proventos)
             
+            elif tipo == "Fundos Imobiliários":
+                st.dataframe(proventos_fii, width=850, height=350)
+                
+                # Plotar gráfico de barras do total de proventos distribuídos por ano
+                st.subheader("Dividendos distribuídos por ano")
+                fig_proventos_fii, ax_proventos_fii = plt.subplots(figsize=(10, 6))
+                bars = ax_proventos_fii.bar(somatoria_por_ano_fii['Ano'], somatoria_por_ano_fii['Valor'], color='palegreen')
+                ax_proventos_fii.set_xlabel('Ano')
+                ax_proventos_fii.set_ylabel('Valor (R$)')
+                ax_proventos_fii.set_title('Total de Proventos Distribuídos por Ano')
+
+                # Adicionar texto com o valor por ano em cada barra
+                for bar in bars:
+                    height = bar.get_height()
+                    ax_proventos_fii.annotate(f'R$ {height:.2f}', 
+                                        xy=(bar.get_x() + bar.get_width() / 2, height),
+                                        xytext=(0, 3),  # 3 points vertical offset
+                                        textcoords="offset points",
+                                        ha='center', va='bottom')
+
+                st.pyplot(fig_proventos_fii)
+                
             else:
                 st.warning("Não foi possível obter a tabela de proventos")
             
