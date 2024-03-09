@@ -5,6 +5,7 @@ import requests
 import streamlit as st
 import matplotlib.pyplot as plt
 import matplotlib.ticker as mtick
+import fundamentus
 from bs4 import BeautifulSoup
 from streamlit_extras.metric_cards import style_metric_cards
 from streamlit_extras.grid import grid
@@ -310,6 +311,8 @@ if ativo != '' and tipo != '':
         
         last_data = df.iloc[-1]
         
+        df_fundamentalista = fundamentus.get_papel(f'{ativo}')
+        
         # Calcular os retornos apenas se houver dados disponíveis
         if len(df) > 1:
             
@@ -459,13 +462,17 @@ if ativo != '' and tipo != '':
                 ax_cotacoes.plot(pd.to_datetime(df.index), df['Close'], label=f"{ativo}")
         # Adicionando legenda e título
         plt.legend()
-        plt.title("Comparação de Cotações de Ativos")
+        plt.title(f"Histórico de {ativo}")
         plt.xlabel('Data')
         plt.ylabel('Preço de Fechamento')
 
         # Exibindo o gráfico de cotações
         st.pyplot(fig_cotacoes)
 
+        with st.expander("Histórico da cotação:"):
+            st.dataframe(df, width=850, height=350)
+            df = dados_ativos[ativo]
+        
     if selected_indice == "":
         st.warning("Selecione o índice para analisar o rendimento")
     else:
