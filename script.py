@@ -16,7 +16,6 @@ icon = Image.open("icon-monitor.png")
 st.set_page_config(
     page_title="Monitor Financeiro",
     page_icon=icon,
-    layout="wide",
 )
 
 # Elaborando o monitor
