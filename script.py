@@ -19,7 +19,7 @@ st.set_page_config(
 )
 
 # Elaborando o monitor
-st.title("Monitoramento de Análise Financeira")
+st.sidebar.title("Monitoramento de Análise Financeira")
 
 mapa_indices = {
     'BOVESPA': '^BVSP',
@@ -38,7 +38,7 @@ data_final = datetime.today()
 
 # Criar sidebar vazio
 st.sidebar.empty()
-st.sidebar.title("Insira os dados")
+st.sidebar.header("Insira os dados")
 
 tipo = st.sidebar.selectbox('Selecione um tipo de renda variável',[''] + tipo_invest)
 
