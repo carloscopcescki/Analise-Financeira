@@ -20,6 +20,7 @@ st.set_page_config(
 
 # Elaborando o monitor
 st.sidebar.title("Monitoramento de Análise Financeira")
+st.title("")
 
 mapa_indices = {
     'BOVESPA': '^BVSP',
