@@ -525,8 +525,8 @@ if ativo != '' and tipo != '':
             with st.expander("Histórico de dividendos:"):
                 st.dataframe(proventos_fii, width=850, height=350)
                 
-            else:
-                st.warning("Não foi possível obter a tabela de proventos")
+        else:
+            st.warning("Não foi possível obter a tabela de proventos")
             
         if ativo != '' and tipo == 'Ações':
             st.link_button(f"Veja mais sobre {ativo}", f"https://investidor10.com.br/acoes/{ativo}/")
