@@ -8,11 +8,19 @@ import matplotlib.ticker as mtick
 from bs4 import BeautifulSoup
 from streamlit_extras.metric_cards import style_metric_cards
 from streamlit_extras.grid import grid
+from PIL import Image
 #import fundamentus
 
-# Elaborando o dash
-st.title("Monitoramento de Análise Financeira")
+# Definindo o ícone e título da página
+icon = Image.open("icon-monitor.png")
+st.set_page_config(
+    page_title="Monitor Financeiro",
+    page_icon=icon,
+    layout="wide",
+)
 
+# Elaborando o monitor
+st.title("Monitoramento de Análise Financeira")
 
 mapa_indices = {
     'BOVESPA': '^BVSP',
