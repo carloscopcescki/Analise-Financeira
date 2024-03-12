@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 
 
 # Coletar a lista de ativos/fii's
-lista = list(pd.read_excel('listativos.xls')['Código'].values)
+lista = list(pd.read_excel('lists/listativos.xls')['Código'].values)
 lista.sort()
 lista_ativos = [ativo + '.SA' for ativo in lista]
 
