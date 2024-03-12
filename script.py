@@ -12,7 +12,7 @@ from PIL import Image
 #import fundamentus
 
 # Definindo o ícone e título da página
-icon = Image.open("icon-monitor.png")
+icon = Image.open("img/icon-monitor.png")
 st.set_page_config(
     page_title="Monitor Financeiro",
     page_icon=icon,
