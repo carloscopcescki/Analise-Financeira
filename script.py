@@ -48,34 +48,34 @@ ativo = ''
 
 if tipo == 'Fundos Imobiliários':
     # Lista de Fundos Imobiliários utilizados
-    listafii = list(pd.read_excel('listafii.xls')['Código'].values)
+    listafii = list(pd.read_excel('lists/listafii.xls')['Código'].values)
     listafii.sort()
     lista_fiis = [ativo + '.SA' for ativo in listafii]
     ativo = st.sidebar.selectbox("Escolha um ativo",[''] + listafii)
     
 if tipo == 'Ações':
     # Lista de ações utilizadas
-    lista = list(pd.read_excel('listativos.xls')['Código'].values)
+    lista = list(pd.read_excel('lists/listativos.xls')['Código'].values)
     lista.sort()
     lista_ativos = [ativo + '.SA' for ativo in lista]
     ativo = st.sidebar.selectbox("Escolha um ativo",[''] + lista)
     
 if tipo == 'BDR':
-    listabdr = list(pd.read_excel('listabdr.xls')['Código'].values)
+    listabdr = list(pd.read_excel('lists/listabdr.xls')['Código'].values)
     listabdr.sort()
     lista_bdrs = [ativo + '.SA' for ativo in listabdr]
     ativo = st.sidebar.selectbox("Escolha uma ativo",[''] + listabdr)
  
 if tipo == 'ETFs':
     # Lista de ETFs utilizados
-    listaetf = list(pd.read_excel('listaetfs.xls')['Código'].values)
+    listaetf = list(pd.read_excel('lists/listaetfs.xls')['Código'].values)
     listaetf.sort()
     lista_etfs = [ativo + '.SA' for ativo in listaetf]
     ativo = st.sidebar.selectbox("Escolha um ativo",[''] + listaetf)
 
 if tipo == 'Stocks':
     # Lista de Stocks utilizados
-    listastock = list(pd.read_excel('listastocks.xls')['Código'].values)
+    listastock = list(pd.read_excel('lists/listastocks.xls')['Código'].values)
     listastock.sort()
     lista_stocks = [ativo + '.SA' for ativo in listastock]
     ativo = st.sidebar.selectbox("Escolha um ativo",[''] + listastock)
