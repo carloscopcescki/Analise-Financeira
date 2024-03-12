@@ -485,6 +485,8 @@ if ativo != '' and tipo != '':
             st.link_button(f"Veja mais sobre {ativo}", f"https://investidor10.com.br/bdrs/{ativo}/")
         elif ativo != '' and tipo == 'ETFs':
             st.link_button(f"Veja mais sobre {ativo}", f"https://investidor10.com.br/etfs/{ativo}/")
+
+        st.write("\n---\n")
         
         if ativo in dados_div and tipo == "Ações":           
 
