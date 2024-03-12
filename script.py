@@ -477,7 +477,14 @@ if ativo != '' and tipo != '':
         else:
             st.write("Não há dados suficientes para calcular retornos.")
 
-        st.subheader("Dividendos")
+        if ativo != '' and tipo == 'Ações':
+            st.link_button(f"Veja mais sobre {ativo}", f"https://investidor10.com.br/acoes/{ativo}/")
+        elif ativo != '' and tipo == 'Fundos Imobiliários':
+            st.link_button(f"Veja mais sobre {ativo}", f"https://investidor10.com.br/fiis/{ativo}/")
+        elif ativo != '' and tipo == 'BDR':
+            st.link_button(f"Veja mais sobre {ativo}", f"https://investidor10.com.br/bdrs/{ativo}/")
+        elif ativo != '' and tipo == 'ETFs':
+            st.link_button(f"Veja mais sobre {ativo}", f"https://investidor10.com.br/etfs/{ativo}/")
         
         if ativo in dados_div and tipo == "Ações":           
 
@@ -505,6 +512,9 @@ if ativo != '' and tipo != '':
                 tabela = dados_div[ativo]   
         
         elif tipo == "Fundos Imobiliários":
+            
+            # Plotar gráfico de barras do total de proventos distribuídos por ano
+            st.subheader("Dividendos")
             fig_proventos_fii, ax_proventos_fii = plt.subplots(figsize=(10, 6))
             bars = ax_proventos_fii.bar(somatoria_por_ano_fii['Ano'], somatoria_por_ano_fii['Valor'], color='palegreen')
             ax_proventos_fii.set_xlabel('Ano')
@@ -527,15 +537,6 @@ if ativo != '' and tipo != '':
                 
         else:
             st.warning("Não foi possível obter a tabela de proventos")
-            
-        if ativo != '' and tipo == 'Ações':
-            st.link_button(f"Veja mais sobre {ativo}", f"https://investidor10.com.br/acoes/{ativo}/")
-        elif ativo != '' and tipo == 'Fundos Imobiliários':
-            st.link_button(f"Veja mais sobre {ativo}", f"https://investidor10.com.br/fiis/{ativo}/")
-        elif ativo != '' and tipo == 'BDR':
-            st.link_button(f"Veja mais sobre {ativo}", f"https://investidor10.com.br/bdrs/{ativo}/")
-        elif ativo != '' and tipo == 'ETFs':
-            st.link_button(f"Veja mais sobre {ativo}", f"https://investidor10.com.br/etfs/{ativo}/")
             
         st.write("\n---\n")
         
