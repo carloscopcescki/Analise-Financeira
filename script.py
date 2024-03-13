@@ -252,7 +252,7 @@ if ativo != '' and tipo == 'Ações':
 
     
     # Criando uma nova coluna "Ano" para extrair o ano da coluna "Pagamento"
-    tabela['Ano'] = pd.to_datetime(tabela['Registro']).dt.year.astype(str) 
+    tabela['Ano'] = pd.to_datetime(tabela['Registro'], format='%d/%m/%Y').dt.year.astype(str)
     tabela['Ano'] = tabela['Ano'].str.replace(',', '')
     
     dados_div[ativo] = pd.DataFrame(tabela) 
