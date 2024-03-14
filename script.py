@@ -213,10 +213,10 @@ headers = {
     'Connection'      : 'close'
 }
 
-dados_fundamentus = requests.get(url_fundamentus, headers=headers, timeout=5).text
-dados_fundamentus_fii = requests.get(url_fundamentus_fii, headers=headers, timeout=5).text
-dados_fundamentus_bdr = requests.get(url_fundamentus_bdr, headers=headers, timeout=5).text
-dados_fundamentus_etf = requests.get(url_fundamentus_etf, headers=headers, timeout=5).text
+dados_fundamentus = requests.get(url_fundamentus, headers=headers, timeout=10).text
+dados_fundamentus_fii = requests.get(url_fundamentus_fii, headers=headers, timeout=10).text
+dados_fundamentus_bdr = requests.get(url_fundamentus_bdr, headers=headers, timeout=10).text
+dados_fundamentus_etf = requests.get(url_fundamentus_etf, headers=headers, timeout=10).text
 
 # Verificando se a requisição foi bem-sucedida
 if ativo != '' and tipo == 'Ações':
