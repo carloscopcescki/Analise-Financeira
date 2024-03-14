@@ -80,6 +80,13 @@ if tipo == 'Stocks':
     lista_stocks = [ativo + '.SA' for ativo in listastock]
     ativo = st.sidebar.selectbox("Escolha um ativo",[''] + listastock)
 
+if tipo == 'ETFs Americanos':
+    # Lista de ETFs americanos utilizados
+    listaefteua = list(pd.read_excel('lists/listaetfseua.xls')['Código'].values)
+    listaetfeua.sort()
+    lista_etfseua = [ativo + '.SA' for ativo in listaetfeua]
+    ativo = st.sidebar.selectbox("Escolha um ativo",[''] + listaetfeua)
+    
 if tipo == '':
     st.warning("Selecione um tipo de renda variável")
 
@@ -113,7 +120,7 @@ st.sidebar.info('Aplicativo simples utilizando Streamlit para realizar o'
 
 # Simulador de carteira
 st.sidebar.write("\n---\n")
-st.sidebar.link_button(f"Simulador de Carteira", f"https://simulador-carteira.streamlit.app/")
+st.sidebar.link_button(f"Simulador de Carteira", f"https://simulador-de-carteira.streamlit.app/")
 
 # Calculadora de Juros Compostos
 st.sidebar.link_button(f"Calculadora de Juros Compostos", f"https://calculadora-juros-compostos.streamlit.app/")
