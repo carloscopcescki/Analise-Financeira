@@ -485,60 +485,6 @@ if ativo != '' and tipo != '':
             st.link_button(f"Veja mais sobre {ativo}", f"https://investidor10.com.br/bdrs/{ativo}/")
         elif ativo != '' and tipo == 'ETFs':
             st.link_button(f"Veja mais sobre {ativo}", f"https://investidor10.com.br/etfs/{ativo}/")
-
-        st.write("\n---\n")
-        
-        if ativo in dados_div and tipo == "Ações":           
-
-            # Plotar gráfico de barras do total de proventos distribuídos por ano
-            st.subheader("Dividendos")
-            fig_proventos, ax_proventos = plt.subplots(figsize=(10, 6))
-            bars = ax_proventos.bar(somatoria_por_ano['Ano'], somatoria_por_ano['Valor'], color='palegreen')
-            ax_proventos.set_xlabel('Ano')
-            ax_proventos.set_ylabel('Valor (R$)')
-            ax_proventos.set_title('Total de Proventos Distribuídos por Ano')
-
-            # Adicionar texto com o valor por ano em cada barra
-            for bar in bars:
-                height = bar.get_height()
-                ax_proventos.annotate(f'R$ {height:.2f}', 
-                                    xy=(bar.get_x() + bar.get_width() / 2, height),
-                                    xytext=(0, 3),  # 3 points vertical offset
-                                    textcoords="offset points",
-                                    ha='center', va='bottom')
-
-            st.pyplot(fig_proventos)
-
-            with st.expander("Histórico de dividendos:"):
-                st.dataframe(tabela, width=850, height=350)
-                tabela = dados_div[ativo]   
-        
-        elif tipo == "Fundos Imobiliários":
-            
-            # Plotar gráfico de barras do total de proventos distribuídos por ano
-            st.subheader("Dividendos")
-            fig_proventos_fii, ax_proventos_fii = plt.subplots(figsize=(10, 6))
-            bars = ax_proventos_fii.bar(somatoria_por_ano_fii['Ano'], somatoria_por_ano_fii['Valor'], color='palegreen')
-            ax_proventos_fii.set_xlabel('Ano')
-            ax_proventos_fii.set_ylabel('Valor (R$)')
-            ax_proventos_fii.set_title('Total de Proventos Distribuídos por Ano')
-
-            # Adicionar texto com o valor por ano em cada barra
-            for bar in bars:
-                height = bar.get_height()
-                ax_proventos_fii.annotate(f'R$ {height:.2f}', 
-                                    xy=(bar.get_x() + bar.get_width() / 2, height),
-                                    xytext=(0, 3),  # 3 points vertical offset
-                                    textcoords="offset points",
-                                    ha='center', va='bottom')
-
-            st.pyplot(fig_proventos_fii)
-
-            with st.expander("Histórico de dividendos:"):
-                st.dataframe(proventos_fii, width=850, height=350)
-                
-        else:
-            st.warning("Não foi possível obter a tabela de proventos")
             
         st.write("\n---\n")
         
@@ -568,6 +514,60 @@ if ativo != '' and tipo != '':
             st.dataframe(df, width=850, height=350)
             df = dados_ativos[ativo]
 
+    st.write("\n---\n")
+
+    if ativo in dados_div and tipo == "Ações":           
+
+        # Plotar gráfico de barras do total de proventos distribuídos por ano
+        st.subheader("Dividendos")
+        fig_proventos, ax_proventos = plt.subplots(figsize=(10, 6))
+        bars = ax_proventos.bar(somatoria_por_ano['Ano'], somatoria_por_ano['Valor'], color='palegreen')
+        ax_proventos.set_xlabel('Ano')
+        ax_proventos.set_ylabel('Valor (R$)')
+        ax_proventos.set_title('Total de Proventos Distribuídos por Ano')
+
+        # Adicionar texto com o valor por ano em cada barra
+        for bar in bars:
+            height = bar.get_height()
+            ax_proventos.annotate(f'R$ {height:.2f}', 
+                                xy=(bar.get_x() + bar.get_width() / 2, height),
+                                xytext=(0, 3),  # 3 points vertical offset
+                                textcoords="offset points",
+                                ha='center', va='bottom')
+
+        st.pyplot(fig_proventos)
+
+        with st.expander("Histórico de dividendos:"):
+            st.dataframe(tabela, width=850, height=350)
+            tabela = dados_div[ativo]   
+        
+    elif tipo == "Fundos Imobiliários":
+            
+        # Plotar gráfico de barras do total de proventos distribuídos por ano
+        st.subheader("Dividendos")
+        fig_proventos_fii, ax_proventos_fii = plt.subplots(figsize=(10, 6))
+        bars = ax_proventos_fii.bar(somatoria_por_ano_fii['Ano'], somatoria_por_ano_fii['Valor'], color='palegreen')
+        ax_proventos_fii.set_xlabel('Ano')
+        ax_proventos_fii.set_ylabel('Valor (R$)')
+        ax_proventos_fii.set_title('Total de Proventos Distribuídos por Ano')
+
+        # Adicionar texto com o valor por ano em cada barra
+        for bar in bars:
+            height = bar.get_height()
+            ax_proventos_fii.annotate(f'R$ {height:.2f}', 
+                                xy=(bar.get_x() + bar.get_width() / 2, height),
+                                xytext=(0, 3),  # 3 points vertical offset
+                                textcoords="offset points",
+                                ha='center', va='bottom')
+
+        st.pyplot(fig_proventos_fii)
+
+        with st.expander("Histórico de dividendos:"):
+            st.dataframe(proventos_fii, width=850, height=350)
+                
+    else:
+        st.warning("Não foi possível obter a tabela de proventos")
+            
     st.write("\n---\n")
 
     if selected_indice == "":
