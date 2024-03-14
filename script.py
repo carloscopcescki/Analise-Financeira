@@ -82,7 +82,7 @@ if tipo == 'Stocks':
 
 if tipo == 'ETFs Americanos':
     # Lista de ETFs americanos utilizados
-    listaefteua = list(pd.read_excel('lists/listaetfseua.xls')['Código'].values)
+    listaetfeua = list(pd.read_excel('lists/listaetfseua.xls')['Código'].values)
     listaetfeua.sort()
     lista_etfseua = [ativo + '.SA' for ativo in listaetfeua]
     ativo = st.sidebar.selectbox("Escolha um ativo",[''] + listaetfeua)
