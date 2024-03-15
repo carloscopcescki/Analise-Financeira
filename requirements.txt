@@ -10,6 +10,7 @@ plotly.express
 bs4
 investpy
 numpy
+fundamentus
 beautifulsoup4
 requests
 xlrd

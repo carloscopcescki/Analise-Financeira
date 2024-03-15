@@ -4,6 +4,7 @@ import pandas as pd
 import requests
 import streamlit as st
 import matplotlib.pyplot as plt
+import fundamentus
 import matplotlib.ticker as mtick
 from bs4 import BeautifulSoup
 from streamlit_extras.metric_cards import style_metric_cards
@@ -197,6 +198,19 @@ yield_dict_etf = {}
 name_dict_etf = {}
 variacao_60_dict_etf = {}
 
+setor_dict = {}
+lpa_dict = {}
+vpa_dict = {}
+roe_dict = {}
+roic_dict = {}
+evebit_dict = {}
+margbruta_dict = {}
+margebit_dict = {}
+margliq_dict = {}
+divbrut_dict = {}
+divliq_dict = {}
+patrliq_dict = {}
+
 # Construir a URL dinâmica para cada ativo
 url_fundamentus = (f'https://investidor10.com.br/acoes/{ativo}/')
 url_fundamentus_fii = (f'https://investidor10.com.br/fiis/{ativo}/')
@@ -225,11 +239,6 @@ if ativo != '' and tipo == 'Ações':
     response = requests.get(stock_url, headers=headers)
     soup = BeautifulSoup(response.text, 'html.parser')
     soup_valuation = BeautifulSoup(dados_fundamentus, 'html.parser')
-    
-    # Obtendo dados fundamentalistas da API Fundamentus
-    
-    #an_fund = fundamentus.get_papel(f'ativo')
-    #table_fund = pd.DataFrame(an_fund)
     
     # Obter dados de valuation        
     valuation = soup_valuation.find_all('div', class_='_card-body')
@@ -270,12 +279,43 @@ if ativo != '' and tipo == 'Ações':
     # Mantendo apenas as últimas linhas
     somatoria_por_ano = somatoria_por_ano.tail(6)
 
-    # Calcular o preco_teto para cada ativo e armazenar no dicionário
-        
+    # Calcular o preco_teto para cada ativo e armazenar no dicionário    
     media_prov = (somatoria_por_ano['Valor'].sum()) / 6
     preco_teto = (media_prov * 100) / 5
     preco_teto_dict[ativo] = preco_teto
-
+    
+    # Coletar dados fundamentalistas do ativo
+    
+    dados_fundamentalistas = fundamentus.get_detalhes_papel(f'{ativo}')
+    df_fund = pd.DataFrame(dados_fundamentalistas)
+    df_fund = df_fund.reset_index(drop=True)
+    
+    setor = df_fund.at[0, 'Subsetor']
+    lpa = df_fund.at[0, 'LPA']
+    vpa = df_fund.at[0, 'VPA']
+    roe = df_fund.at[0, 'ROE']
+    roic = df_fund.at[0, 'ROIC']
+    evebit = df_fund.at[0, 'EV_EBIT']
+    margbruta = df_fund.at[0, 'Marg_Bruta']
+    margebit = df_fund.at[0, 'Marg_EBIT']
+    margliq = df_fund.at[0, 'Marg_Liquida']
+    
+    if 'Div_Bruta' in df_fund.columns:
+        divbruta = df_fund.at[0, 'Div_Bruta']
+    else:
+        divbruta = None
+   
+    patrliq = df_fund.at[0, 'Patrim_Liq']
+    evebitda = df_fund.at[0, 'EV_EBITDA']
+    pebit = df_fund.at[0, 'PEBIT']
+    psr = df_fund.at[0, 'PSR']
+    cre = df_fund.at[0, 'Cres_Rec_5a']
+    
+    if 'Div_Liquida' in df_fund.columns:
+        divliq = df_fund.at[0, 'Div_Liquida'] 
+    else:
+        divliq = None
+    
 elif ativo != '' and tipo == 'Fundos Imobiliários': 
     stock_fii_url = (f'https://www.fundamentus.com.br/fii_proventos.php?papel={ativo}&tipo=2')
     response_fii = requests.get(stock_fii_url, headers=headers, timeout=5).text
@@ -416,6 +456,10 @@ if ativo != '' and tipo != '':
                     
             st.subheader(f'{ativo}')
             
+            if ativo != '' and tipo == 'Ações':
+                st.write(f'Setor: {setor}')
+                st.write()
+            
             col1, col2, col3, col4, col5, col6 = st.columns(6)
             
             with col1:
@@ -495,11 +539,6 @@ if ativo != '' and tipo != '':
             
         st.write("\n---\n")
         
-        # Análise Fundamentalista
-        #if ativo != '' and tipo == 'Ações':
-            #st.subheader("Análise Fundamentalista")
-            #st.write("\n---\n")
-        
         # Plotando o gráfico de cotações
         st.subheader("Cotação")
         fig_cotacoes, ax_cotacoes = plt.subplots(figsize=(12, 6))
@@ -576,7 +615,161 @@ if ativo != '' and tipo != '':
         st.warning("Não foi possível obter a tabela de proventos")
             
     st.write("\n---\n")
+    
+    if ativo != '' and tipo == 'Ações':
+        st.subheader("Indicadores Fundamentalistas")
 
+        col1f, col2f, col3f, col4f, col5f, col6f = st.columns(6)
+
+        with col1f:
+            st.write("**P/L:**")
+            st.write(f"{pl_dict[ativo]}")
+        
+        with col2f:
+            st.write("**P/VP:**")
+            st.write(f"{pvp_dict[ativo]}")
+
+        with col3f:
+            st.write("**DY:**")
+            st.write(f"{yield_dict[ativo]}")
+            
+        with col4f:
+            if lpa != '-':
+                st.write("**LPA:**")
+                valor_lpa = float(lpa) / 100
+                st.write(f"{valor_lpa:.2f}". replace('.',','))
+            else:
+                st.write("**LPA:**")
+                st.write("-")
+                
+        with col5f:
+            if vpa != '-':
+                st.write("**VPA:**")
+                valor_vpa = float(vpa) / 100
+                st.write(f"{valor_vpa:.2f}". replace('.',','))
+            else:
+                st.write("**VPA:**")
+                st.write("-")
+            
+        with col6f:
+            if roe != '-':
+                st.write("**ROE:**")
+                st.write(f"{roe}")
+            else:
+                st.write("**ROE:**")
+                st.write("-")
+            
+        col13f, col14f, col15f, col16f, col17f, col18f = st.columns(6)
+
+        with col13f:
+            if roic != '-':
+                st.write("**ROIC:**")
+                st.write(f"{roic}")
+            else:
+                st.write("**ROIC:**")
+                st.write("-")
+        
+        with col14f:
+            if evebit != '-':
+                st.write("**EV/EBIT:**")
+                valor_pebit = float(evebit) / 100
+                st.write(f"{valor_pebit:.2f}". replace('.',','))
+            else:
+                st.write("**EV/EBIT:**")
+                st.write("-")
+                
+        with col15f:
+            if evebitda != '-':
+                st.write("**EV/EBITDA:**")
+                valor_evebitda = float(evebitda) / 100
+                st.write(f"{valor_evebitda:.2f}". replace('.',','))
+            else:
+                st.write("**EV/EBITDA:**")
+                st.write("-")
+        
+        with col16f:
+            if pebit != '-':
+                st.write("**P/EBIT:**")
+                valor_pebit = float(pebit) / 100
+                st.write(f"{valor_pebit:.2f}". replace('.',','))
+            else:
+                st.write("**P/EBIT:**")
+                st.write("-")
+                
+        with col17f:
+            if psr != '-':
+                st.write("**PSR:**")
+                valor_psr = float(psr) / 100
+                st.write(f"{valor_psr:.2f}". replace('.',','))
+            else:
+                st.write("**PSR:**")
+                st.write("-")
+            
+        with col18f:
+            if cre != '-':
+                st.write("**Cres. Receita Líquida (5a) :**")
+                st.write(f"{cre}")
+            else:
+                st.write("**Cres. Receita Líquida (5a) :**")
+                st.write("-")
+            
+        col7f, col8f, col9f, col10f, col11f, col12f = st.columns(6)    
+
+        with col7f:
+            if margbruta != '-':
+                st.write("**Marg Bruta:**")
+                st.write(f"{margbruta}")
+            else:
+                st.write("**Marg Bruta:**")
+                st.write("-")  
+                 
+        with col8f:
+            if margebit != '-':
+                st.write("**Marg Ebit:**")
+                st.write(f"{margebit}")
+            else:
+                st.write("**Marg Ebit:**")
+                st.write("-")  
+            
+        with col9f:
+            if margliq != '-':
+                st.write("**Marg Líquida:**")
+                st.write(f"{margliq}")
+            else:
+                st.write("**Marg Líquida:**")
+                st.write("-")
+        
+        with col10f:
+            if divbruta != '-' and divbruta != None:
+                st.write("**Dívida Bruta:**")
+                valor_divbruta = float(divbruta)
+                st.write(f"{valor_divbruta:,.0f}")
+            else:
+                st.write("**Dívida Bruta:**")
+                st.write("-")
+        
+        with col11f:
+            if divliq != '-' and divliq != None:
+                st.write("**Dívida Liquida:**")
+                valor_divliq = float(divliq)
+                st.write(f"{valor_divliq:,.0f}")
+            else:
+                st.write("**Dívida Liquida:**")
+                st.write("-")
+        
+        with col12f:
+            if patrliq != '-':
+                st.write("**Patr. Líquido:**")
+                valor_patrliq = float(patrliq)
+                st.write(f"{valor_patrliq:,.0f}")
+            else:
+                st.write("**Patr. Líquido:**")
+                st.write("-")
+        
+        st.write("\n---\n")       
+    
+    st.subheader("Indice x Cotação")
+    
     if selected_indice == "":
         st.warning("Selecione o índice para analisar o rendimento")
     else:
