@@ -5,12 +5,12 @@ import requests
 import streamlit as st
 import matplotlib.pyplot as plt
 import fundamentus
+from win10toast import ToastNotifier
 import matplotlib.ticker as mtick
 from bs4 import BeautifulSoup
 from streamlit_extras.metric_cards import style_metric_cards
 from streamlit_extras.grid import grid
 from PIL import Image
-#import fundamentus
 
 # Definindo o ícone e título da página
 icon = Image.open("img/icon-monitor.png")
@@ -289,8 +289,9 @@ if ativo != '' and tipo == 'Ações':
     dados_fundamentalistas = fundamentus.get_detalhes_papel(f'{ativo}')
     df_fund = pd.DataFrame(dados_fundamentalistas)
     df_fund = df_fund.reset_index(drop=True)
-    
-    setor = df_fund.at[0, 'Subsetor']
+
+    setor = df_fund.at[0, 'Setor']
+    sub_setor = df_fund.at[0, 'Subsetor']
     lpa = df_fund.at[0, 'LPA']
     vpa = df_fund.at[0, 'VPA']
     roe = df_fund.at[0, 'ROE']
@@ -458,7 +459,7 @@ if ativo != '' and tipo != '':
             
             if ativo != '' and tipo == 'Ações':
                 st.write(f'Setor: {setor}')
-                st.write()
+                st.write(f'Subsetor: {sub_setor}')
             
             col1, col2, col3, col4, col5, col6 = st.columns(6)
             
@@ -809,3 +810,14 @@ if ativo != '' and tipo != '':
         ax_retornos.set_ylabel('Rendimento')
         ax_retornos.yaxis.set_major_formatter(mtick.PercentFormatter(1.0))
         st.pyplot(fig_retornos)
+
+        # Ativando notificações
+        notificacao = ToastNotifier()
+
+        notificacao.show_toast(
+            "Monitor Financeiro",
+            f"Dados carregados para {ativo}, com sucesso!",
+            duration = 10,
+            icon_path = (f"{https://raw.githubusercontent.com/thefintz/icones-b3/main/icones/{ativo}.png}"),
+            threaded = True,
+        )
