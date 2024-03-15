@@ -429,6 +429,8 @@ if ativo != '' and tipo != '':
         
         last_data = df.iloc[-1]
         
+        st.toast(f'Dados carregados para {ativo}', icon='📈')
+        
         # Calcular os retornos apenas se houver dados disponíveis
         if len(df) > 1:
             
@@ -809,7 +811,3 @@ if ativo != '' and tipo != '':
         ax_retornos.set_ylabel('Rendimento')
         ax_retornos.yaxis.set_major_formatter(mtick.PercentFormatter(1.0))
         st.pyplot(fig_retornos)
-
-        # Ativando notificações
-        if ativo !='':
-            st.toast(f'Dados carregados para {ativo}', icon='📈')
