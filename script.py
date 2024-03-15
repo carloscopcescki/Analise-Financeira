@@ -5,7 +5,6 @@ import requests
 import streamlit as st
 import matplotlib.pyplot as plt
 import fundamentus
-import time
 import matplotlib.ticker as mtick
 from bs4 import BeautifulSoup
 from streamlit_extras.metric_cards import style_metric_cards
@@ -814,4 +813,3 @@ if ativo != '' and tipo != '':
         # Ativando notificações
         if ativo !='':
             st.toast(f'Dados carregados para {ativo}', icon=f'{https://raw.githubusercontent.com/thefintz/icones-b3/main/icones/{ativo}.png}'
-            time.sleep(10)
