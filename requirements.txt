@@ -15,4 +15,3 @@ beautifulsoup4
 requests
 xlrd
 streamlit-extras
-time
