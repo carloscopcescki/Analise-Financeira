@@ -460,7 +460,6 @@ if ativo != '' and tipo != '':
             
             if ativo != '' and tipo == 'Ações':
                 st.write(f'Setor: {setor}')
-                st.write(f'Subsetor: {sub_setor}')
             
             col1, col2, col3, col4, col5, col6 = st.columns(6)
             
