@@ -15,3 +15,5 @@ beautifulsoup4
 requests
 xlrd
 streamlit-extras
+ToastNotifier
+win10toast
