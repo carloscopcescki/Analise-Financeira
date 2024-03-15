@@ -812,4 +812,4 @@ if ativo != '' and tipo != '':
 
         # Ativando notificações
         if ativo !='':
-            st.toast(f'Dados carregados para {ativo}', icon=f'{https://raw.githubusercontent.com/thefintz/icones-b3/main/icones/{ativo}.png}'
+            st.toast(f'Dados carregados para {ativo}', icon='📈')
