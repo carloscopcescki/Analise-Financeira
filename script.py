@@ -5,7 +5,7 @@ import requests
 import streamlit as st
 import matplotlib.pyplot as plt
 import fundamentus
-from win10toast import ToastNotifier
+import time
 import matplotlib.ticker as mtick
 from bs4 import BeautifulSoup
 from streamlit_extras.metric_cards import style_metric_cards
@@ -812,12 +812,6 @@ if ativo != '' and tipo != '':
         st.pyplot(fig_retornos)
 
         # Ativando notificações
-        notificacao = ToastNotifier()
-
-        notificacao.show_toast(
-            "Monitor Financeiro",
-            f"Dados carregados para {ativo}, com sucesso!",
-            duration = 10,
-            icon_path = (f"{https://raw.githubusercontent.com/thefintz/icones-b3/main/icones/{ativo}.png}"),
-            threaded = True,
-        )
+        if ativo !='':
+            st.toast(f'Dados carregados para {ativo}', icon=f'{https://raw.githubusercontent.com/thefintz/icones-b3/main/icones/{ativo}.png}'
+            time.sleep(.10)
