@@ -12,7 +12,6 @@ from streamlit_extras.metric_cards import style_metric_cards
 from streamlit_extras.grid import grid
 from PIL import Image
 
-
 # Definindo o ícone e título da página
 icon = Image.open("img/icon-monitor.png")
 st.set_page_config(
@@ -283,67 +282,67 @@ with aba1:
         # Mantendo apenas as últimas linhas
         somatoria_por_ano = somatoria_por_ano.tail(6)
 
-        # Calcular o preco_teto para cada ativo e armazenar no dicionário    
-        media_prov = (somatoria_por_ano['Valor'].sum()) / 6
-        preco_teto = (media_prov * 100) / 5
-        preco_teto_dict[ativo] = preco_teto
-        
-        # Coletar dados fundamentalistas do ativo
-        
-        dados_fundamentalistas = fundamentus.get_detalhes_papel(f'{ativo}')
-        df_fund = pd.DataFrame(dados_fundamentalistas)
-        df_fund = df_fund.reset_index(drop=True)
-        
-        setor = df_fund.at[0, 'Subsetor']
-        lpa = df_fund.at[0, 'LPA']
-        vpa = df_fund.at[0, 'VPA']
-        roe = df_fund.at[0, 'ROE']
-        roic = df_fund.at[0, 'ROIC']
-        evebit = df_fund.at[0, 'EV_EBIT']
-        margbruta = df_fund.at[0, 'Marg_Bruta']
-        margebit = df_fund.at[0, 'Marg_EBIT']
-        margliq = df_fund.at[0, 'Marg_Liquida']
-        
-        if 'Div_Bruta' in df_fund.columns:
-            divbruta = df_fund.at[0, 'Div_Bruta']
-        else:
-            divbruta = None
+    # Calcular o preco_teto para cada ativo e armazenar no dicionário    
+    media_prov = (somatoria_por_ano['Valor'].sum()) / 6
+    preco_teto = (media_prov * 100) / 5
+    preco_teto_dict[ativo] = preco_teto
     
-        patrliq = df_fund.at[0, 'Patrim_Liq']
-        evebitda = df_fund.at[0, 'EV_EBITDA']
-        pebit = df_fund.at[0, 'PEBIT']
-        psr = df_fund.at[0, 'PSR']
-        cre = df_fund.at[0, 'Cres_Rec_5a']
+    # Coletar dados fundamentalistas do ativo
+    
+    dados_fundamentalistas = fundamentus.get_detalhes_papel(f'{ativo}')
+    df_fund = pd.DataFrame(dados_fundamentalistas)
+    df_fund = df_fund.reset_index(drop=True)
+    
+    setor = df_fund.at[0, 'Subsetor']
+    lpa = df_fund.at[0, 'LPA']
+    vpa = df_fund.at[0, 'VPA']
+    roe = df_fund.at[0, 'ROE']
+    roic = df_fund.at[0, 'ROIC']
+    evebit = df_fund.at[0, 'EV_EBIT']
+    margbruta = df_fund.at[0, 'Marg_Bruta']
+    margebit = df_fund.at[0, 'Marg_EBIT']
+    margliq = df_fund.at[0, 'Marg_Liquida']
+    
+    if 'Div_Bruta' in df_fund.columns:
+        divbruta = df_fund.at[0, 'Div_Bruta']
+    else:
+        divbruta = None
+   
+    patrliq = df_fund.at[0, 'Patrim_Liq']
+    evebitda = df_fund.at[0, 'EV_EBITDA']
+    pebit = df_fund.at[0, 'PEBIT']
+    psr = df_fund.at[0, 'PSR']
+    cre = df_fund.at[0, 'Cres_Rec_5a']
+    
+    if 'Div_Liquida' in df_fund.columns:
+        divliq = df_fund.at[0, 'Div_Liquida'] 
+    else:
+        divliq = None
+    
+elif ativo != '' and tipo == 'Fundos Imobiliários': 
+    stock_fii_url = (f'https://www.fundamentus.com.br/fii_proventos.php?papel={ativo}&tipo=2')
+    response_fii = requests.get(stock_fii_url, headers=headers, timeout=5).text
+    soup_proventos = BeautifulSoup(response_fii, 'html.parser')
+    soup_fii = BeautifulSoup(dados_fundamentus_fii, 'html.parser')
+    valuation_fii = soup_fii.find_all('div', class_='_card-body')
         
-        if 'Div_Liquida' in df_fund.columns:
-            divliq = df_fund.at[0, 'Div_Liquida'] 
-        else:
-            divliq = None
+    # Obter valores de valuation para fii's
+    name_fii = soup_fii.find('h2').get_text()
+    preco_vp_fii = valuation_fii[2].find('span').text
+    dividend_yield_fii = valuation_fii[1].find('span').text
+    liquidez_fii = valuation_fii[3].find('span').text
         
-    elif ativo != '' and tipo == 'Fundos Imobiliários': 
-        stock_fii_url = (f'https://www.fundamentus.com.br/fii_proventos.php?papel={ativo}&tipo=2')
-        response_fii = requests.get(stock_fii_url, headers=headers, timeout=5).text
-        soup_proventos = BeautifulSoup(response_fii, 'html.parser')
-        soup_fii = BeautifulSoup(dados_fundamentus_fii, 'html.parser')
-        valuation_fii = soup_fii.find_all('div', class_='_card-body')
-            
-        # Obter valores de valuation para fii's
-        name_fii = soup_fii.find('h2').get_text()
-        preco_vp_fii = valuation_fii[2].find('span').text
-        dividend_yield_fii = valuation_fii[1].find('span').text
-        liquidez_fii = valuation_fii[3].find('span').text
-            
-        # Tabela valuation para fii
-        table_valuation_fii = pd.DataFrame(columns=['P/VP', 'DY', 'EMPRESA', 'LIQUIDEZ'])
-        table_valuation_fii['P/VP'] = [preco_vp_fii]
-        table_valuation_fii['DY'] = [dividend_yield_fii]
-        table_valuation_fii['EMPRESA'] = [name_fii]
-        table_valuation_fii['LIQUIDEZ'] = [liquidez_fii]
-            
-        yield_dict_fii[ativo] = dividend_yield_fii
-        pvp_dict_fii[ativo] = preco_vp_fii
-        name_dict_fii[ativo] = name_fii
-        liquidez_dict[ativo] = liquidez_fii
+    # Tabela valuation para fii
+    table_valuation_fii = pd.DataFrame(columns=['P/VP', 'DY', 'EMPRESA', 'LIQUIDEZ'])
+    table_valuation_fii['P/VP'] = [preco_vp_fii]
+    table_valuation_fii['DY'] = [dividend_yield_fii]
+    table_valuation_fii['EMPRESA'] = [name_fii]
+    table_valuation_fii['LIQUIDEZ'] = [liquidez_fii]
+        
+    yield_dict_fii[ativo] = dividend_yield_fii
+    pvp_dict_fii[ativo] = preco_vp_fii
+    name_dict_fii[ativo] = name_fii
+    liquidez_dict[ativo] = liquidez_fii
 
         tabela_fii = soup_proventos.find('table')
         proventos_fii = pd.DataFrame(columns=['Última Data Com', 'Tipo', 'Data de Pagamento', 'Valor'])
@@ -428,109 +427,109 @@ with aba1:
         variacao_12_dict_etf[ativo] = variacao_12m    
         variacao_60_dict_etf[ativo] = variacao_60m
 
-    if ativo != '' and tipo != '':
-        for ativo, df in dados_ativos.items():
+if ativo != '' and tipo != '':
+    for ativo, df in dados_ativos.items():
+        
+        last_data = df.iloc[-1]
+        
+        # Calcular os retornos apenas se houver dados disponíveis
+        if len(df) > 1:
             
-            last_data = df.iloc[-1]
+            df_retornos = (df['Close'].pct_change() + 1).cumprod() - 1
+            rendimento_total = df_retornos.iloc[-1]
             
-            # Calcular os retornos apenas se houver dados disponíveis
-            if len(df) > 1:
-                
-                df_retornos = (df['Close'].pct_change() + 1).cumprod() - 1
-                rendimento_total = df_retornos.iloc[-1]
-                
-                rendimento_diario = ((df['Close'].iloc[-1] - df['Close'].iloc[-2]) / df['Close'].iloc[-2]) * 100
-                
-                colimg, colname = st.columns(2)
-                
-                with colimg:
-                    st.image(f'https://raw.githubusercontent.com/thefintz/icones-b3/main/icones/{ativo}.png', width=85)
-                
-                with colname:
-                    if ativo in name_dict:
-                        st.subheader(f'{name_dict[ativo]}')
-                    elif ativo in name_dict_fii:
-                        st.subheader(f'{name_dict_fii[ativo]}')
-                    elif ativo in name_dict_bdr:
-                        st.subheader(f'{name_dict_bdr[ativo]}')
-                    elif ativo in name_dict_etf:
-                        st.subheader(f'{name_dict_etf[ativo]}')
-                    else:
-                        st.write("N/A")
-                        
-                st.subheader(f'{ativo}')
-                
-                if ativo != '' and tipo == 'Ações':
-                    st.write(f'Setor: {setor}')
-                    st.write()
-                
-                col1, col2, col3, col4, col5, col6 = st.columns(6)
-                
-                with col1:
-                    st.write("**Cotação:**")
-                    st.write(f"R$ {last_data['Close']:.2f}")
-                with col2:
-                    if rendimento_total < 0:
-                        st.write("**Rendimento**")
-                        st.write(f"<span style='color:{color_negative}'>{rendimento_total:.2%}</span>", unsafe_allow_html=True)
-                    else:
-                        st.write("**Rendimento**")
-                        st.write(f"<span style='color:{color_positive}'>{rendimento_total:.2%}</span>", unsafe_allow_html=True)
-                with col3:
-                    if ativo in pl_dict:
-                        st.write("**P/L**")
-                        st.write(f"{pl_dict[ativo]}")
-                    elif ativo in pl_dict_bdr:
-                        st.write("**P/L**")
-                        st.write(f"{pl_dict_bdr[ativo]}")
-                    elif ativo in liquidez_dict:
-                        st.write("**LIQUIDEZ DIÁRIA**")
-                        st.write(f"{liquidez_dict[ativo]}")
-                    elif ativo in capital_dict_etf:
-                        st.write("**Capitalização**")
-                        st.write(f"{capital_dict_etf[ativo]}")
-                with col4:
-                    if ativo in pvp_dict:
-                        st.write("**P/VP**")
-                        st.write(f"{pvp_dict[ativo]}")
-                    elif ativo in pvp_dict_fii:
-                        st.write("**P/VP**")
-                        st.write(f"{pvp_dict_fii[ativo]}")
-                    elif ativo in pvp_dict_bdr:
-                        st.write("**P/VP**")
-                        st.write(f"{pvp_dict_bdr[ativo]}")
-                    elif ativo in variacao_12_dict_etf:
-                        st.write("**Variação (12m)**")
-                        st.write(f"{variacao_12_dict_etf[ativo]}")
-                with col5:
-                    if ativo in yield_dict:
-                        st.write("**DY**")
-                        st.write(f"{yield_dict[ativo]}")
-                    elif ativo in yield_dict_fii:
-                        st.write("**DY**")
-                        st.write(f"{yield_dict_fii[ativo]}")
-                    elif ativo in yield_dict_bdr:
-                        st.write("**DY**")
-                        st.write(f"{yield_dict_bdr[ativo]}")
-                    elif ativo in variacao_60_dict_etf:
-                        st.write("**Variação (60m)**")
-                        st.write(f"{variacao_60_dict_etf[ativo]}")
-                with col6:
-                    if ativo in preco_teto_dict:
-                        st.write("**Preço Teto**")
-                        st.write(f"R$ {preco_teto_dict[ativo]:.2f}")
-                    elif ativo in preco_teto_dict_fii:
-                        st.write("**Preço Teto**")
-                        st.write(f"R$ {preco_teto_dict_fii[ativo]:.2f}")
-                    elif ativo in yield_dict_etf:
-                        st.write("**DY**")
-                        st.write(f"{yield_dict_etf[ativo]}")
-                    else:
-                        st.write("**Preço Teto**")
-                        st.write("N/A")
-                
-            else:
-                st.write("Não há dados suficientes para calcular retornos.")
+            rendimento_diario = ((df['Close'].iloc[-1] - df['Close'].iloc[-2]) / df['Close'].iloc[-2]) * 100
+            
+            colimg, colname = st.columns(2)
+            
+            with colimg:
+                st.image(f'https://raw.githubusercontent.com/thefintz/icones-b3/main/icones/{ativo}.png', width=85)
+            
+            with colname:
+                if ativo in name_dict:
+                    st.subheader(f'{name_dict[ativo]}')
+                elif ativo in name_dict_fii:
+                    st.subheader(f'{name_dict_fii[ativo]}')
+                elif ativo in name_dict_bdr:
+                    st.subheader(f'{name_dict_bdr[ativo]}')
+                elif ativo in name_dict_etf:
+                    st.subheader(f'{name_dict_etf[ativo]}')
+                else:
+                    st.write("N/A")
+                    
+            st.subheader(f'{ativo}')
+            
+            if ativo != '' and tipo == 'Ações':
+                st.write(f'Setor: {setor}')
+                st.write()
+            
+            col1, col2, col3, col4, col5, col6 = st.columns(6)
+            
+            with col1:
+                st.write("**Cotação:**")
+                st.write(f"R$ {last_data['Close']:.2f}")
+            with col2:
+                if rendimento_total < 0:
+                    st.write("**Rendimento**")
+                    st.write(f"<span style='color:{color_negative}'>{rendimento_total:.2%}</span>", unsafe_allow_html=True)
+                else:
+                    st.write("**Rendimento**")
+                    st.write(f"<span style='color:{color_positive}'>{rendimento_total:.2%}</span>", unsafe_allow_html=True)
+            with col3:
+                if ativo in pl_dict:
+                    st.write("**P/L**")
+                    st.write(f"{pl_dict[ativo]}")
+                elif ativo in pl_dict_bdr:
+                    st.write("**P/L**")
+                    st.write(f"{pl_dict_bdr[ativo]}")
+                elif ativo in liquidez_dict:
+                    st.write("**LIQUIDEZ DIÁRIA**")
+                    st.write(f"{liquidez_dict[ativo]}")
+                elif ativo in capital_dict_etf:
+                    st.write("**Capitalização**")
+                    st.write(f"{capital_dict_etf[ativo]}")
+            with col4:
+                if ativo in pvp_dict:
+                    st.write("**P/VP**")
+                    st.write(f"{pvp_dict[ativo]}")
+                elif ativo in pvp_dict_fii:
+                    st.write("**P/VP**")
+                    st.write(f"{pvp_dict_fii[ativo]}")
+                elif ativo in pvp_dict_bdr:
+                    st.write("**P/VP**")
+                    st.write(f"{pvp_dict_bdr[ativo]}")
+                elif ativo in variacao_12_dict_etf:
+                    st.write("**Variação (12m)**")
+                    st.write(f"{variacao_12_dict_etf[ativo]}")
+            with col5:
+                if ativo in yield_dict:
+                    st.write("**DY**")
+                    st.write(f"{yield_dict[ativo]}")
+                elif ativo in yield_dict_fii:
+                    st.write("**DY**")
+                    st.write(f"{yield_dict_fii[ativo]}")
+                elif ativo in yield_dict_bdr:
+                    st.write("**DY**")
+                    st.write(f"{yield_dict_bdr[ativo]}")
+                elif ativo in variacao_60_dict_etf:
+                    st.write("**Variação (60m)**")
+                    st.write(f"{variacao_60_dict_etf[ativo]}")
+            with col6:
+                if ativo in preco_teto_dict:
+                    st.write("**Preço Teto**")
+                    st.write(f"R$ {preco_teto_dict[ativo]:.2f}")
+                elif ativo in preco_teto_dict_fii:
+                    st.write("**Preço Teto**")
+                    st.write(f"R$ {preco_teto_dict_fii[ativo]:.2f}")
+                elif ativo in yield_dict_etf:
+                    st.write("**DY**")
+                    st.write(f"{yield_dict_etf[ativo]}")
+                else:
+                    st.write("**Preço Teto**")
+                    st.write("N/A")
+            
+        else:
+            st.write("Não há dados suficientes para calcular retornos.")
 
             if ativo != '' and tipo == 'Ações':
                 st.link_button(f"Veja mais sobre {ativo}", f"https://investidor10.com.br/acoes/{ativo}/")
