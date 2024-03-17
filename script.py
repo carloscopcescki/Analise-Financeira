@@ -215,6 +215,8 @@ with aba1:
     divliq_dict = {}
     patrliq_dict = {}
 
+    relatorio_investidor = {}
+
     # Construir a URL dinâmica para cada ativo
     url_fundamentus = (f'https://investidor10.com.br/acoes/{ativo}/')
     url_fundamentus_fii = (f'https://investidor10.com.br/fiis/{ativo}/')
@@ -244,6 +246,19 @@ with aba1:
         soup = BeautifulSoup(response.text, 'html.parser')
         soup_valuation = BeautifulSoup(dados_fundamentus, 'html.parser')
         
+        # Obtendo dados para RI (relatório de investidores)
+        url_ri = (f'https://www.dadosdemercado.com.br/bolsa/acoes/{ativo}')
+        dados_ri = requests.get(url_ri, headers=headers, timeout=10).text
+        soup_ri = BeautifulSoup(dados_ri, 'html.parser')
+
+        divs_about_params = soup_ri.find_all('div', class_='about-params')
+
+        for div in divs_about_params:
+            links_ri = div.find_all('a', href=True)
+            
+            for link in links_ri:
+                href = link['href']
+        
         # Obter dados de valuation        
         valuation = soup_valuation.find_all('div', class_='_card-body')
         
@@ -270,7 +285,6 @@ with aba1:
         tabela = tabela.drop(["Ex"], axis=1)
         tabela.set_index('Tipo', inplace=True)
 
-        
         # Criando uma nova coluna "Ano" para extrair o ano da coluna "Pagamento"
         tabela['Ano'] = pd.to_datetime(tabela['Registro'], format='%d/%m/%Y').dt.year.astype(str)
         tabela['Ano'] = tabela['Ano'].str.replace(',', '')
@@ -540,7 +554,13 @@ with aba1:
                 st.link_button(f"Veja mais sobre {ativo}", f"https://investidor10.com.br/bdrs/{ativo}/")
             elif ativo != '' and tipo == 'ETFs':
                 st.link_button(f"Veja mais sobre {ativo}", f"https://investidor10.com.br/etfs/{ativo}/")
-                
+            
+            if ativo != '' and tipo == 'Ações':
+                if href == "None":
+                    st.warning(f"Não foi possível obter o RI de {ativo}")
+                else:
+                    st.link_button(f"Acessar o RI de {ativo}", f"{href}")
+                    
             st.write("\n---\n")
             
             # Plotando o gráfico de cotações
