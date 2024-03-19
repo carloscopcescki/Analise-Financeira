@@ -339,15 +339,15 @@ with aba1:
         valuation_fii = soup_fii.find_all('div', class_='_card-body')
 
         # Obter o RI de fundo imobiliário
-        url_ri_fii = f'https://www.clubefii.com.br/fiis/MXRF11'
+        url_ri_fii = 'https://www.clubefii.com.br/fiis/MXRF11'
         dados_ri_fii = requests.get(url_ri_fii, headers=headers, timeout=10)
         soup_ri_fii = BeautifulSoup(dados_ri_fii.text, 'html.parser')
         
         divs_about_params_fii = soup_ri_fii.find('a', class_='btn-primary')
         
-        for link in divs_about_params_fii:
-            href = link.get('href')
-        
+        if divs_about_params_fii:
+            href = divs_about_params_fii.get('href')
+
         # Obter valores de valuation para fii's
         name_fii = soup_fii.find('h2').get_text()
         preco_vp_fii = valuation_fii[2].find('span').text
