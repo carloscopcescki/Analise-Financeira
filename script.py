@@ -340,13 +340,16 @@ with aba1:
 
         # Obter o RI de fundo imobiliário
         url_ri_fii = 'https://www.clubefii.com.br/fiis/MXRF11'
-        dados_ri_fii = requests.get(url_ri_fii, headers=headers, timeout=10)
+        dados_ri_fii = requests.get(url_ri_fii, timeout=10)
         soup_ri_fii = BeautifulSoup(dados_ri_fii.text, 'html.parser')
         
-        divs_about_params_fii = soup_ri_fii.find('a', class_='btn-primary', href=True)
+        div_link = soup_ri_fii.find('div', class_='link')
         
-        if divs_about_params_fii:
-            href = divs_about_params_fii.get('href')
+        if div_link:
+            divs_about_params_fii = div_link.find('a', class_='btn-primary', href=True)
+            
+            if divs_about_params_fii:
+                href_fii = divs_about_params_fii.get('href')
 
         # Obter valores de valuation para fii's
         name_fii = soup_fii.find('h2').get_text()
@@ -569,10 +572,10 @@ with aba1:
                     st.link_button(f"Acessar o RI de {ativo}", f"{href}")
 
             if ativo != '' and tipo == 'Fundos Imobiliários':
-                if href == "None":
+                if href_fii == "None":
                     st.warning(f"Não foi possível obter o RI de {ativo}")
                 else:
-                    st.link_button(f"Acessar o RI de {ativo}", f"{href}")
+                    st.link_button(f"Acessar o RI de {ativo}", f"{href_fii}")
                     
             st.write("\n---\n")
             
