@@ -330,7 +330,9 @@ with aba1:
             divliq = df_fund.at[0, 'Div_Liquida'] 
         else:
             divliq = None
-        
+
+    href_fii = None
+    
     elif ativo != '' and tipo == 'Fundos Imobiliários': 
         stock_fii_url = (f'https://www.fundamentus.com.br/fii_proventos.php?papel={ativo}&tipo=2')
         response_fii = requests.get(stock_fii_url, headers=headers, timeout=5).text
