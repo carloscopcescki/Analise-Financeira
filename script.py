@@ -239,6 +239,8 @@ with aba1:
     dados_fundamentus_bdr = requests.get(url_fundamentus_bdr, headers=headers, timeout=10).text
     dados_fundamentus_etf = requests.get(url_fundamentus_etf, headers=headers, timeout=10).text
 
+    href_fii = None
+    
     # Verificando se a requisição foi bem-sucedida
     if ativo != '' and tipo == 'Ações':
         # Parseando o conteúdo HTML
@@ -330,8 +332,6 @@ with aba1:
             divliq = df_fund.at[0, 'Div_Liquida'] 
         else:
             divliq = None
-
-    href_fii = None
     
     elif ativo != '' and tipo == 'Fundos Imobiliários': 
         stock_fii_url = (f'https://www.fundamentus.com.br/fii_proventos.php?papel={ativo}&tipo=2')
