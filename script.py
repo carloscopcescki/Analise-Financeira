@@ -353,7 +353,10 @@ with aba1:
             links_ri_fii = div.find_all('a', href=True)
             
             for link in links_ri_fii:
-                href_fii = link['href']
+                if 'href' in link.attrs:
+                    href_fii = link['href']
+                else:
+                    href_fii = None
 
         # Obter valores de valuation para fii's
         name_fii = soup_fii.find('h2').get_text()
