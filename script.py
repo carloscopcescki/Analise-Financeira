@@ -342,16 +342,6 @@ with aba1:
         soup_fii = BeautifulSoup(dados_fundamentus_fii, 'html.parser')
         valuation_fii = soup_fii.find_all('div', class_='_card-body')
 
-        # Obter o RI do fundo
-        url_ri_fii = f'https://www.clubefii.com.br/fiis/{ativo}'
-        dados_ri_fii = requests.get(url_ri_fii, headers=headers, timeout=10)
-        soup_ri_fii = BeautifulSoup(dados_ri_fii.text, 'html.parser')
-        
-        divs_about_params_fii = soup_ri_fii.find_all('a', {'class': 'btn-primary'})
-        
-        if len(divs_about_params_fii) >= 5:
-            href = divs_about_params_fii[4].get('href')
-
         # Obter valores de valuation para fii's
         name_fii = soup_fii.find('h2').get_text()
         preco_vp_fii = valuation_fii[2].find('span').text
@@ -567,12 +557,6 @@ with aba1:
                 st.link_button(f"Veja mais sobre {ativo}", f"https://investidor10.com.br/etfs/{ativo}/")
             
             if ativo != '' and tipo == 'Ações':
-                if href == "None":
-                    st.warning(f"Não foi possível obter o RI de {ativo}")
-                else:
-                    st.link_button(f"Acessar o RI de {ativo}", f"{href}")
-
-            if ativo != '' and tipo == 'Fundos Imobiliários':
                 if href == "None":
                     st.warning(f"Não foi possível obter o RI de {ativo}")
                 else:
