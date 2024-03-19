@@ -561,7 +561,7 @@ with aba1:
                 st.link_button(f"Veja mais sobre {ativo}", f"https://investidor10.com.br/bdrs/{ativo}/")
             elif ativo != '' and tipo == 'ETFs':
                 st.link_button(f"Veja mais sobre {ativo}", f"https://investidor10.com.br/etfs/{ativo}/")
-            
+
             if ativo != '' and tipo == 'Ações':
                 if href == "None":
                     st.warning(f"Não foi possível obter o RI de {ativo}")
@@ -569,10 +569,7 @@ with aba1:
                     st.link_button(f"Acessar o RI de {ativo}", f"{href}")
 
             if ativo != '' and tipo == 'Fundos Imobiliários':
-                if href == "None":
-                    st.warning(f"Não foi possível obter o RI de {ativo}")
-                else:
-                    st.link_button(f"Acessar o RI de {ativo}", f"{href}")
+                st.write(divs_about_params_fii)
                     
             st.write("\n---\n")
             
