@@ -347,16 +347,10 @@ with aba1:
         dados_ri_fii = requests.get(url_ri_fii, headers=headers, timeout=10)
         soup_ri_fii = BeautifulSoup(dados_ri_fii.text, 'html.parser')
 
-        divs_about_params_fii = soup_ri_fii.find_all('div', class_='link')
+        links_fii = soup_ri_fii.find_all('a', {'class': 'btn-primary'})
 
-        for div in divs_about_params_fii:
-            links_ri_fii = div.find_all('a', href=True)
-            
-            for link in links_ri_fii:
-                if 'href' in link.attrs:
-                    href_fii = link['href']
-                else:
-                    href_fii = None
+        for link in links_fii:
+            href = link.get('href')
 
         # Obter valores de valuation para fii's
         name_fii = soup_fii.find('h2').get_text()
@@ -579,7 +573,10 @@ with aba1:
                     st.link_button(f"Acessar o RI de {ativo}", f"{href}")
 
             if ativo != '' and tipo == 'Fundos Imobiliários':
-                    st.link_button(f"Acessar o RI de {ativo}", f"{link_ri_fii}")
+                if href == "None":
+                    st.warning(f"Não foi possível obter o RI de {ativo}")
+                else:
+                    st.link_button(f"Acessar o RI de {ativo}", f"{href}")
                     
             st.write("\n---\n")
             
