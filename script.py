@@ -238,8 +238,6 @@ with aba1:
     dados_fundamentus_fii = requests.get(url_fundamentus_fii, headers=headers, timeout=10).text
     dados_fundamentus_bdr = requests.get(url_fundamentus_bdr, headers=headers, timeout=10).text
     dados_fundamentus_etf = requests.get(url_fundamentus_etf, headers=headers, timeout=10).text
-
-    href_fii = None
     
     # Verificando se a requisição foi bem-sucedida
     if ativo != '' and tipo == 'Ações':
@@ -341,17 +339,17 @@ with aba1:
         valuation_fii = soup_fii.find_all('div', class_='_card-body')
 
         # Obter o RI de fundo imobiliário
-        url_ri_fii = 'https://www.clubefii.com.br/fiis/MXRF11'
-        dados_ri_fii = requests.get(url_ri_fii, timeout=10)
-        soup_ri_fii = BeautifulSoup(dados_ri_fii.text, 'html.parser')
+        #url_ri_fii = 'https://www.clubefii.com.br/fiis/MXRF11'
+        #dados_ri_fii = requests.get(url_ri_fii, timeout=10)
+        #soup_ri_fii = BeautifulSoup(dados_ri_fii.text, 'html.parser')
         
-        div_link = soup_ri_fii.find('div', class_='link')
+        #div_link = soup_ri_fii.find('div', class_='link')
         
-        if div_link:
-            divs_about_params_fii = div_link.find('a', class_='btn-primary', href=True)
+        #if div_link:
+            #divs_about_params_fii = div_link.find('a', class_='btn-primary', href=True)
             
-            if divs_about_params_fii:
-                href_fii = divs_about_params_fii.get('href')
+            #if divs_about_params_fii:
+                #href_fii = divs_about_params_fii.get('href')
 
         # Obter valores de valuation para fii's
         name_fii = soup_fii.find('h2').get_text()
@@ -573,8 +571,8 @@ with aba1:
                 else:
                     st.link_button(f"Acessar o RI de {ativo}", f"{href}")
 
-            if ativo != '' and tipo == 'Fundos Imobiliários':
-                st.link_button(f"Acessar o RI de {ativo}", f"{href_fii}")
+            #if ativo != '' and tipo == 'Fundos Imobiliários':
+                #st.link_button(f"Acessar o RI de {ativo}", f"{href_fii}")
                     
             st.write("\n---\n")
             
