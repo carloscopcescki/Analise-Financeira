@@ -216,6 +216,7 @@ with aba1:
     patrliq_dict = {}
 
     relatorio_investidor = {}
+    relatorio_fii = {}
 
     # Construir a URL dinâmica para cada ativo
     url_fundamentus = (f'https://investidor10.com.br/acoes/{ativo}/')
@@ -340,7 +341,20 @@ with aba1:
         soup_proventos = BeautifulSoup(response_fii, 'html.parser')
         soup_fii = BeautifulSoup(dados_fundamentus_fii, 'html.parser')
         valuation_fii = soup_fii.find_all('div', class_='_card-body')
+
+        # Obter o RI do fundo
+        url_ri_fii = (f'https://www.clubefii.com.br/fiis/{ativo}')
+        dados_ri_fii = requests.get(url_ri_fii, headers=headers, timeout=10).text
+        soup_ri_fii = BeautifulSoup(dados_ri_fii, 'html.parser')
+
+        divs_about_params_fii = soup_ri.find_all('div', class_='link')
+
+        for div in divs_about_params_fii:
+            links_ri_fii = div.find_all('a', href=True)
             
+            for link_fii in links_ri_fii:
+                href_fii = link_fii['href']
+
         # Obter valores de valuation para fii's
         name_fii = soup_fii.find('h2').get_text()
         preco_vp_fii = valuation_fii[2].find('span').text
@@ -560,6 +574,12 @@ with aba1:
                     st.warning(f"Não foi possível obter o RI de {ativo}")
                 else:
                     st.link_button(f"Acessar o RI de {ativo}", f"{href}")
+
+            if ativo != '' and tipo == 'Fundos Imobiliários':
+                if href_fii == "None":
+                    st.warning(f"Não foi possível obter o RI de {ativo}")
+                else:
+                    st.link_button(f"Acessar o RI de {ativo}", f"{href_fii}")
                     
             st.write("\n---\n")
             
