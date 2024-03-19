@@ -347,12 +347,10 @@ with aba1:
         dados_ri_fii = requests.get(url_ri_fii, headers=headers, timeout=10)
         soup_ri_fii = BeautifulSoup(dados_ri_fii.text, 'html.parser')
         
-        divs_fii = soup_ri_fii.find_all('div', {'class': 'link'})
+        divs_about_params_fii = soup_ri_fii.find_all('a', {'class': 'btn-primary'})
         
-        for div_fii in divs_fii:  # Corrigido o nome da variável
-            links_fii = div_fii.find_all('a', {'class': 'btn-primary'})
-            for link in links_fii:
-                href = link.get('href')
+        if len(divs_about_params_fii) >= 2:
+            href = divs_about_params_fii[1].get('href')
 
         # Obter valores de valuation para fii's
         name_fii = soup_fii.find('h2').get_text()
