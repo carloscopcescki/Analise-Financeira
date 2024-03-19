@@ -347,7 +347,7 @@ with aba1:
         dados_ri_fii = requests.get(url_ri_fii, headers=headers, timeout=10)
         soup_ri_fii = BeautifulSoup(dados_ri_fii.text, 'html.parser')
         
-        divs_about_params_fii = soup_ri_fii.find_all('a', {'class': 'btn-primary'})
+        divs_about_params_fii = soup_ri_fii.find('a', class_='btn-primary')
         
         for link in divs_about_params_fii:
             href = link.get('href')
