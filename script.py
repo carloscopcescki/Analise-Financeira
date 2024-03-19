@@ -573,7 +573,10 @@ with aba1:
                     st.link_button(f"Acessar o RI de {ativo}", f"{href}")
 
             if ativo != '' and tipo == 'Fundos Imobiliários':
-                st.link_button(f"Acessar o RI de {ativo}", f"{href}")
+                if href == "None":
+                    st.warning(f"Não foi possível obter o RI de {ativo}")
+                else:
+                    st.link_button(f"Acessar o RI de {ativo}", f"{href}")
                     
             st.write("\n---\n")
             
