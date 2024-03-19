@@ -254,7 +254,7 @@ with aba1:
 
         divs_about_params = soup_ri.find_all('div', class_='about-params')
 
-        href = divs_about_params_fii.get('href')
+        href = divs_about_params.get('href')
         
         # Obter dados de valuation        
         valuation = soup_valuation.find_all('div', class_='_card-body')
