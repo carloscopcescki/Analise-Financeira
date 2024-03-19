@@ -343,13 +343,13 @@ with aba1:
         valuation_fii = soup_fii.find_all('div', class_='_card-body')
 
         # Obter o RI do fundo
-        url_ri_fii = (f'https://www.clubefii.com.br/fiis/{ativo}')
+        url_ri_fii = f'https://www.clubefii.com.br/fiis/{ativo}'
         dados_ri_fii = requests.get(url_ri_fii, headers=headers, timeout=10)
         soup_ri_fii = BeautifulSoup(dados_ri_fii.text, 'html.parser')
-
+        
         divs_fii = soup_ri_fii.find_all('div', {'class': 'link'})
-
-        for div_fii in divs_fiis:
+        
+        for div_fii in divs_fii:  # Corrigido o nome da variável
             links_fii = div_fii.find_all('a', {'class': 'btn-primary'})
             for link in links_fii:
                 href = link.get('href')
