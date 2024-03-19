@@ -352,8 +352,8 @@ with aba1:
         for div in divs_about_params_fii:
             links_ri_fii = div.find_all('a', href=True)
             
-            for link_fii in links_ri_fii:
-                href_fii = link_fii['href']
+            for link in links_ri_fii:
+                href_fii = link['href']
 
         # Obter valores de valuation para fii's
         name_fii = soup_fii.find('h2').get_text()
@@ -576,7 +576,10 @@ with aba1:
                     st.link_button(f"Acessar o RI de {ativo}", f"{href}")
 
             if ativo != '' and tipo == 'Fundos Imobiliários':
-                st.link_button(f"Acessar o RI de {ativo}", f"{href_fii}")
+                 if href == "None":
+                    st.warning(f"Não foi possível obter o RI de {ativo}")
+                else:
+                    st.link_button(f"Acessar o RI de {ativo}", f"{href}")
                     
             st.write("\n---\n")
             
