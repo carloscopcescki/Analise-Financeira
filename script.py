@@ -342,6 +342,16 @@ with aba1:
         soup_fii = BeautifulSoup(dados_fundamentus_fii, 'html.parser')
         valuation_fii = soup_fii.find_all('div', class_='_card-body')
 
+        # Obter o RI de fundo imobiliário
+        url_ri_fii = f'https://www.clubefii.com.br/fiis/MXRF11'
+        dados_ri_fii = requests.get(url_ri_fii, headers=headers, timeout=10)
+        soup_ri_fii = BeautifulSoup(dados_ri_fii.text, 'html.parser')
+        
+        divs_about_params_fii = soup_ri_fii.find_all('a', {'class': 'btn-primary'})
+        
+        for link in divs_about_params_fii:
+            href = link.get('href')
+        
         # Obter valores de valuation para fii's
         name_fii = soup_fii.find('h2').get_text()
         preco_vp_fii = valuation_fii[2].find('span').text
@@ -561,6 +571,9 @@ with aba1:
                     st.warning(f"Não foi possível obter o RI de {ativo}")
                 else:
                     st.link_button(f"Acessar o RI de {ativo}", f"{href}")
+
+            if ativo != '' and tipo == 'Fundos Imobiliários':
+                st.link_button(f"Acessar o RI de {ativo}", f"{href}")
                     
             st.write("\n---\n")
             
