@@ -349,8 +349,8 @@ with aba1:
         
         divs_about_params_fii = soup_ri_fii.find_all('a', {'class': 'btn-primary'})
         
-        if len(divs_about_params_fii) >= 4:
-            href = divs_about_params_fii[3].get('href')
+        if len(divs_about_params_fii) >= 5:
+            href = divs_about_params_fii[4].get('href')
 
         # Obter valores de valuation para fii's
         name_fii = soup_fii.find('h2').get_text()
