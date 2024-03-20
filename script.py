@@ -216,6 +216,7 @@ with aba1:
     patrliq_dict = {}
 
     relatorio_investidor = {}
+    relatorio_fii = {}
 
     # Construir a URL dinâmica para cada ativo
     url_fundamentus = (f'https://investidor10.com.br/acoes/{ativo}/')
@@ -237,7 +238,7 @@ with aba1:
     dados_fundamentus_fii = requests.get(url_fundamentus_fii, headers=headers, timeout=10).text
     dados_fundamentus_bdr = requests.get(url_fundamentus_bdr, headers=headers, timeout=10).text
     dados_fundamentus_etf = requests.get(url_fundamentus_etf, headers=headers, timeout=10).text
-
+    
     # Verificando se a requisição foi bem-sucedida
     if ativo != '' and tipo == 'Ações':
         # Parseando o conteúdo HTML
@@ -254,9 +255,9 @@ with aba1:
         divs_about_params = soup_ri.find_all('div', class_='about-params')
 
         for div in divs_about_params:
-            links_ri = div.find_all('a', href=True)
+            links = div.find_all('a', href=True)
             
-            for link in links_ri:
+            for link in links:
                 href = link['href']
         
         # Obter dados de valuation        
@@ -333,14 +334,27 @@ with aba1:
             divliq = df_fund.at[0, 'Div_Liquida'] 
         else:
             divliq = None
-        
+    
     elif ativo != '' and tipo == 'Fundos Imobiliários': 
         stock_fii_url = (f'https://www.fundamentus.com.br/fii_proventos.php?papel={ativo}&tipo=2')
         response_fii = requests.get(stock_fii_url, headers=headers, timeout=5).text
         soup_proventos = BeautifulSoup(response_fii, 'html.parser')
         soup_fii = BeautifulSoup(dados_fundamentus_fii, 'html.parser')
         valuation_fii = soup_fii.find_all('div', class_='_card-body')
+
+        # Obter o RI de fundo imobiliário
+        #url_ri_fii = 'https://www.clubefii.com.br/fiis/MXRF11'
+        #dados_ri_fii = requests.get(url_ri_fii, timeout=10)
+        #soup_ri_fii = BeautifulSoup(dados_ri_fii.text, 'html.parser')
+        
+        #div_link = soup_ri_fii.find('div', class_='link')
+        
+        #if div_link:
+            #divs_about_params_fii = div_link.find('a', class_='btn-primary', href=True)
             
+            #if divs_about_params_fii:
+                #href_fii = divs_about_params_fii.get('href')
+
         # Obter valores de valuation para fii's
         name_fii = soup_fii.find('h2').get_text()
         preco_vp_fii = valuation_fii[2].find('span').text
@@ -561,6 +575,16 @@ with aba1:
                 st.link_button(f"Veja mais sobre {ativo}", f"https://investidor10.com.br/bdrs/{ativo}/")
             elif ativo != '' and tipo == 'ETFs':
                 st.link_button(f"Veja mais sobre {ativo}", f"https://investidor10.com.br/etfs/{ativo}/")  
+                st.link_button(f"Veja mais sobre {ativo}", f"https://investidor10.com.br/etfs/{ativo}/")
+
+            if ativo != '' and tipo == 'Ações':
+                if href == "None":
+                    st.warning(f"Não foi possível obter o RI de {ativo}")
+                else:
+                    st.link_button(f"Acessar o RI de {ativo}", f"{href}")
+
+            #if ativo != '' and tipo == 'Fundos Imobiliários':
+                #st.link_button(f"Acessar o RI de {ativo}", f"{href_fii}")
                     
             st.write("\n---\n")
             
