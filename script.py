@@ -548,18 +548,19 @@ with aba1:
 
             if ativo != '' and tipo == 'Ações':
                 st.link_button(f"Veja mais sobre {ativo}", f"https://investidor10.com.br/acoes/{ativo}/")
-            elif ativo != '' and tipo == 'Fundos Imobiliários':
-                st.link_button(f"Veja mais sobre {ativo}", f"https://investidor10.com.br/fiis/{ativo}/")
-            elif ativo != '' and tipo == 'BDR':
-                st.link_button(f"Veja mais sobre {ativo}", f"https://investidor10.com.br/bdrs/{ativo}/")
-            elif ativo != '' and tipo == 'ETFs':
-                st.link_button(f"Veja mais sobre {ativo}", f"https://investidor10.com.br/etfs/{ativo}/")
-            
-            if ativo != '' and tipo == 'Ações':
+                
                 if href == "None":
                     st.warning(f"Não foi possível obter o RI de {ativo}")
                 else:
                     st.link_button(f"Acessar o RI de {ativo}", f"{href}")
+            elif ativo != '' and tipo == 'Fundos Imobiliários':
+                st.link_button(f"Veja mais sobre {ativo}", f"https://investidor10.com.br/fiis/{ativo}/")
+                ri_fii = (f"https://www.fundamentus.com.br/fii_relatorios.php?papel={ativo}")
+                st.link_button(f"Veja os Relatórios Gerenciais de {ativo}", f"{ri_fii}")
+            elif ativo != '' and tipo == 'BDR':
+                st.link_button(f"Veja mais sobre {ativo}", f"https://investidor10.com.br/bdrs/{ativo}/")
+            elif ativo != '' and tipo == 'ETFs':
+                st.link_button(f"Veja mais sobre {ativo}", f"https://investidor10.com.br/etfs/{ativo}/")  
                     
             st.write("\n---\n")
             
