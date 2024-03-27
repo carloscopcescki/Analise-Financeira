@@ -21,7 +21,7 @@ st.set_page_config(
 )
 
 # Definindo abas
-aba1, aba2 = st.tabs(['Monitoramento Financeiro', 'Calculadora de Juros Compostos'])
+aba1, aba2, aba3 = st.tabs(['Monitoramento Financeiro', 'Calculadora de Juros Compostos', 'Simulador de Carteira'])
 
 # Ajustando aba de monitoramento financeiro
 with aba1:
@@ -125,10 +125,6 @@ with aba1:
                     '\nmonitoramento de ativos financeiros, simulação de carteira'
                     '\ne cálculo de juros compostos.\n'
                     '\nVeja o código em: https://github.com/carloscopcescki/analise-financeira/blob/main/script.py')
-
-    # Simulador de carteira
-    st.sidebar.write("\n---\n")
-    st.sidebar.link_button(f"Simulador de Carteira", f"https://simulador-de-carteira.streamlit.app/")
 
     # Condição para evitar conflito de datas
 
@@ -888,3 +884,86 @@ with aba2:
         montante_final, valor_juros_total = calcular_juros_compostos(capital, taxa_juros, tempo_anos, aporte_mensal)
         st.write(f"**Montante Final:** R$ {montante_final:.2f}")
         st.write(f"**Valor Total de Juros:** R$ {valor_juros_total:.2f}")
+        
+# Aba simulador de carteira
+
+with aba3:
+
+    lista_carteira = list(pd.read_excel('lists/listativos.xls')['Código'].values)
+    lista_carteira.sort()
+    lista_ativos_carteira = [ativo + '.SA' for ativo in lista_carteira]
+
+    st.header("Simulador de carteira - Rentabilidade")
+
+    qtd_ativo = st.number_input("Insira a quantidade:", min_value=0, step=1)
+
+    # Função para simular carteira
+    def simulador_carteira(de_data, para_data_correta, carteira):
+        if not carteira:
+            st.warning("Adicione ativos à carteira antes de simular.")
+            return None
+        
+        carteira_sa = {}
+        for valor, ativo in carteira.items():
+            ativo_sa = ativo + '.SA'
+            carteira_sa[ativo_sa] = float(valor)  # Convertendo o valor para float
+        
+        try:
+            precos_cotacao = yf.download(list(carteira_sa.keys()), start=de_data, end=para_data_correta, progress=False)['Adj Close']
+        except Exception as e:
+            st.error(f"Erro ao baixar dados: {e}")
+            return None
+        
+        if precos_cotacao.empty:
+            st.warning("Não há dados disponíveis para o intervalo de datas selecionado.")
+            return None
+        
+        primeiro_preco = precos_cotacao.iloc[0]
+        
+        # Certifique-se de que todos os valores são numéricos antes de realizar a operação de divisão
+        carteira_df = pd.Series(data=carteira_sa, name='Carteira')
+        
+        qtd_ativos = round(carteira_df / primeiro_preco, 0)
+        pl = pd.DataFrame(data=(precos_cotacao.values * qtd_ativos.values), index=precos_cotacao.index, columns=list(carteira_sa.keys()))
+        pl['PL Total'] = pl.sum(axis='columns')
+        
+        try:
+            ibov = yf.download('^BVSP', start=de_data, end=para_data_correta, progress=False)['Adj Close'].rename('IBOV')
+        except Exception as e:
+            st.error(f"Erro ao baixar dados do Ibovespa: {e}")
+            return None
+        
+        dado_consolidado = pd.concat([ibov, pl], axis=1, join='inner')
+        dado_consolidado_adj = dado_consolidado / dado_consolidado.iloc[0]
+        
+        # Criar o gráfico com Plotly
+        fig = go.Figure()
+        fig.add_trace(go.Scatter(x=dado_consolidado_adj.index, y=dado_consolidado_adj['IBOV'], mode='lines', name='BOVESPA', line=dict(color='orange')))
+        fig.add_trace(go.Scatter(x=dado_consolidado_adj.index, y=dado_consolidado_adj['PL Total'], mode='lines', name='CARTEIRA'))
+        fig.update_layout(title="Carteira x Bovespa", xaxis_title="Data", yaxis_title="Rendimento")
+        
+        # Exibir o gráfico comparativo
+        st.plotly_chart(fig)
+
+    # Carteira de ativos
+    carteira = {}
+    contador = 0
+
+    try:
+        while contador < qtd_ativo:
+            ativo = st.selectbox(f"Selecione o ativo {contador + 1}", [''] + lista_carteira, key=f"select_ativo_{contador}")
+            preco = st.text_input(f"Insira o valor em R$ a ser investido em {ativo}", key=f"input_preco_{contador}")
+
+            if ativo != '' and preco != '':
+                preco_float = float(preco)
+                carteira[preco_float] = ativo
+                contador += 1
+
+    except Exception as e:
+        st.warning("Selecione o ativo e insira o valor aportado")
+
+    if qtd_ativo != 0:
+        if st.button("Comparar rendimento") and carteira:
+            simulador_carteira(de_data, para_data_correta, carteira)
+    else:
+        st.warning("Informe a quantidade de ativos em sua carteira")
