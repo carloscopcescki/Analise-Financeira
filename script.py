@@ -893,7 +893,7 @@ with aba3:
     lista_carteira.sort()
     lista_ativos_carteira = [ativo + '.SA' for ativo in lista_carteira]
 
-    st.header("Simulador de carteira - Rentabilidade")
+    st.header("Simulador de Carteira - Rentabilidade")
 
     qtd_ativo = st.number_input("Insira a quantidade:", min_value=0, step=1)
 
