@@ -38,7 +38,7 @@ with aba1:
         'NASDAQ': '^IXIC',
     }
 
-    tipo_invest = ['Ações', 'Fundos Imobiliários', 'BDR', 'ETFs']
+    tipo_invest = ['Ações', 'Fundos Imobiliários', 'BDR', 'ETFs', 'Stocks']
 
     # Definir intervalo de datas (1 ano)
     data_inicio = datetime.today() - timedelta(365)
@@ -109,6 +109,9 @@ with aba1:
         
     if ativo == '' and tipo == 'ETFs':
         st.warning("Selecione uma ETF")
+        
+    if ativo == '' and tipo == 'Stocks':
+        st.warning("Selecione um stock")
             
     de_data = st.sidebar.date_input("De:", data_inicio)
     para_data = st.sidebar.date_input("Para:", data_final)
@@ -233,6 +236,7 @@ with aba1:
     dados_fundamentus_fii = requests.get(url_fundamentus_fii, headers=headers, timeout=10).text
     dados_fundamentus_bdr = requests.get(url_fundamentus_bdr, headers=headers, timeout=10).text
     dados_fundamentus_etf = requests.get(url_fundamentus_etf, headers=headers, timeout=10).text
+    dados_fundamentus_stock = requests.get(url_fundamentus_stock, headers=headers, timeout=10).text
 
     # Verificando se a requisição foi bem-sucedida
     if ativo != '' and tipo == 'Ações':
@@ -329,6 +333,28 @@ with aba1:
             divliq = df_fund.at[0, 'Div_Liquida'] 
         else:
             divliq = None
+    
+    elif ativo != '' and tipo == 'Stocks':
+        soup_stock = BeautifulSoup(dados_fundamentus_stock, 'html.parser')
+        valuation_stock = soup_stock.find_all('div', class_='_card-body')
+        
+        # Obter valores de valuation para ações
+        name = soup_stock.find('h2').get_text()
+        preco_lucro = valuation_stock[2].find('span').text
+        preco_vp = valuation_stock[3].find('span').text
+        dividend_yield = valuation_stock[4].find('span').text
+        
+        # Tabela valuation para ações
+        table_valuation_stock = pd.DataFrame(columns=['P/L', 'P/VP', 'DY','EMPRESA'])
+        table_valuation_stock['EMPRESA'] = [name]
+        table_valuation_stock['P/L'] = [preco_lucro]
+        table_valuation_stock['P/VP'] = [preco_vp]
+        table_valuation_stock['DY'] = [dividend_yield]
+        
+        name_dict[ativo] = name    
+        yield_dict[ativo] = dividend_yield
+        pvp_dict[ativo] = preco_vp 
+        pl_dict[ativo] = preco_lucro
         
     elif ativo != '' and tipo == 'Fundos Imobiliários': 
         stock_fii_url = (f'https://www.fundamentus.com.br/fii_proventos.php?papel={ativo}&tipo=2')
@@ -454,8 +480,15 @@ with aba1:
                 colimg, colname = st.columns(2)
                 
                 with colimg:
-                    st.image(f'https://raw.githubusercontent.com/thefintz/icones-b3/main/icones/{ativo}.png', width=85)
-                
+                    if tipo == 'ETFs':
+                        st.image(f'https://raw.githubusercontent.com/thefintz/icones-b3/main/icones/BOVV.png', width=85)
+                    elif tipo == 'Fundos Imobiliários':
+                        st.image("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSaNUDgPvK_OIJ3RcMqrTqLEQXRZG8dPX-526Bfc_aNlA&s", width=85)
+                    elif tipo == 'Stocks':
+                        st.image("https://static.thenounproject.com/png/161182-200.png", width=85)
+                    else:
+                        st.image(f'https://raw.githubusercontent.com/thefintz/icones-b3/main/icones/{ativo}.png', width=85)
+ 
                 with colname:
                     if ativo in name_dict:
                         st.subheader(f'{name_dict[ativo]}')
@@ -557,6 +590,8 @@ with aba1:
                 st.link_button(f"Veja mais sobre {ativo}", f"https://investidor10.com.br/bdrs/{ativo}/")
             elif ativo != '' and tipo == 'ETFs':
                 st.link_button(f"Veja mais sobre {ativo}", f"https://investidor10.com.br/etfs/{ativo}/")  
+            elif ativo != '' and tipo == 'Stocks':
+                st.link_button(f"Veja mais sobre {ativo}", f"https://investidor10.com.br/stocks/{ativo}/")
                     
             st.write("\n---\n")
             
@@ -594,10 +629,11 @@ with aba1:
 
         st.write("\n---\n")
 
+        st.subheader("Dividendos")
+        
         if ativo in dados_div and tipo == "Ações":           
 
             # Plotar gráfico de barras do total de proventos distribuídos por ano
-            st.subheader("Dividendos")
             somatoria_por_ano = somatoria_por_ano[somatoria_por_ano['Ano'].astype(str).str.match(r'^\d{4}$')]
         
             fig_proventos = go.Figure()
