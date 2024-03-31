@@ -38,7 +38,7 @@ with aba1:
         'NASDAQ': '^IXIC',
     }
 
-    tipo_invest = ['Ações', 'Fundos Imobiliários', 'BDR', 'ETFs', 'Stocks']
+    tipo_invest = ['Ações', 'Fundos Imobiliários', 'BDR', 'ETFs', 'ETFs Americanos', 'Stocks']
 
     # Definir intervalo de datas (1 ano)
     data_inicio = datetime.today() - timedelta(365)
@@ -110,6 +110,9 @@ with aba1:
     if ativo == '' and tipo == 'ETFs':
         st.warning("Selecione uma ETF")
         
+    if ativo == '' and tipo == 'ETFs Americanos':
+        st.warning("Selecione um ETF")
+        
     if ativo == '' and tipo == 'Stocks':
         st.warning("Selecione um stock")
             
@@ -142,7 +145,7 @@ with aba1:
         # Se o ativo estiver no mapa_indices, use o valor mapeado diretamente
         symbol = mapa_indices[ativo]
         selected_indice = mapa_indices[ativo]
-    elif tipo != 'Stocks':
+    elif tipo != 'Stocks' and tipo != 'ETFs Americanos':
         # Caso contrário, acrescente o sufixo ".SA"
         symbol = f"{ativo}.SA"
         
@@ -222,6 +225,7 @@ with aba1:
     url_fundamentus_bdr = (f'https://investidor10.com.br/bdrs/{ativo}/')
     url_fundamentus_etf = (f'https://investidor10.com.br/etfs/{ativo}/')
     url_fundamentus_stock = (f'https://investidor10.com.br/stocks/{ativo}/')
+    url_fundamentus_etf_americano = (f'https://investidor10.com.br/etfs-global/{ativo}/')
         
     # Restante do código permanece o mesmo
     headers = { 
@@ -234,8 +238,8 @@ with aba1:
 
     dados_fundamentus = requests.get(url_fundamentus, headers=headers, timeout=10).text
     dados_fundamentus_fii = requests.get(url_fundamentus_fii, headers=headers, timeout=10).text
-    dados_fundamentus_bdr = requests.get(url_fundamentus_bdr, headers=headers, timeout=10).text
     dados_fundamentus_etf = requests.get(url_fundamentus_etf, headers=headers, timeout=10).text
+    dados_fundamentus_bdr = requests.get(url_fundamentus_bdr, headers=headers, timeout=10).text
     dados_fundamentus_stock = requests.get(url_fundamentus_stock, headers=headers, timeout=10).text
 
     # Verificando se a requisição foi bem-sucedida
@@ -463,6 +467,34 @@ with aba1:
         capital_dict_etf[ativo] = capitalizacao
         variacao_12_dict_etf[ativo] = variacao_12m    
         variacao_60_dict_etf[ativo] = variacao_60m
+        
+    elif ativo != '' and tipo == 'ETFs Americanos':
+        
+        dados_fundamentus_etf = requests.get(url_fundamentus_etf_americano, headers=headers, timeout=10).text
+        
+        soup_etf = BeautifulSoup(dados_fundamentus_etf, 'html.parser')      
+        valuation_etf = soup_etf.find_all('div', class_='_card-body')
+            
+        # Obter valores de valuation para ações
+        name_etf = soup_etf.find('h2').get_text()
+        capitalizacao = valuation_etf[1].find('span').text
+        variacao_12m = valuation_etf[2].find('span').text
+        variacao_60m = valuation_etf[3].find('span').text
+        dividend_yield_etf = valuation_etf[4].find('span').text
+            
+        # Tabela valuation para ações
+        table_valuation_etf = pd.DataFrame(columns=['CAPITALIZAÇÃO', 'VARIAÇÃO (12M)', 'DY','ETF', 'VARIAÇÃO (60M)'])
+        table_valuation_etf['ETF'] = [name_etf]
+        table_valuation_etf['CAPITALIZAÇÃO'] = [capitalizacao]
+        table_valuation_etf['VARIAÇÃO (12M)'] = [variacao_12m]
+        table_valuation_etf['VARIAÇÃO (60M)'] = [variacao_60m]
+        table_valuation_etf['DY'] = [dividend_yield_etf]
+            
+        name_dict_etf[ativo] = name_etf    
+        yield_dict_etf[ativo] = dividend_yield_etf
+        capital_dict_etf[ativo] = capitalizacao
+        variacao_12_dict_etf[ativo] = variacao_12m    
+        variacao_60_dict_etf[ativo] = variacao_60m
 
     if ativo != '' and tipo != '':
         for ativo, df in dados_ativos.items():
@@ -480,7 +512,7 @@ with aba1:
                 colimg, colname = st.columns(2)
                 
                 with colimg:
-                    if tipo == 'ETFs':
+                    if tipo == 'ETFs' or tipo == 'ETFs Americanos':
                         st.image(f'https://raw.githubusercontent.com/thefintz/icones-b3/main/icones/BOVV.png', width=85)
                     elif tipo == 'Fundos Imobiliários':
                         st.image("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSaNUDgPvK_OIJ3RcMqrTqLEQXRZG8dPX-526Bfc_aNlA&s", width=85)
@@ -589,7 +621,9 @@ with aba1:
             elif ativo != '' and tipo == 'BDR':
                 st.link_button(f"Veja mais sobre {ativo}", f"https://investidor10.com.br/bdrs/{ativo}/")
             elif ativo != '' and tipo == 'ETFs':
-                st.link_button(f"Veja mais sobre {ativo}", f"https://investidor10.com.br/etfs/{ativo}/")  
+                st.link_button(f"Veja mais sobre {ativo}", f"https://investidor10.com.br/etfs/{ativo}/")
+            elif ativo != '' and tipo == 'ETFs Americanos':
+                st.link_button(f"Veja mais sobre {ativo}", f"https://investidor10.com.br/etfs-global/{ativo}/")
             elif ativo != '' and tipo == 'Stocks':
                 st.link_button(f"Veja mais sobre {ativo}", f"https://investidor10.com.br/stocks/{ativo}/")
                     
