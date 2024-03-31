@@ -485,7 +485,7 @@ with aba1:
                     elif tipo == 'Fundos Imobiliários':
                         st.image("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSaNUDgPvK_OIJ3RcMqrTqLEQXRZG8dPX-526Bfc_aNlA&s", width=85)
                     elif tipo == 'Stocks':
-                        st.image("https://static.thenounproject.com/png/161182-200.png", width=85)
+                        st.image(f"https://raw.githubusercontent.com/nvstly/icons/main/ticker_icons/{ativo}.png", width=85)
                     else:
                         st.image(f'https://raw.githubusercontent.com/thefintz/icones-b3/main/icones/{ativo}.png', width=85)
  
