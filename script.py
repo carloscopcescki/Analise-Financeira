@@ -94,6 +94,12 @@ with aba1:
         listaetfeua.sort()
         lista_etfseua = [ativo + '.SA' for ativo in listaetfeua]
         ativo = st.sidebar.selectbox("Escolha um ativo",[''] + listaetfeua)
+    
+    if tipo == 'Cripto':
+        # Lista de criptomoedas utilizadas
+        listacripto = list(pd.read_excel('lists/listacripto.xls')['Código'].values)
+        listacripto.sort()
+        ativo = st.sidebar.selectbox("Escolha um ativo", [''] + listacripto)
         
     if tipo == '':
         st.warning("Selecione um tipo de renda variável")
@@ -115,6 +121,9 @@ with aba1:
         
     if ativo == '' and tipo == 'Stocks':
         st.warning("Selecione um stock")
+        
+    #if ativo == '' and tipo == 'Cripto':
+        #st.warning("Selecione uma criptomoeda")
             
     de_data = st.sidebar.date_input("De:", data_inicio)
     para_data = st.sidebar.date_input("Para:", data_final)
@@ -145,7 +154,7 @@ with aba1:
         # Se o ativo estiver no mapa_indices, use o valor mapeado diretamente
         symbol = mapa_indices[ativo]
         selected_indice = mapa_indices[ativo]
-    elif tipo != 'Stocks' and tipo != 'ETFs Americanos':
+    elif tipo != 'Stocks' and tipo != 'ETFs Americanos' and tipo != 'Cripto':
         # Caso contrário, acrescente o sufixo ".SA"
         symbol = f"{ativo}.SA"
         
@@ -518,6 +527,8 @@ with aba1:
                         st.image("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSaNUDgPvK_OIJ3RcMqrTqLEQXRZG8dPX-526Bfc_aNlA&s", width=85)
                     elif tipo == 'Stocks':
                         st.image(f"https://raw.githubusercontent.com/nvstly/icons/main/ticker_icons/{ativo}.png", width=85)
+                    #elif tipo == 'Cripto':
+                        #st.image(f"https://raw.githubusercontent.com/nvstly/icons/main/crypto_icons/{ativo}.png", width=85)
                     else:
                         st.image(f'https://raw.githubusercontent.com/thefintz/icones-b3/main/icones/{ativo}.png', width=85)
  
@@ -626,6 +637,8 @@ with aba1:
                 st.link_button(f"Veja mais sobre {ativo}", f"https://investidor10.com.br/etfs-global/{ativo}/")
             elif ativo != '' and tipo == 'Stocks':
                 st.link_button(f"Veja mais sobre {ativo}", f"https://investidor10.com.br/stocks/{ativo}/")
+            #elif ativo != '' and tipo == 'Cripto':
+                #st.link_button(f"Veja mais sobre {ativo}", f"https://statusinvest.com.br/criptomoedas/{ativo}")
                     
             st.write("\n---\n")
             
