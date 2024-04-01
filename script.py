@@ -274,6 +274,9 @@ with aba1:
             for link in links_ri:
                 href = link['href']
         
+        if ativo == "AURE3":
+            href = "https://ri.aurenenergia.com.br/"
+        
         # Obter dados de valuation        
         valuation = soup_valuation.find_all('div', class_='_card-body')
         
@@ -630,6 +633,7 @@ with aba1:
                     st.warning(f"Não foi possível obter o RI de {ativo}")
                 else:
                     st.link_button(f"Acessar o RI de {ativo}", f"{href}")
+        
             elif ativo != '' and tipo == 'Fundos Imobiliários':
                 st.link_button(f"Veja mais sobre {ativo}", f"https://investidor10.com.br/fiis/{ativo}/")
                 ri_fii = (f"https://www.fundamentus.com.br/fii_relatorios.php?papel={ativo}")
