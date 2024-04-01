@@ -31,6 +31,8 @@ with aba1:
 
     mapa_indices = {
         'BOVESPA': '^BVSP',
+        'IBRX 50': '^IBV50',
+        'IFIX': 'IFIX.SA',
         'DÓLAR': 'BRL=X',
         'EURO': 'EURBRL=X',
         'S&P 500': '^GSPC',
@@ -554,7 +556,10 @@ with aba1:
                 
                 with col1:
                     st.write("**Cotação:**")
-                    st.write(f"R$ {last_data['Close']:.2f}")
+                    if tipo != "Stocks" and tipo != "ETFs Americanos":
+                        st.write(f"R$ {last_data['Close']:.2f}")
+                    else:
+                        st.write(f"US$ {last_data['Close']:.2f}")
                 with col2:
                     if rendimento_total < 0:
                         st.write("**Rendimento**")
@@ -651,21 +656,41 @@ with aba1:
                 if ativo not in selected_indice:
                     fig_cotacoes.add_trace(go.Scatter(x=pd.to_datetime(df.index), y=df['Close'], mode='lines', name=ativo))
 
-            # Adicionando legenda e título
-            fig_cotacoes.update_layout(
-                legend=dict(
-                    orientation="h",
-                    yanchor="bottom",
-                    y=1.02,
-                    xanchor="right",
-                    x=1
-                ),
-                yaxis_tickprefix='R$',
-                yaxis_tickformat=',.2f',
-                title=f"Histórico de {ativo}",
-                xaxis_title='Data',
-                yaxis_title='Preço de Fechamento'
-            )
+            if tipo != 'Stocks' and tipo != 'ETFs Americanos':
+                
+                # Adicionando legenda e título
+                fig_cotacoes.update_layout(
+                    legend=dict(
+                        orientation="h",
+                        yanchor="bottom",
+                        y=1.02,
+                        xanchor="right",
+                        x=1
+                    ),
+                    yaxis_tickprefix='R$',
+                    yaxis_tickformat=',.2f',
+                    title=f"Histórico de {ativo}",
+                    xaxis_title='Data',
+                    yaxis_title='Preço de Fechamento'
+                )
+            
+            else:
+                
+                # Adicionando legenda e título
+                fig_cotacoes.update_layout(
+                    legend=dict(
+                        orientation="h",
+                        yanchor="bottom",
+                        y=1.02,
+                        xanchor="right",
+                        x=1
+                    ),
+                    yaxis_tickprefix='US$',
+                    yaxis_tickformat=',.2f',
+                    title=f"Histórico de {ativo}",
+                    xaxis_title='Data',
+                    yaxis_title='Preço de Fechamento'
+                )
 
             # Exibindo o gráfico de cotações
             st.plotly_chart(fig_cotacoes)
@@ -712,7 +737,6 @@ with aba1:
         elif tipo == "Fundos Imobiliários":
                 
             # Plotar gráfico de barras do total de proventos distribuídos por ano
-            st.subheader("Dividendos")
             fig_proventos_fii = go.Figure()
 
             fig_proventos_fii.add_bar(x=somatoria_por_ano_fii['Ano'], y=somatoria_por_ano_fii['Valor'], marker_color='palegreen')
@@ -915,6 +939,10 @@ with aba1:
             indice = yf.download('^DJI', start=f"{de_data}", end=f"{para_data_correta}")
         elif selected_indice == "NASDAQ":
             indice = yf.download('^IXIC', start=f"{de_data}", end=f"{para_data_correta}")
+        elif selected_indice == "IBRX 50":
+            indice = yf.download('^IBX50', start=f"{de_data}", end=f"{para_data_correta}")
+        elif selected_indice == "IFIX":
+            indice = yf.download('IFIX.SA', start=f"{de_data}", end=f"{para_data_correta}")
 
         if selected_indice != '' and ativo != '':
             indice_retornos = (indice['Close'].pct_change() + 1).cumprod() - 1
