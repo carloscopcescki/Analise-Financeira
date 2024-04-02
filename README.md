@@ -24,7 +24,8 @@ Calcula o juros compostos do valor inicial investido.
 - Pandas
 - Streamlit
 - Matplotlib
-- Python-BCB
+- Plotly
+- Numpy
 - BeautifulSoup
 
 ## Autor
