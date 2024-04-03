@@ -226,13 +226,7 @@ with aba1:
     divbrut_dict = {}
     divliq_dict = {}
     patrliq_dict = {}
-    divliq_ebitda_dict = {}
-    payout_dict = {}
-    roa_dict = {}
-    liquidez_corrente_dict = {}
-    p_ativo_dict = {}
     
-
     relatorio_investidor = {}
 
     # Construir a URL dinâmica para cada ativo
@@ -291,22 +285,6 @@ with aba1:
         preco_lucro = valuation[2].find('span').text
         preco_vp = valuation[3].find('span').text
         dividend_yield = valuation[4].find('span').text
-        
-        divliq_ebitda = valuation_inv10[23].find('span').text
-        payout = valuation_inv10[5].find('span').text
-        roa = valuation_inv10[21].find('span').text
-        liq_corrente = valuation_inv10[28].find('span').text
-        preco_sobativo = valuation_inv10[14].find('span').text
-        
-        divliq_ebitda = divliq_ebitda.replace('\n', '')
-        payout = payout.replace('\n', '')
-        roa = roa.replace('\n', '')
-        
-        divliq_ebitda_dict = divliq_ebitda
-        payout_dict = payout
-        roa_dict = roa
-        liquidez_corrente_dict = liq_corrente
-        p_ativo_dict = preco_sobativo
         
         # Tabela valuation para ações
         table_valuation = pd.DataFrame(columns=['P/L', 'P/VP', 'DY','EMPRESA'])
@@ -940,48 +918,6 @@ with aba1:
                     st.write(f"{valor_patrliq:,.0f}")
                 else:
                     st.write("**Patr. Líquido:**")
-                    st.write("-")
-                    
-            col19f, col20f, col21f, col22f, col23f, col24f = st.columns(6)
-            
-            with col19f:
-                if divliq_ebitda != '-':
-                    st.write("**Dív. / Ebitda:**")
-                    st.write(f"{divliq_ebitda}")
-                else:
-                    st.write("**Dív. / Ebitda:**")
-                    st.write("-")
-                    
-            with col20f:
-                if payout != '-':
-                    st.write("**Payout:**")
-                    st.write(f"{payout}")
-                else:
-                    st.write("**Payout:**")
-                    st.write("-")
-            
-            with col21f:
-                if roa != '-':
-                    st.write("**ROA:**")
-                    st.write(f"{roa}")
-                else:
-                    st.write("**ROA:**")
-                    st.write("-")
-            
-            with col22f:
-                if liq_corrente != '-':
-                    st.write("**Liq. Corrente:**")
-                    st.write(f"{liq_corrente}")
-                else:
-                    st.write("**Liq. Corrente:**")
-                    st.write("-")
-                    
-            with col23f:
-                if preco_sobativo != '-':
-                    st.write("**Preço / Ativo:**")
-                    st.write(f"{preco_sobativo}")
-                else:
-                    st.write("**Preço / Ativo:**")
                     st.write("-")
             
             st.write("\n---\n")       
