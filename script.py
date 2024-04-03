@@ -292,9 +292,9 @@ with aba1:
         dividend_yield = valuation[4].find('span').text
         
         divliq_ebitda = valuation_inv10[23].find('span').text
-        payout = valuation_inv10[5].find('span').text
+        payout = valuation_inv10[4].find('span').text
         roa = valuation_inv10[21].find('span').text
-        preco_sobativo = valuation_inv10[14].find('span').text
+        preco_sobativo = valuation_inv10[13].find('span').text
         
         divliq_ebitda = divliq_ebitda.replace('\n', '')
         payout = payout.replace('\n', '')
