@@ -32,7 +32,6 @@ with aba1:
     mapa_indices = {
         'BOVESPA': '^BVSP',
         'IBRX 50': '^IBV50',
-        'IFIX': 'IFIX.SA',
         'DÓLAR': 'BRL=X',
         'EURO': 'EURBRL=X',
         'S&P 500': '^GSPC',
@@ -1010,9 +1009,7 @@ with aba1:
             indice = yf.download('^IXIC', start=f"{de_data}", end=f"{para_data_correta}")
         elif selected_indice == "IBRX 50":
             indice = yf.download('^IBX50', start=f"{de_data}", end=f"{para_data_correta}")
-        elif selected_indice == "IFIX":
-            indice = yf.download('IFIX.SA', start=f"{de_data}", end=f"{para_data_correta}")
-
+            
         if selected_indice != '' and ativo != '':
             indice_retornos = (indice['Close'].pct_change() + 1).cumprod() - 1
             dados_retornos_completo[selected_indice] = indice_retornos
