@@ -286,6 +286,23 @@ with aba1:
         preco_vp = valuation[3].find('span').text
         dividend_yield = valuation[4].find('span').text
         
+<<<<<<< HEAD
+=======
+        divliq_ebitda = valuation_inv10[23].find('span').text
+        payout = valuation_inv10[4].find('span').text
+        roa = valuation_inv10[21].find('span').text
+        preco_sobativo = valuation_inv10[13].find('span').text
+        
+        divliq_ebitda = divliq_ebitda.replace('\n', '')
+        payout = payout.replace('\n', '')
+        roa = roa.replace('\n', '')
+        
+        divliq_ebitda_dict = divliq_ebitda
+        payout_dict = payout
+        roa_dict = roa
+        p_ativo_dict = preco_sobativo
+        
+>>>>>>> a984acec4d4e5d33ba10f295edfe29c58a77c63f
         # Tabela valuation para ações
         table_valuation = pd.DataFrame(columns=['P/L', 'P/VP', 'DY','EMPRESA'])
         table_valuation['EMPRESA'] = [name]
@@ -919,6 +936,43 @@ with aba1:
                 else:
                     st.write("**Patr. Líquido:**")
                     st.write("-")
+<<<<<<< HEAD
+=======
+                    
+            col19f, col20f, col21f, col22f, col23f, col24f = st.columns(6)
+            
+            with col19f:
+                if divliq != '-' and divliq != None and divliq_ebitda != '-':
+                    st.write("**Dív. / Ebitda:**")
+                    st.write(f"{divliq_ebitda}")
+                else:
+                    st.write("**Dív. / Ebitda:**")
+                    st.write("-")
+                    
+            with col20f:
+                if divliq != '-' and divliq != None and payout != '-':
+                    st.write("**Payout:**")
+                    st.write(f"{payout}")
+                else:
+                    st.write("**Payout:**")
+                    st.write("-")
+            
+            with col21f:
+                if divliq != '-' and divliq != None and roa != '-':
+                    st.write("**ROA:**")
+                    st.write(f"{roa}")
+                else:
+                    st.write("**ROA:**")
+                    st.write("-")
+            
+            with col22f:
+                if divliq != '-' and divliq != None and preco_sobativo != '-':
+                    st.write("**Preço / Ativo:**")
+                    st.write(f"{preco_sobativo}")
+                else:
+                    st.write("**Preço / Ativo:**")
+                    st.write("-")
+>>>>>>> a984acec4d4e5d33ba10f295edfe29c58a77c63f
             
             st.write("\n---\n")       
         
