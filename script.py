@@ -942,7 +942,7 @@ with aba1:
             col19f, col20f, col21f, col22f, col23f, col24f = st.columns(6)
             
             with col19f:
-                if divliq_ebitda != '-':
+                if divliq != '-' and divliq != None and divliq_ebitda != '-':
                     st.write("**Dív. / Ebitda:**")
                     st.write(f"{divliq_ebitda}")
                 else:
@@ -950,7 +950,7 @@ with aba1:
                     st.write("-")
                     
             with col20f:
-                if payout != '-':
+                if divliq != '-' and divliq != None and payout != '-':
                     st.write("**Payout:**")
                     st.write(f"{payout}")
                 else:
@@ -958,7 +958,7 @@ with aba1:
                     st.write("-")
             
             with col21f:
-                if roa != '-':
+                if divliq != '-' and divliq != None and roa != '-':
                     st.write("**ROA:**")
                     st.write(f"{roa}")
                 else:
@@ -966,7 +966,7 @@ with aba1:
                     st.write("-")
             
             with col22f:
-                if preco_sobativo != '-':
+                if divliq != '-' and divliq != None and preco_sobativo != '-':
                     st.write("**Preço / Ativo:**")
                     st.write(f"{preco_sobativo}")
                 else:
