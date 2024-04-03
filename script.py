@@ -229,7 +229,6 @@ with aba1:
     divliq_ebitda_dict = {}
     payout_dict = {}
     roa_dict = {}
-    liquidez_corrente_dict = {}
     p_ativo_dict = {}
     
 
@@ -295,7 +294,6 @@ with aba1:
         divliq_ebitda = valuation_inv10[23].find('span').text
         payout = valuation_inv10[5].find('span').text
         roa = valuation_inv10[21].find('span').text
-        liq_corrente = valuation_inv10[28].find('span').text
         preco_sobativo = valuation_inv10[14].find('span').text
         
         divliq_ebitda = divliq_ebitda.replace('\n', '')
@@ -305,7 +303,6 @@ with aba1:
         divliq_ebitda_dict = divliq_ebitda
         payout_dict = payout
         roa_dict = roa
-        liquidez_corrente_dict = liq_corrente
         p_ativo_dict = preco_sobativo
         
         # Tabela valuation para ações
@@ -969,14 +966,6 @@ with aba1:
                     st.write("-")
             
             with col22f:
-                if liq_corrente != '-':
-                    st.write("**Liq. Corrente:**")
-                    st.write(f"{liq_corrente}")
-                else:
-                    st.write("**Liq. Corrente:**")
-                    st.write("-")
-                    
-            with col23f:
                 if preco_sobativo != '-':
                     st.write("**Preço / Ativo:**")
                     st.write(f"{preco_sobativo}")
