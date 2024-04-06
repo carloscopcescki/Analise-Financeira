@@ -635,9 +635,9 @@ with aba1:
                     st.link_button(f"Acessar o RI de {ativo}", f"{href}")
         
             elif ativo != '' and tipo == 'Fundos Imobiliários':
-                st.link_button(f"Veja mais sobre {ativo}", f"https://investidor10.com.br/fiis/{ativo}/")
-                ri_fii = (f"https://www.fundamentus.com.br/fii_relatorios.php?papel={ativo}")
-                st.link_button(f"Veja os Relatórios Gerenciais de {ativo}", f"{ri_fii}")
+                st.link_button(f"Veja mais sobre {ativo}", f"https://www.fundsexplorer.com.br/funds/{ativo}")
+                ri_fii = (f"https://www.fundsexplorer.com.br/comunicados?ticker={ativo}")
+                st.link_button(f"Veja os comunicados de {ativo}", f"{ri_fii}")
             elif ativo != '' and tipo == 'BDR':
                 st.link_button(f"Veja mais sobre {ativo}", f"https://investidor10.com.br/bdrs/{ativo}/")
             elif ativo != '' and tipo == 'ETFs':
