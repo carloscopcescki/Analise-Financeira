@@ -980,17 +980,19 @@ with aba2:
     st.header("Calculadora de Juros Compostos com Aporte Mensal")
 
     capital = st.number_input("Valor Inicial:", min_value=0.0)
-    taxa_juros = st.number_input("Taxa de Juros (ao ano):", min_value=0.0, step=0.5, format="%g")
+    taxa_juros = st.number_input("Taxa de Juros (ao ano):", min_value=0.0, step=0.5, format="%g") / 100
     tempo_anos = st.number_input("Tempo (anos):", min_value=1, step=1)
     aporte_mensal = st.number_input("Aporte Mensal:", min_value=0.0)
-
+    
     meses = tempo_anos * 12
     montante = capital
     
     for _ in range(meses):
-        montante = aporte_mensal *((1 + taxa_juros)** meses-1) / taxa_juros
-        valor_juros_total = montante - capital - (aporte_mensal * meses)
-        
+        montante += aporte_mensal
+        montante *= (1 + taxa_juros)
+    
+    valor_juros_total = montante - capital - (aporte_mensal * meses)
+    
     if st.button("Calcular"):
         st.write(f"**Montante Final:** R$ {montante:.2f}")
         st.write(f"**Valor Total de Juros:** R$ {valor_juros_total:.2f}")
