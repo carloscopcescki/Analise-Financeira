@@ -988,8 +988,8 @@ with aba2:
     montante = capital
     
     for _ in range(meses):
-        montante += aporte_mensal
         montante *= (1 + taxa_juros)
+        montante += aporte_mensal
     
     valor_juros_total = montante - capital - (aporte_mensal * meses)
     
