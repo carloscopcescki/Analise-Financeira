@@ -626,28 +626,40 @@ with aba1:
             else:
                 st.write("Não há dados suficientes para calcular retornos.")
 
-            if ativo != '' and tipo == 'Ações':
-                st.link_button(f"Veja mais sobre {ativo}", f"https://investidor10.com.br/acoes/{ativo}/")
-                
-                if href == "None":
+            cola, colb, colc, cold = st.columns(4)
+            
+            with cola:
+                if ativo != '' and tipo == 'Ações':
+                    st.link_button(f"Veja mais sobre {ativo}", f"https://investidor10.com.br/acoes/{ativo}/")
+                    
+                if ativo != '' and tipo == 'Fundos Imobiliários':
+                    st.link_button(f"Veja mais sobre {ativo}", f"https://www.fundsexplorer.com.br/funds/{ativo}")
+                elif ativo != '' and tipo == 'BDR':
+                    st.link_button(f"Veja mais sobre {ativo}", f"https://investidor10.com.br/bdrs/{ativo}/")
+                elif ativo != '' and tipo == 'ETFs':
+                    st.link_button(f"Veja mais sobre {ativo}", f"https://investidor10.com.br/etfs/{ativo}/")
+                elif ativo != '' and tipo == 'ETFs Americanos':
+                    st.link_button(f"Veja mais sobre {ativo}", f"https://investidor10.com.br/etfs-global/{ativo}/")
+                elif ativo != '' and tipo == 'Stocks':
+                    st.link_button(f"Veja mais sobre {ativo}", f"https://investidor10.com.br/stocks/{ativo}/")
+            
+            with colb:
+                if tipo == "Ações" and href == "None" and ativo != '':
                     st.warning(f"Não foi possível obter o RI de {ativo}")
-                else:
+                elif tipo == "Ações" and href != "None" and ativo != '':
                     st.link_button(f"Acessar o RI de {ativo}", f"{href}")
-        
-            elif ativo != '' and tipo == 'Fundos Imobiliários':
-                st.link_button(f"Veja mais sobre {ativo}", f"https://www.fundsexplorer.com.br/funds/{ativo}")
-                ri_fii = (f"https://www.fundsexplorer.com.br/comunicados?ticker={ativo}")
-                st.link_button(f"Veja os comunicados de {ativo}", f"{ri_fii}")
-            elif ativo != '' and tipo == 'BDR':
-                st.link_button(f"Veja mais sobre {ativo}", f"https://investidor10.com.br/bdrs/{ativo}/")
-            elif ativo != '' and tipo == 'ETFs':
-                st.link_button(f"Veja mais sobre {ativo}", f"https://investidor10.com.br/etfs/{ativo}/")
-            elif ativo != '' and tipo == 'ETFs Americanos':
-                st.link_button(f"Veja mais sobre {ativo}", f"https://investidor10.com.br/etfs-global/{ativo}/")
-            elif ativo != '' and tipo == 'Stocks':
-                st.link_button(f"Veja mais sobre {ativo}", f"https://investidor10.com.br/stocks/{ativo}/")
-            #elif ativo != '' and tipo == 'Cripto':
-                #st.link_button(f"Veja mais sobre {ativo}", f"https://statusinvest.com.br/criptomoedas/{ativo}")
+                
+                elif tipo == "Fundos Imobiliários" and ativo != '':
+                    ri_fii = (f"https://www.fundsexplorer.com.br/comunicados?ticker={ativo}")
+                    st.link_button(f"Comunicados de {ativo}", f"{ri_fii}")
+                    
+            with colc:
+                if ativo != '' and tipo != 'Stocks' and tipo != 'ETFs Americanos':
+                    st.link_button(f"Notícias sobre {ativo}", f"https://www.bloomberglinea.com.br/quote/{ativo}:BS/")
+            
+            with cold:
+                if ativo != '' and tipo != 'Stocks' and tipo != 'ETFs Americanos':
+                    st.link_button(f"Estudos da Economática", "https://insight.economatica.com/category/estudos/")
                     
             st.write("\n---\n")
             
