@@ -39,7 +39,7 @@ with aba1:
         'NASDAQ': '^IXIC',
     }
 
-    tipo_invest = ['Ações', 'Fundos Imobiliários', 'BDR', 'ETFs', 'ETFs Americanos', 'Stocks']
+    tipo_invest = ['Ações', 'Fundos Imobiliários', 'BDR', 'ETFs', 'ETFs Americanos', 'Stocks', 'Cripto']
 
     # Definir intervalo de datas (1 ano)
     data_inicio = datetime.today() - timedelta(365)
@@ -123,8 +123,8 @@ with aba1:
     if ativo == '' and tipo == 'Stocks':
         st.warning("Selecione um stock")
         
-    #if ativo == '' and tipo == 'Cripto':
-        #st.warning("Selecione uma criptomoeda")
+    if ativo == '' and tipo == 'Cripto':
+        st.warning("Selecione uma criptomoeda")
             
     de_data = st.sidebar.date_input("De:", data_inicio)
     para_data = st.sidebar.date_input("Para:", data_final)
@@ -165,6 +165,16 @@ with aba1:
         # Adicionar os dados ao dicionário
         dados_ativos[ativo] = pd.DataFrame(call_api)
 
+    elif tipo == 'Cripto':
+        
+        symbol = f"{ativo}-USD"
+        
+        # Chamar a API com o símbolo obtido
+        call_api = yf.Ticker(f'{symbol}').history(start=f"{de_data}", end=f"{para_data_correta}")
+        
+        # Adicionar os dados ao dicionário
+        dados_ativos[ativo] = pd.DataFrame(call_api)
+    
     else:
         symbol = f"{ativo}"
 
@@ -373,7 +383,7 @@ with aba1:
         yield_dict[ativo] = dividend_yield
         pvp_dict[ativo] = preco_vp 
         pl_dict[ativo] = preco_lucro
-        
+    
     elif ativo != '' and tipo == 'Fundos Imobiliários': 
         stock_fii_url = (f'https://www.fundamentus.com.br/fii_proventos.php?papel={ativo}&tipo=2')
         response_fii = requests.get(stock_fii_url, headers=headers, timeout=5).text
@@ -532,8 +542,8 @@ with aba1:
                         st.image("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSaNUDgPvK_OIJ3RcMqrTqLEQXRZG8dPX-526Bfc_aNlA&s", width=85)
                     elif tipo == 'Stocks':
                         st.image(f"https://raw.githubusercontent.com/nvstly/icons/main/ticker_icons/{ativo}.png", width=85)
-                    #elif tipo == 'Cripto':
-                        #st.image(f"https://raw.githubusercontent.com/nvstly/icons/main/crypto_icons/{ativo}.png", width=85)
+                    elif tipo == 'Cripto':
+                        st.image(f"https://raw.githubusercontent.com/nvstly/icons/main/crypto_icons/{ativo}.png", width=85)
                     else:
                         st.image(f'https://raw.githubusercontent.com/thefintz/icones-b3/main/icones/{ativo}.png', width=85)
  
@@ -547,7 +557,7 @@ with aba1:
                     elif ativo in name_dict_etf:
                         st.subheader(f'{name_dict_etf[ativo]}')
                     else:
-                        st.write("N/A")
+                        st.write("")
                         
                 st.subheader(f'{ativo}')
                 
@@ -559,7 +569,7 @@ with aba1:
                 
                 with col1:
                     st.write("**Cotação:**")
-                    if tipo != "Stocks" and tipo != "ETFs Americanos":
+                    if tipo != "Stocks" and tipo != "ETFs Americanos" and tipo != 'Cripto':
                         st.write(f"R$ {last_data['Close']:.2f}")
                     else:
                         st.write(f"US$ {last_data['Close']:.2f}")
@@ -619,7 +629,7 @@ with aba1:
                     elif ativo in yield_dict_etf:
                         st.write("**DY**")
                         st.write(f"{yield_dict_etf[ativo]}")
-                    else:
+                    elif tipo != 'Stocks' and tipo != 'ETFs Americanos' and tipo != 'Cripto':
                         st.write("**Preço Teto**")
                         st.write("N/A")
                 
@@ -642,6 +652,8 @@ with aba1:
                     st.link_button(f"Veja mais sobre {ativo}", f"https://investidor10.com.br/etfs-global/{ativo}/")
                 elif ativo != '' and tipo == 'Stocks':
                     st.link_button(f"Veja mais sobre {ativo}", f"https://investidor10.com.br/stocks/{ativo}/")
+                elif ativo != '' and tipo == 'Cripto':
+                    st.link_button(f'Veja mais sobre {ativo}', f"https://br.investing.com/crypto/ethereum/{ativo}")
             
             with colb:
                 if tipo == "Ações" and href == "None" and ativo != '':
@@ -654,11 +666,11 @@ with aba1:
                     st.link_button(f"Comunicados de {ativo}", f"{ri_fii}")
                     
             with colc:
-                if ativo != '' and tipo != 'Stocks' and tipo != 'ETFs Americanos':
+                if ativo != '' and tipo != 'Stocks' and tipo != 'ETFs Americanos' and tipo != 'Cripto':
                     st.link_button(f"Notícias sobre {ativo}", f"https://www.bloomberglinea.com.br/quote/{ativo}:BS/")
             
             with cold:
-                if ativo != '' and tipo != 'Stocks' and tipo != 'ETFs Americanos':
+                if ativo != '' and tipo != 'Stocks' and tipo != 'ETFs Americanos' and tipo != 'Cripto':
                     st.link_button(f"Estudos da Economática", "https://insight.economatica.com/category/estudos/")
                     
             st.write("\n---\n")
@@ -672,7 +684,7 @@ with aba1:
                 if ativo not in selected_indice:
                     fig_cotacoes.add_trace(go.Scatter(x=pd.to_datetime(df.index), y=df['Close'], mode='lines', name=ativo))
 
-            if tipo != 'Stocks' and tipo != 'ETFs Americanos':
+            if tipo != 'Stocks' and tipo != 'ETFs Americanos' and tipo != 'Cripto':
                 
                 # Adicionando legenda e título
                 fig_cotacoes.update_layout(
