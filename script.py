@@ -1004,8 +1004,8 @@ with aba2:
     st.header("Calculadora de Juros Simples")
 
     valor_inicial = st.number_input("Valor Inicial:", min_value=0.0, key="initial_value")
-    taxa_juros_simples = st.number_input("Taxa de Juros:", min_value=0.0, step=0.5, format="%g") / 100
-    tempo_anos_simples = st.number_input("Tempo (anos):", min_value=1, step=1)
+    taxa_juros_simples = st.number_input("Taxa de Juros:", min_value=0.0, step=0.5, format="%g", key="initial_value") / 100
+    tempo_anos_simples = st.number_input("Tempo (anos):", min_value=1, step=1, key="initial_value")
 
     juros = (valor_inicial * taxa_juros_simples * tempo_anos_simples)
     montante_simples = valor_inicial + juros
