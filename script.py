@@ -1029,7 +1029,6 @@ with aba3:
     for _ in range(tempo_anos_mes):
         montante = capital + aporte_mensal
         montante *= (1 + taxa_juros)
-        capital = montante
     
     juros_total = montante - capital - (aporte_mensal * tempo_anos)
     
