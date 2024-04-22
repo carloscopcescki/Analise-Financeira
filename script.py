@@ -1025,18 +1025,12 @@ with aba3:
     taxa_juros = st.number_input("Taxa de Juros:", min_value=0.0, step=0.5, format="%g", key="taxa_juros_input") / 100
     tempo_anos = st.number_input("Tempo (anos):", min_value=1, step=1, key="tempo_anos_input")
     tempo_anos_mes = tempo_anos * 12
-    
-    montante = capital
 
-    if aporte_mensal != '':
-        for _ in range(tempo_anos_mes):
-            montante *= (1 + taxa_juros)
-            montante += aporte_mensal
+    for _ in range(tempo_anos_mes):
+        montante = capital + aporte_mensal
+        montante *= (1 + taxa_juros)
     
-        juros_total = montante - capital - (aporte_mensal * tempo_anos)
-
-    else:
-        juros_total = montante - capital
+    juros_total = montante - capital - (aporte_mensal * tempo_anos)
     
     if st.button("Calcular", key="calcular_button"):
         st.write(f"**Montante Final:** R$ {montante:.2f}")
