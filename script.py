@@ -1003,8 +1003,8 @@ with aba2:
     
     st.header("Calculadora de Juros Simples")
 
-    valor_inicial = st.number_input("Valor Inicial:", min_value=0.0, key="initial_value")
-    taxa_juros_simples = st.number_input("Taxa de Juros:", min_value=0.0, step=0.5, format="%g", key="initial_value") / 100
+    valor_inicial = st.number_input("Valor Inicial:", min_value=0.0)
+    taxa_juros_simples = st.number_input("Taxa de Juros:", min_value=0.0, step=0.5, format="%g") / 100
     tempo_anos_simples = st.number_input("Tempo (anos):", min_value=1, step=1, key="initial_value")
 
     juros = (valor_inicial * taxa_juros_simples * tempo_anos_simples)
@@ -1020,10 +1020,10 @@ with aba3:
     
     st.header("Calculadora de Juros Compostos")
     
-    capital = st.number_input("Valor Inicial:", min_value=0.0)
-    aporte_mensal = st.number_input("Aporte Mensal:", min_value=0.0)
-    taxa_juros = st.number_input("Taxa de Juros (ao ano):", min_value=0.0, step=0.5, format="%g") / 100
-    tempo_anos = st.number_input("Tempo (anos):", min_value=1, step=1)
+    capital = st.number_input("Valor Inicial:", min_value=0.0, key="capital_input")
+    aporte_mensal = st.number_input("Aporte Mensal:", min_value=0.0, key="aporte_mensal_input")
+    taxa_juros = st.number_input("Taxa de Juros (ao ano):", min_value=0.0, step=0.5, format="%g", key="taxa_juros_input") / 100
+    tempo_anos = st.number_input("Tempo (anos):", min_value=1, step=1, key="tempo_anos_input")
     tempo_anos_mes = tempo_anos * 12
     
     montante = capital
@@ -1033,7 +1033,7 @@ with aba3:
     
     juros_total = montante - capital - (aporte_mensal * tempo_anos)
     
-    if st.button("Calcular"):
+    if st.button("Calcular", key="calcular_button"):
         st.write(f"**Montante Final:** R$ {montante:.2f}")
         st.write(f"**Valor Total de Juros:** R$ {juros_total:.2f}")
 
