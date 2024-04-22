@@ -1022,16 +1022,21 @@ with aba3:
     
     capital = st.number_input("Valor Inicial:", min_value=0.0, key="capital_input")
     aporte_mensal = st.number_input("Aporte Mensal:", min_value=0.0, key="aporte_mensal_input")
-    taxa_juros = st.number_input("Taxa de Juros (ao ano):", min_value=0.0, step=0.5, format="%g", key="taxa_juros_input") / 100
+    taxa_juros = st.number_input("Taxa de Juros:", min_value=0.0, step=0.5, format="%g", key="taxa_juros_input") / 100
     tempo_anos = st.number_input("Tempo (anos):", min_value=1, step=1, key="tempo_anos_input")
     tempo_anos_mes = tempo_anos * 12
     
     montante = capital
-    for _ in range(tempo_anos_mes):
-        montante *= (1 + taxa_juros)
-        montante += aporte_mensal
+
+    if aporte_mensal != '':
+        for _ in range(tempo_anos_mes):
+            montante *= (1 + taxa_juros)
+            montante += aporte_mensal
     
-    juros_total = montante - capital - (aporte_mensal * tempo_anos)
+        juros_total = montante - capital - (aporte_mensal * tempo_anos)
+
+    else:
+        juros_total = montante - capital
     
     if st.button("Calcular", key="calcular_button"):
         st.write(f"**Montante Final:** R$ {montante:.2f}")
