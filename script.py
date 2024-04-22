@@ -21,7 +21,7 @@ st.set_page_config(
 )
 
 # Definindo abas
-aba1, aba2, aba3 = st.tabs(['Monitoramento Financeiro', 'Calculadora de Juros Compostos', 'Simulador de Carteira'])
+aba1, aba2, aba3, aba4 = st.tabs(['Monitoramento Financeiro', 'Calculadora de Juros Simples', 'Calculadora de Juros Compostos', 'Simulador de Carteira'])
 
 # Ajustando aba de monitoramento financeiro
 with aba1:
@@ -996,34 +996,50 @@ with aba1:
                 )
             )
             st.plotly_chart(fig_retornos)
-        
-# Aba de calculadora de juros compostos
+            
+# Aba da calculadora de juros simples        
 
 with aba2:
     
-    st.header("Calculadora de Juros Compostos com Aporte Mensal")
+    st.header("Calculadora de Juros Simples")
 
+    valor_inicial = st.number_input("Valor Inicial:", min_value=0.0)
+    taxa_juros_simples = st.number_input("Taxa de Juros:", min_value=0.0, step=0.5, format="%g") / 100
+    tempo_anos_simples = st.number_input("Tempo (anos):", min_value=1, step=1)
+
+    juros = (valor_inicial * taxa_juros_simples * tempo_anos_simples)
+    montante_simples = valor_inicial + juros
+    
+    if st.button("Calcular"):
+        st.write(f"**Montante Final:** R$ {montante_simples:.2f}")
+        st.write(f"**Valor Total de Juros:** R$ {juros:.2f}")
+
+# Aba de calculadora de juros compostos
+
+with aba3:
+    
+    st.header("Calculadora de Juros Compostos")
+    
     capital = st.number_input("Valor Inicial:", min_value=0.0)
+    aporte_mensal = st.number_input("Aporte Mensal:", min_value=0.0)
     taxa_juros = st.number_input("Taxa de Juros (ao ano):", min_value=0.0, step=0.5, format="%g") / 100
     tempo_anos = st.number_input("Tempo (anos):", min_value=1, step=1)
-    aporte_mensal = st.number_input("Aporte Mensal:", min_value=0.0)
+    tempo_anos_mes = tempo_anos * 12
     
-    meses = tempo_anos * 12
     montante = capital
-    
-    for _ in range(meses):
+    for _ in range(tempo_anos_mes):
         montante *= (1 + taxa_juros)
         montante += aporte_mensal
     
-    valor_juros_total = montante - capital - (aporte_mensal * meses)
+    juros_total = montante - capital - (aporte_mensal * tempo_anos)
     
     if st.button("Calcular"):
         st.write(f"**Montante Final:** R$ {montante:.2f}")
-        st.write(f"**Valor Total de Juros:** R$ {valor_juros_total:.2f}")
-        
+        st.write(f"**Valor Total de Juros:** R$ {juros_total:.2f}")
+
 # Aba simulador de carteira
 
-with aba3:
+with aba4:
 
     lista_carteira = list(pd.read_excel('lists/listativos.xls')['Código'].values)
     lista_carteira.sort()
