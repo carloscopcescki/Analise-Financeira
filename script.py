@@ -1027,9 +1027,11 @@ with aba3:
     tempo_anos_mes = tempo_anos * 12
 
     for _ in range(tempo_anos_mes):
-        montante = capital + aporte_mensal
-        montante *= (1 + taxa_juros)
-    
+        capital_mensal = capital + aporte_mensal
+        capital = capital_mensal
+        montante = capital_mensal * ((1 + taxa_juros)**tempo_anos)
+        
+        
     juros_total = montante - capital - (aporte_mensal * tempo_anos)
     
     if st.button("Calcular", key="calcular_button"):
