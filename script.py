@@ -1027,14 +1027,12 @@ with aba3:
 
     meses = int(tempo_anos * 12)
     montante = capital
-    deposito = 0
+    deposito = capital
     
-    for vezes in range(1, (meses + 1)):
-        deposito += aporte_mensal
-        montante += (montante * taxa_juros)
+    for vez in range(1, (meses + 1)):
+        montante += montante * taxa_juros
         montante += aporte_mensal
 
-    deposito = deposito + capital
     juros_compostos = montante - deposito
 
     if st.button("Calcular", key="calcular_button"):
