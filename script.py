@@ -1024,19 +1024,19 @@ with aba3:
     aporte_mensal = st.number_input("Aporte Mensal:", min_value=0.0, key="aporte_input")
     taxa_juros = st.number_input("Taxa de Juros:", min_value=0.0, step=0.5, format="%g", key="taxa_juros_input") / 100
     tempo_anos = st.number_input("Tempo (anos):", min_value=1, step=1, key="tempo_anos_input")
-
+    
     meses = int(tempo_anos * 12)
     contador = 0
     
+    montante_total = 0.0
+    
     if aporte_mensal <= 0:
         montante = capital * ((1 + taxa_juros)** meses)
-
     else:
         montante_acumulado = aporte_mensal * (((1 + taxa_juros)** meses)-1)
         montante_capital = taxa_juros + capital * (1 + taxa_juros) ** meses
-
         montante_total = montante_acumulado / montante_capital
-
+    
     if st.button("Calcular", key="calcular_button"):
         st.write(f"**Montante Final:** R$ {montante_total:.2f}")
 
