@@ -1031,7 +1031,7 @@ with aba3:
     
     for vezes in range(1, (meses + 1)):
         deposito += aporte_mensal
-        montante += (montate * taxa_juros)
+        montante += (montante * taxa_juros)
         montante += aporte_mensal
 
     deposito = deposito + capital
