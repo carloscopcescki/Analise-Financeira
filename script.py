@@ -1022,23 +1022,25 @@ with aba3:
     
     capital = st.number_input("Valor Inicial:", min_value=0.0, key="capital_input")
     aporte_mensal = st.number_input("Aporte Mensal:", min_value=0.0, key="aporte_input")
-    taxa_juros = st.number_input("Taxa de Juros:", min_value=0.0, step=0.5, format="%g", key="taxa_juros_input") / 100
+    taxa_juros_mes = st.number_input("Taxa de Juros (mensal):", min_value=0.0, step=0.5, format="%g", key="taxa_juros_input")
     tempo_anos = st.number_input("Tempo (anos):", min_value=1, step=1, key="tempo_anos_input")
     
     meses = int(tempo_anos * 12)
-    contador = 0
+    total = capital
+    deposito = 0    
     
-    montante_total = 0.0
-    
-    if aporte_mensal <= 0:
-        montante = capital * ((1 + taxa_juros)** meses)
-    else:
-        montante_acumulado = aporte_mensal * (((1 + taxa_juros)** meses)-1)
-        montante_capital = taxa_juros + capital * (1 + taxa_juros) ** meses
-        montante_total = montante_acumulado / montante_capital
+    for vezes in range(1, (meses + 1)):
+        deposito += aporte_mensal
+        total += (total * taxa_juros_mes / 100)
+        total += aporte_mensal
+        
+    deposito = deposito + capital
+    juros_compostos = total - deposito
     
     if st.button("Calcular", key="calcular_button"):
-        st.write(f"**Montante Final:** R$ {montante_total:.2f}")
+        st.write(f"**Total Investido:** R$ {deposito:.2f}")
+        st.write(f"**Total em Juros:** R$ {juros_compostos:.2f}")
+        st.write(f"**Montante Total:** R$ {total:.2f}")
 
 # Aba simulador de carteira
 
