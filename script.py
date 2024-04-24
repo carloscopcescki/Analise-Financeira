@@ -1029,11 +1029,11 @@ with aba3:
     total = capital
     deposito = 0
 
-    taxa_juros_mes = ((1 + taxa_juros_ano)**1/meses - 1)*100
-    
+    taxa_juros_mes = ((1 + taxa_juros_ano)**(1/12) - 1) * 100
+
     for vezes in range(1, (meses + 1)):
         deposito += aporte_mensal
-        total += (total * taxa_juros_mes)
+        total += (total * (taxa_juros_mes / 100))
         total += aporte_mensal
         
     deposito = deposito + capital
