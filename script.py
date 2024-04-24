@@ -1022,14 +1022,14 @@ with aba3:
     
     capital = st.number_input("Valor Inicial:", min_value=0.0, key="capital_input")
     aporte_mensal = st.number_input("Aporte Mensal:", min_value=0.0, key="aporte_input")
-    taxa_juros_ano = st.number_input("Taxa de Juros (Anual):", min_value=0.0, step=0.5, format="%g", key="taxa_juros_input")
+    taxa_juros_ano = st.number_input("Taxa de Juros (Anual):", min_value=0.0, step=0.5, format="%g", key="taxa_juros_input") / 100
     tempo_anos = st.number_input("Tempo (anos):", min_value=1, step=1, key="tempo_anos_input")
     
     meses = int(tempo_anos * 12)
     total = capital
     deposito = 0
 
-    taxa_juros_mes = ((1 + taxa_juros_ano / 100)**1/meses)*100
+    taxa_juros_mes = ((1 + taxa_juros_ano)**1/meses - 1)*100
     
     for vezes in range(1, (meses + 1)):
         deposito += aporte_mensal
