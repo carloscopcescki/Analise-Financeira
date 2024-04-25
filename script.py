@@ -1039,9 +1039,9 @@ with aba3:
     deposito = deposito + capital
     juros_compostos = total - deposito
 
-    deposito_formatado = "{:,.2f}".format(deposito)
-    juros_formatado = "{:,.2f}".format(juros_compostos)
-    total_formatado = "{:,.2f}".format(total)
+    deposito_formatado = "{:,.2f}".format(deposito).replace('.', ',')
+    juros_formatado = "{:,.2f}".format(juros_compostos).replace('.', ',')
+    total_formatado = "{:,.2f}".format(total).replace('.', ',')
     
     if st.button("Calcular", key="calcular_button"):
         st.write(f"**Total Investido:** R$ {deposito_formatado}")
