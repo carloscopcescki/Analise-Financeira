@@ -1038,11 +1038,15 @@ with aba3:
         
     deposito = deposito + capital
     juros_compostos = total - deposito
+
+    deposito_formatado = "{:,.2f}".format(deposito)
+    juros_formatado = "{:,.2f}".format(juros_compostos)
+    total_formatado = "{:,.2f}".format(total)
     
     if st.button("Calcular", key="calcular_button"):
-        st.write(f"**Total Investido:** R$ {deposito:..2f}")
-        st.write(f"**Total em Juros:** R$ {juros_compostos:..2f}")
-        st.write(f"**Montante Total:** R$ {total:..2f}")
+        st.write(f"**Total Investido:** R$ {deposito_formatado}")
+        st.write(f"**Total em Juros:** R$ {juros_formatado}")
+        st.write(f"**Montante Total:** R$ {total_formatado}")
 
 # Aba simulador de carteira
 
