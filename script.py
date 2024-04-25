@@ -6,6 +6,7 @@ import streamlit as st
 import matplotlib.pyplot as plt
 import plotly.graph_objs as go
 import fundamentus
+import locale
 import matplotlib.ticker as mtick
 from bs4 import BeautifulSoup
 from streamlit_extras.metric_cards import style_metric_cards
@@ -1039,9 +1040,11 @@ with aba3:
     deposito = deposito + capital
     juros_compostos = total - deposito
 
-    deposito_formatado = "{:,.2f}".format(deposito).replace('.', ',')
-    juros_formatado = "{:,.2f}".format(juros_compostos).replace('.', ',')
-    total_formatado = "{:,.2f}".format(total).replace('.', ',')
+    locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')
+    
+    deposito_formatado = locale.currency(deposito, grouping=True, symbol='R$ ')
+    juros_formatado = locale.currency(juros_compostos, grouping=True, symbol='R$ ')
+    total_formatado = locale.currency(total, grouping=True, symbol='R$ ')
     
     if st.button("Calcular", key="calcular_button"):
         st.write(f"**Total Investido:** R$ {deposito_formatado}")
