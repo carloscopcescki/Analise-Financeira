@@ -6,13 +6,11 @@ import streamlit as st
 import matplotlib.pyplot as plt
 import plotly.graph_objs as go
 import fundamentus
-import locale
 import matplotlib.ticker as mtick
 from bs4 import BeautifulSoup
 from streamlit_extras.metric_cards import style_metric_cards
 from streamlit_extras.grid import grid
 from PIL import Image
-
 
 # Definindo o ícone e título da página
 icon = Image.open("img/icon-monitor.png")
