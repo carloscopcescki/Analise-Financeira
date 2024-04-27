@@ -629,7 +629,7 @@ with aba1:
                     elif ativo in yield_dict_etf:
                         st.write("**DY**")
                         st.write(f"{yield_dict_etf[ativo]}")
-                    elif tipo != 'Stocks' and tipo != 'ETFs Americanos' and tipo != 'Cripto':
+                    elif tipo == 'Stocks' and tipo == 'ETFs Americanos' and tipo == 'Cripto':
                         st.write("**Preço Teto**")
                         st.write("N/A")
                 
@@ -660,17 +660,30 @@ with aba1:
                     st.warning(f"Não foi possível obter o RI de {ativo}")
                 elif tipo == "Ações" and href != "None" and ativo != '':
                     st.link_button(f"Acessar o RI de {ativo}", f"{href}")
-                
                 elif tipo == "Fundos Imobiliários" and ativo != '':
                     ri_fii = (f"https://www.fundsexplorer.com.br/comunicados?ticker={ativo}")
                     st.link_button(f"Comunicados de {ativo}", f"{ri_fii}")
-                    
+                elif tipo == 'Cripto' and ativo != '':
+                    st.link_button(f"MarketCap de {ativo}", f"https://br.tradingview.com/symbols/{ativo}/")
+                elif tipo == 'ETFs' and ativo != '':
+                    st.link_button(f"Análise de {ativo}", f"https://br.tradingview.com/symbols/BMFBOVESPA-{ativo}/analysis/")
+                elif tipo == 'ETFs Americanos' and ativo != '':
+                    st.link_button(f"Análise de {ativo}", f"https://br.tradingview.com/symbols/{ativo}/analysis/")
+                elif tipo == 'BDR' and ativo != '':
+                    st.link_button(f"Análise de {ativo}", f"https://br.tradingview.com/symbols/BMFBOVESPA-{ativo}/technicals/")
+                elif tipo == 'Stocks' and ativo != '':
+                    st.link_button(f"Finanças de {ativo}", f"https://br.tradingview.com/symbols/{ativo}/financials-overview/")
             with colc:
                 if ativo != '' and tipo != 'Stocks' and tipo != 'ETFs Americanos' and tipo != 'Cripto':
-                    st.link_button(f"Notícias sobre {ativo}", f"https://www.bloomberglinea.com.br/quote/{ativo}:BS/")
-            
+                    st.link_button(f"Notícias sobre {ativo}", f"https://br.tradingview.com/symbols/BMFBOVESPA-{ativo}/news/")
+                elif tipo == 'Cripto' and ativo !='':
+                    st.link_button(f"Notícias sobre Criptomoedas", f"https://br.tradingview.com/news/markets/?category=crypto")
+                elif tipo == 'ETFs Americanos' and ativo != '':
+                    st.link_button(f"Notícias sobre {ativo}", f"https://br.tradingview.com/symbols/{ativo}/news/")
+                elif tipo == 'Stocks' and ativo != '':
+                    st.link_button(f"Notícias sobre {ativo}", f"https://br.tradingview.com/symbols/{ativo}/news/")
             with cold:
-                if ativo != '' and tipo != 'Stocks' and tipo != 'ETFs Americanos' and tipo != 'Cripto':
+                if ativo != '':
                     st.link_button(f"Estudos da Economática", "https://insight.economatica.com/category/estudos/")
                     
             st.write("\n---\n")
