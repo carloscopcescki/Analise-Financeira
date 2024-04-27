@@ -264,8 +264,8 @@ with aba1:
     # Verificando se a requisição foi bem-sucedida
     if ativo != '' and tipo == 'Ações':
         # Parseando o conteúdo HTML
-        stock_url = (f'https://www.dadosdemercado.com.br/bolsa/acoes/{ativo}/dividendos')
-        response = requests.get(stock_url, headers=headers)
+        ativos_url = (f'https://www.dadosdemercado.com.br/bolsa/acoes/{ativo}/dividendos')
+        response = requests.get(ativos_url, headers=headers)
         soup = BeautifulSoup(response.text, 'html.parser')
         soup_valuation = BeautifulSoup(dados_fundamentus, 'html.parser')
         
@@ -275,9 +275,20 @@ with aba1:
         soup_ri = BeautifulSoup(dados_ri, 'html.parser')
 
         divs_about_params = soup_ri.find_all('div', class_='about-params')
-
+        text_ativo = soup_ri.find_all('p', class_='serif')
+        
+        sobre_ativo = None
+        
+        for p in text_ativo:
+            sobre_ativo = p.get_text()
+        
         for div in divs_about_params:
             links_ri = div.find_all('a', href=True)
+            text = div.find_all('span')
+            text_razao = text[1].text.strip()
+            text_cnpj = text[3].text.strip()
+            text_isin = text[5].text.strip()
+            text_setorial = text[9].text.strip()
             
             for link in links_ri:
                 href = link['href']
@@ -532,6 +543,8 @@ with aba1:
                 
                 rendimento_diario = ((df['Close'].iloc[-1] - df['Close'].iloc[-2]) / df['Close'].iloc[-2]) * 100
                 
+                variacao = rendimento_diario / 100
+                
                 colimg, colname = st.columns(2)
                 
                 with colimg:
@@ -556,9 +569,14 @@ with aba1:
                     elif ativo in name_dict_etf:
                         st.subheader(f'{name_dict_etf[ativo]}')
                     else:
-                        st.write("")
-                        
+                        st.write("")     
+
                 st.subheader(f'{ativo}')
+
+                if rendimento_diario < 0:
+                    st.write(f"<span style='color:{color_negative}'>{variacao:.2%}</span>", unsafe_allow_html=True)
+                else:
+                    st.write(f"<span style='color:{color_positive}'>+{variacao:.2%}</span>", unsafe_allow_html=True)
                 
                 if ativo != '' and tipo == 'Ações':
                     st.write(f'Setor: {setor}')
@@ -955,6 +973,22 @@ with aba1:
                 else:
                     st.write("**Patr. Líquido:**")
                     st.write("-")
+                    
+            st.write("\n---\n")
+                
+            st.subheader(f"Sobre {ativo}")
+            
+            if sobre_ativo is None:
+                st.write(f"**Razão social:** {text_razao}")
+                st.write(f"**CNJP:** {text_cnpj}")
+                st.write(f"**Código ISIN:** {text_isin}")
+                st.write(f"**Classificação setorial B3:** {text_setorial}")
+            else:
+                st.write(sobre_ativo)
+                st.write(f"**Razão social:** {text_razao}")
+                st.write(f"**CNJP:** {text_cnpj}")
+                st.write(f"**Código ISIN:** {text_isin}")
+                st.write(f"**Classificação setorial B3:** {text_setorial}")
             
             st.write("\n---\n")       
         
