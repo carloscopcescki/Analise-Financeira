@@ -670,7 +670,7 @@ with aba1:
                 elif ativo != '' and tipo == 'Stocks':
                     st.link_button(f"Veja mais sobre {ativo}", f"https://investidor10.com.br/stocks/{ativo}/")
                 elif ativo != '' and tipo == 'Cripto':
-                    st.link_button(f'Veja mais sobre {ativo}', f"https://br.investing.com/crypto/ethereum/{ativo}")
+                    st.link_button(f'Veja mais sobre {ativo}', f"https://finance.yahoo.com/quote/{ativo}-USD")
             
             with colb:
                 if tipo == "Ações" and href == "None" and ativo != '':
