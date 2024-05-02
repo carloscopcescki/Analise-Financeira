@@ -1156,7 +1156,7 @@ with aba4:
         fig.update_layout(title="Carteira x Bovespa", xaxis_title="Data", yaxis_title="Rendimento")
         
         # Exibir o gráfico comparativo
-        st.plotly_chart(fig)
+        st.plotly_chart(fig, use_container_width=True)
 
     # Carteira de ativos
     carteira = {}
