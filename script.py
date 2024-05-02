@@ -17,6 +17,7 @@ icon = Image.open("img/icon-monitor.png")
 st.set_page_config(
     page_title="Monitor Financeiro",
     page_icon=icon,
+    layout="wide",
 )
 
 # Definindo abas
@@ -705,123 +706,178 @@ with aba1:
                     
             st.write("\n---\n")
             
-            # Plotando o gráfico de cotações
-            st.subheader("Cotação")
-            fig_cotacoes = go.Figure()
+            colCotaçao, colDividendo = st.columns(2)
+            
+            with colCotaçao:
+                # Plotando o gráfico de cotações
+                st.subheader("Cotação")
+                fig_cotacoes = go.Figure()
 
-            for ativo, df in dados_ativos.items():
-                # Ignorar ativos que são iguais aos índices do mapa_indices
-                if ativo not in selected_indice:
-                    fig_cotacoes.add_trace(go.Scatter(x=pd.to_datetime(df.index), y=df['Close'], mode='lines', name=ativo))
+                for ativo, df in dados_ativos.items():
+                    # Ignorar ativos que são iguais aos índices do mapa_indices
+                    if ativo not in selected_indice:
+                        fig_cotacoes.add_trace(go.Scatter(x=pd.to_datetime(df.index), y=df['Close'], mode='lines', name=ativo))
 
-            if tipo != 'Stocks' and tipo != 'ETFs Americanos' and tipo != 'Cripto':
+                if tipo != 'Stocks' and tipo != 'ETFs Americanos' and tipo != 'Cripto':
+                    
+                    # Adicionando legenda e título
+                    fig_cotacoes.update_layout(
+                        legend=dict(
+                            orientation="h",
+                            yanchor="bottom",
+                            y=1.02,
+                            xanchor="right",
+                            x=1
+                        ),
+                        yaxis_tickprefix='R$',
+                        yaxis_tickformat=',.2f',
+                        title=f"Histórico de {ativo}",
+                        xaxis_title='Data',
+                        yaxis_title='Preço de Fechamento'
+                    )
                 
-                # Adicionando legenda e título
-                fig_cotacoes.update_layout(
-                    legend=dict(
-                        orientation="h",
-                        yanchor="bottom",
-                        y=1.02,
-                        xanchor="right",
-                        x=1
-                    ),
+                else:
+                    
+                    # Adicionando legenda e título
+                    fig_cotacoes.update_layout(
+                        legend=dict(
+                            orientation="h",
+                            yanchor="bottom",
+                            y=1.02,
+                            xanchor="right",
+                            x=1
+                        ),
+                        yaxis_tickprefix='US$',
+                        yaxis_tickformat=',.2f',
+                        title=f"Histórico de {ativo}",
+                        xaxis_title='Data',
+                        yaxis_title='Preço de Fechamento'
+                    )
+
+                # Exibindo o gráfico de cotações
+                st.plotly_chart(fig_cotacoes)
+
+                with st.expander("Histórico da cotação:"):
+                    st.dataframe(df, width=850, height=350)
+                    df = dados_ativos[ativo]
+
+        with colDividendo:
+            st.subheader("Dividendos")
+            
+            if ativo in dados_div and tipo == "Ações":           
+
+                # Plotar gráfico de barras do total de proventos distribuídos por ano
+                somatoria_por_ano = somatoria_por_ano[somatoria_por_ano['Ano'].astype(str).str.match(r'^\d{4}$')]
+            
+                fig_proventos = go.Figure()
+                fig_proventos.add_bar(x=somatoria_por_ano['Ano'].astype(str), y=somatoria_por_ano['Valor'], marker_color='palegreen')
+                fig_proventos.update_layout(
+                    xaxis_title='Ano',
+                    yaxis_title='Valor (R$)',
+                    title='Total de Proventos Distribuídos por Ano',
                     yaxis_tickprefix='R$',
                     yaxis_tickformat=',.2f',
-                    title=f"Histórico de {ativo}",
-                    xaxis_title='Data',
-                    yaxis_title='Preço de Fechamento'
+                    xaxis=dict(tickvals=somatoria_por_ano['Ano'].astype(str))
                 )
-            
-            else:
+
+                for i in range(len(somatoria_por_ano)):
+                    fig_proventos.add_annotation(
+                        x=somatoria_por_ano['Ano'].astype(str).iloc[i],
+                        y=somatoria_por_ano['Valor'].iloc[i],
+                        text=f"R$ {somatoria_por_ano['Valor'].iloc[i]:,.2f}",
+                        showarrow=True,
+                        arrowhead=1
+                    )
+
+                st.plotly_chart(fig_proventos)
+
+                with st.expander("Histórico de dividendos:"):
+                    st.dataframe(tabela, width=850, height=350)
+                    tabela = dados_div[ativo]   
                 
-                # Adicionando legenda e título
-                fig_cotacoes.update_layout(
-                    legend=dict(
-                        orientation="h",
-                        yanchor="bottom",
-                        y=1.02,
-                        xanchor="right",
-                        x=1
-                    ),
-                    yaxis_tickprefix='US$',
-                    yaxis_tickformat=',.2f',
-                    title=f"Histórico de {ativo}",
-                    xaxis_title='Data',
-                    yaxis_title='Preço de Fechamento'
-                )
-
-            # Exibindo o gráfico de cotações
-            st.plotly_chart(fig_cotacoes)
-
-            with st.expander("Histórico da cotação:"):
-                st.dataframe(df, width=850, height=350)
-                df = dados_ativos[ativo]
-
-        st.write("\n---\n")
-
-        st.subheader("Dividendos")
-        
-        if ativo in dados_div and tipo == "Ações":           
-
-            # Plotar gráfico de barras do total de proventos distribuídos por ano
-            somatoria_por_ano = somatoria_por_ano[somatoria_por_ano['Ano'].astype(str).str.match(r'^\d{4}$')]
-        
-            fig_proventos = go.Figure()
-            fig_proventos.add_bar(x=somatoria_por_ano['Ano'].astype(str), y=somatoria_por_ano['Valor'], marker_color='palegreen')
-            fig_proventos.update_layout(
-                xaxis_title='Ano',
-                yaxis_title='Valor (R$)',
-                title='Total de Proventos Distribuídos por Ano',
-                yaxis_tickprefix='R$',
-                yaxis_tickformat=',.2f',
-                xaxis=dict(tickvals=somatoria_por_ano['Ano'].astype(str))
-            )
-
-            for i in range(len(somatoria_por_ano)):
-                fig_proventos.add_annotation(
-                    x=somatoria_por_ano['Ano'].astype(str).iloc[i],
-                    y=somatoria_por_ano['Valor'].iloc[i],
-                    text=f"R$ {somatoria_por_ano['Valor'].iloc[i]:,.2f}",
-                    showarrow=True,
-                    arrowhead=1
-                )
-
-            st.plotly_chart(fig_proventos)
-
-            with st.expander("Histórico de dividendos:"):
-                st.dataframe(tabela, width=850, height=350)
-                tabela = dados_div[ativo]   
-            
-        elif tipo == "Fundos Imobiliários":
-                
-            # Plotar gráfico de barras do total de proventos distribuídos por ano
-            fig_proventos_fii = go.Figure()
-
-            fig_proventos_fii.add_bar(x=somatoria_por_ano_fii['Ano'], y=somatoria_por_ano_fii['Valor'], marker_color='palegreen')
-
-            fig_proventos_fii.update_layout(
-                xaxis_title='Ano',
-                yaxis_title='Valor (R$)',
-                title='Total de Proventos Distribuídos por Ano',
-            )
-
-            for i, ano in enumerate(somatoria_por_ano_fii['Ano']):
-                fig_proventos_fii.add_annotation(
-                    x=ano,
-                    y=somatoria_por_ano_fii['Valor'].iloc[i],
-                    text=f"R$ {somatoria_por_ano_fii['Valor'].iloc[i]:,.2f}",
-                    showarrow=True,
-                    arrowhead=1
-                )
-
-            st.plotly_chart(fig_proventos_fii)
-
-            with st.expander("Histórico de dividendos:"):
-                st.dataframe(proventos_fii, width=850, height=350)
+            elif tipo == "Fundos Imobiliários":
                     
-        else:
-            st.warning("Não foi possível obter a tabela de proventos")
+                # Plotar gráfico de barras do total de proventos distribuídos por ano
+                fig_proventos_fii = go.Figure()
+
+                fig_proventos_fii.add_bar(x=somatoria_por_ano_fii['Ano'], y=somatoria_por_ano_fii['Valor'], marker_color='palegreen')
+
+                fig_proventos_fii.update_layout(
+                    xaxis_title='Ano',
+                    yaxis_title='Valor (R$)',
+                    title='Total de Proventos Distribuídos por Ano',
+                )
+
+                for i, ano in enumerate(somatoria_por_ano_fii['Ano']):
+                    fig_proventos_fii.add_annotation(
+                        x=ano,
+                        y=somatoria_por_ano_fii['Valor'].iloc[i],
+                        text=f"R$ {somatoria_por_ano_fii['Valor'].iloc[i]:,.2f}",
+                        showarrow=True,
+                        arrowhead=1
+                    )
+
+                st.plotly_chart(fig_proventos_fii)
+
+                with st.expander("Histórico de dividendos:"):
+                    st.dataframe(proventos_fii, width=850, height=350)
+                        
+            else:
+                st.warning("Não foi possível obter a tabela de proventos")
                 
+        st.write("\n---\n")
+        
+        st.subheader("Indice x Cotação")
+
+        if selected_indice == "":
+            st.warning("Selecione o índice para analisar o rendimento")
+        else:
+            fig_retornos = go.Figure()
+            dados_retornos_completo = {}
+
+        # Carregar dados do índice
+        if selected_indice == "BOVESPA":
+            indice = yf.download('^BVSP', start=f"{de_data}", end=f"{para_data_correta}")
+        elif selected_indice == "DÓLAR":
+            indice = yf.download('BRL=X', start=f"{de_data}", end=f"{para_data_correta}")
+        elif selected_indice == "EURO":
+            indice = yf.download('EURBRL=X', start=f"{de_data}", end=f"{para_data_correta}")
+        elif selected_indice == "S&P 500":
+            indice = yf.download('^GSPC', start=f"{de_data}", end=f"{para_data_correta}")
+        elif selected_indice == "DOW JONES":
+            indice = yf.download('^DJI', start=f"{de_data}", end=f"{para_data_correta}")
+        elif selected_indice == "NASDAQ":
+            indice = yf.download('^IXIC', start=f"{de_data}", end=f"{para_data_correta}")
+        elif selected_indice == "IBRX 50":
+            indice = yf.download('^IBX50', start=f"{de_data}", end=f"{para_data_correta}")
+            
+        if selected_indice != '' and ativo != '':
+            indice_retornos = (indice['Close'].pct_change() + 1).cumprod() - 1
+            dados_retornos_completo[selected_indice] = indice_retornos
+            fig_retornos.add_trace(go.Scatter(x=pd.to_datetime(indice_retornos.index), y=indice_retornos, mode='lines', name=selected_indice, line=dict(color='orange')))
+
+            for ativo, df in dados_ativos.items():
+                # Calcular os retornos apenas se houver dados disponíveis
+                if len(df) > 1:
+                    df_retornos = (df['Close'].pct_change() + 1).cumprod() - 1
+                    dados_retornos_completo[ativo] = df_retornos
+                    fig_retornos.add_trace(go.Scatter(x=pd.to_datetime(df_retornos.index), y=df_retornos, mode='lines', name=ativo, line=dict(color='blue')))
+
+            fig_retornos.update_layout(
+                title="Comparação de Rendimento de Ativos e Índice",
+                xaxis_title="Data",
+                yaxis_title="Rendimento",
+                yaxis_tickformat=",.0%",
+                legend=dict(
+                    orientation="h",
+                    yanchor="bottom",
+                    y=1.02,
+                    xanchor="right",
+                    x=1
+                )
+            )
+            st.plotly_chart(fig_retornos, use_container_width=True)
+        
         st.write("\n---\n")
         
         if ativo != '' and tipo == 'Ações':
@@ -989,59 +1045,7 @@ with aba1:
                 st.write(f"**CNJP:** {text_cnpj}")
                 st.write(f"**Código ISIN:** {text_isin}")
                 st.write(f"**Classificação setorial B3:** {text_setorial}")
-            
-            st.write("\n---\n")       
-        
-        st.subheader("Indice x Cotação")
 
-        if selected_indice == "":
-            st.warning("Selecione o índice para analisar o rendimento")
-        else:
-            fig_retornos = go.Figure()
-            dados_retornos_completo = {}
-
-        # Carregar dados do índice
-        if selected_indice == "BOVESPA":
-            indice = yf.download('^BVSP', start=f"{de_data}", end=f"{para_data_correta}")
-        elif selected_indice == "DÓLAR":
-            indice = yf.download('BRL=X', start=f"{de_data}", end=f"{para_data_correta}")
-        elif selected_indice == "EURO":
-            indice = yf.download('EURBRL=X', start=f"{de_data}", end=f"{para_data_correta}")
-        elif selected_indice == "S&P 500":
-            indice = yf.download('^GSPC', start=f"{de_data}", end=f"{para_data_correta}")
-        elif selected_indice == "DOW JONES":
-            indice = yf.download('^DJI', start=f"{de_data}", end=f"{para_data_correta}")
-        elif selected_indice == "NASDAQ":
-            indice = yf.download('^IXIC', start=f"{de_data}", end=f"{para_data_correta}")
-        elif selected_indice == "IBRX 50":
-            indice = yf.download('^IBX50', start=f"{de_data}", end=f"{para_data_correta}")
-            
-        if selected_indice != '' and ativo != '':
-            indice_retornos = (indice['Close'].pct_change() + 1).cumprod() - 1
-            dados_retornos_completo[selected_indice] = indice_retornos
-            fig_retornos.add_trace(go.Scatter(x=pd.to_datetime(indice_retornos.index), y=indice_retornos, mode='lines', name=selected_indice, line=dict(color='orange')))
-
-            for ativo, df in dados_ativos.items():
-                # Calcular os retornos apenas se houver dados disponíveis
-                if len(df) > 1:
-                    df_retornos = (df['Close'].pct_change() + 1).cumprod() - 1
-                    dados_retornos_completo[ativo] = df_retornos
-                    fig_retornos.add_trace(go.Scatter(x=pd.to_datetime(df_retornos.index), y=df_retornos, mode='lines', name=ativo, line=dict(color='blue')))
-
-            fig_retornos.update_layout(
-                title="Comparação de Rendimento de Ativos e Índice",
-                xaxis_title="Data",
-                yaxis_title="Rendimento",
-                yaxis_tickformat=",.0%",
-                legend=dict(
-                    orientation="h",
-                    yanchor="bottom",
-                    y=1.02,
-                    xanchor="right",
-                    x=1
-                )
-            )
-            st.plotly_chart(fig_retornos)
             
 # Aba da calculadora de juros simples        
 
