@@ -1059,13 +1059,10 @@ with aba2:
 
     juros = (valor_inicial * taxa_juros_simples * tempo_anos_simples)
     montante_simples = valor_inicial + juros
-
-    montante_simples_formatado = "R$ {,.2f}".format(montante_simples).replace('.', '.')
-    juros_simples_formatado = "R$ {,.2f}".format(juros_formatado).replace('.', '.')
     
     if st.button("Calcular"):
-        st.write(f"**Montante Final:** RS {montante_simples_formatado}")
-        st.write(f"**Valor Total de Juros:** RS {juros_simples_formatado}")
+        st.write(f"**Montante Final:** RS {montante_simples}")
+        st.write(f"**Valor Total de Juros:** RS {juros_simples}")
 
 # Aba de calculadora de juros compostos
 
