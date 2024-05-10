@@ -1059,10 +1059,13 @@ with aba2:
 
     juros = (valor_inicial * taxa_juros_simples * tempo_anos_simples)
     montante_simples = valor_inicial + juros
+
+    montante_simples_formatado = "R$ {,.2f}".format(montante_simples).replace('.', '.')
+    juros_simples_formatado = "R$ {,.2f}".format(juros_formatado).replace('.', '.')
     
     if st.button("Calcular"):
-        st.write(f"**Montante Final:** RS {montante_simples:.2f}")
-        st.write(f"**Valor Total de Juros:** RS {juros:.2f}")
+        st.write(f"**Montante Final:** RS {montante_simples_formatado}")
+        st.write(f"**Valor Total de Juros:** RS {juros_simples_formatado}")
 
 # Aba de calculadora de juros compostos
 
@@ -1094,9 +1097,9 @@ with aba3:
     total_formatado = "R$ {:,.2f}".format(total).replace('.', '.')
     
     if st.button("Calcular", key="calcular_button"):
-        st.write(f"**Total Investido:** RS {deposito_formatado}")
-        st.write(f"**Total em Juros:** RS {juros_formatado}")
-        st.write(f"**Montante Total:** RS {total_formatado}")
+        st.write(f"**Total Investido:** {deposito_formatado}")
+        st.write(f"**Total em Juros:** {juros_formatado}")
+        st.write(f"**Montante Total:** {total_formatado}")
 
 # Aba simulador de carteira
 
