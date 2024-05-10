@@ -1061,7 +1061,7 @@ with aba2:
     montante_simples = valor_inicial + juros
     
     if st.button("Calcular"):
-        st.write(f"**Montante Total:** {montante_simples}")
+        st.write(f"**Montante Total:** R$ {montante_simples}")
         st.write(f"**Valor Total de Juros:** R$ {juros}")
 
 # Aba de calculadora de juros compostos
