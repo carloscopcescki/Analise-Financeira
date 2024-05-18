@@ -762,7 +762,7 @@ with aba1:
                     df = dados_ativos[ativo]
 
         with colDividendo:
-            st.subheader("Dividendos")
+            st.subheader("Proventos")
             
             if ativo in dados_div and tipo == "Ações":           
 
