@@ -256,11 +256,11 @@ with aba1:
         'Connection'      : 'close'
     }
 
-    dados_fundamentus = requests.get(url_fundamentus, headers=headers, timeout=10).text
-    dados_fundamentus_fii = requests.get(url_fundamentus_fii, headers=headers, timeout=10).text
-    dados_fundamentus_etf = requests.get(url_fundamentus_etf, headers=headers, timeout=10).text
-    dados_fundamentus_bdr = requests.get(url_fundamentus_bdr, headers=headers, timeout=10).text
-    dados_fundamentus_stock = requests.get(url_fundamentus_stock, headers=headers, timeout=10).text
+    dados_fundamentus = requests.get(url_fundamentus, headers=headers, timeout=30).text
+    dados_fundamentus_fii = requests.get(url_fundamentus_fii, headers=headers, timeout=30).text
+    dados_fundamentus_etf = requests.get(url_fundamentus_etf, headers=headers, timeout=30).text
+    dados_fundamentus_bdr = requests.get(url_fundamentus_bdr, headers=headers, timeout=30).text
+    dados_fundamentus_stock = requests.get(url_fundamentus_stock, headers=headers, timeout=30).text
 
     # Verificando se a requisição foi bem-sucedida
     if ativo != '' and tipo == 'Ações':
@@ -272,7 +272,7 @@ with aba1:
         
         # Obtendo dados para RI (relatório de investidores)
         url_ri = (f'https://www.dadosdemercado.com.br/bolsa/acoes/{ativo}')
-        dados_ri = requests.get(url_ri, headers=headers, timeout=10).text
+        dados_ri = requests.get(url_ri, headers=headers, timeout=30).text
         soup_ri = BeautifulSoup(dados_ri, 'html.parser')
 
         divs_about_params = soup_ri.find_all('div', class_='about-params')
@@ -397,7 +397,7 @@ with aba1:
     
     elif ativo != '' and tipo == 'Fundos Imobiliários': 
         stock_fii_url = (f'https://www.fundamentus.com.br/fii_proventos.php?papel={ativo}&tipo=2')
-        response_fii = requests.get(stock_fii_url, headers=headers, timeout=5).text
+        response_fii = requests.get(stock_fii_url, headers=headers, timeout=30).text
         soup_proventos = BeautifulSoup(response_fii, 'html.parser')
         soup_fii = BeautifulSoup(dados_fundamentus_fii, 'html.parser')
         valuation_fii = soup_fii.find_all('div', class_='_card-body')
@@ -1061,8 +1061,8 @@ with aba2:
     montante_simples = valor_inicial + juros
     
     if st.button("Calcular"):
-        st.write(f"**Montante Final:** R$ {montante_simples:.2f}")
-        st.write(f"**Valor Total de Juros:** R$ {juros:.2f}")
+        st.write(f"**Montante Total:** R$ {montante_simples}")
+        st.write(f"**Valor Total de Juros:** R$ {juros}")
 
 # Aba de calculadora de juros compostos
 
@@ -1094,9 +1094,9 @@ with aba3:
     total_formatado = "R$ {:,.2f}".format(total).replace('.', '.')
     
     if st.button("Calcular", key="calcular_button"):
-        st.write(f"**Total Investido:** R$ {deposito_formatado}")
-        st.write(f"**Total em Juros:** R$ {juros_formatado}")
-        st.write(f"**Montante Total:** R$ {total_formatado}")
+        st.write(f"**Total Investido:** {deposito_formatado}")
+        st.write(f"**Total em Juros:** {juros_formatado}")
+        st.write(f"**Montante Total:** {total_formatado}")
 
 # Aba simulador de carteira
 
@@ -1156,7 +1156,7 @@ with aba4:
         fig.update_layout(title="Carteira x Bovespa", xaxis_title="Data", yaxis_title="Rendimento")
         
         # Exibir o gráfico comparativo
-        st.plotly_chart(fig)
+        st.plotly_chart(fig, use_container_width=True)
 
     # Carteira de ativos
     carteira = {}
