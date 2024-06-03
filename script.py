@@ -331,15 +331,17 @@ with aba1:
                 valor_table = columns[1].text.strip(' ')
                 tipo_table = columns[2].text.strip(' ')
                 data_pag_table = columns[3].text.strip(' ')
-                proventos = pd.concat([proventos, pd.DataFrame.from_records([{'Data': ult_data_table, 'Valor': valor_table, 'Tipo': tipo_table, 'Data de Pagamento': data_pag_table}])])
+                qtd_açao = columns[4].text.strip(' ')
+                proventos = pd.concat([proventos, pd.DataFrame.from_records([{'Data': ult_data_table, 'Valor': valor_table, 'Tipo': tipo_table, 'Data de Pagamento': data_pag_table, 'Por quantas ações': qtd_açao}])])
         
         proventos.head(20)
         proventos['Valor'] = [x.replace(',','.') for x in proventos['Valor']]
         proventos = proventos.astype({'Valor': float})
+        proventos = proventos.drop(columns=['Por quantas ações'])
         proventos.set_index('Tipo', inplace=True)
         proventos = proventos.rename(columns={'Data': 'Registro', 'Data de Pagamento': 'Pagamento'})
 
-        proventos['Ano'] = pd.to_datetime(proventos['Registro']).dt.year.astype(str) 
+        proventos['Ano'] = pd.to_datetime(proventos['Registro'], dayfirst=True).dt.year.astype(str) 
         proventos['Ano'] = proventos['Ano'].str.replace(',', '')
             
         # Calcular o preço teto
@@ -779,7 +781,7 @@ with aba1:
         with colDividendo:
             st.subheader("Proventos")
             
-            if ativo in dados_div and tipo == "Ações":           
+            if tipo == "Ações":           
 
                 # Plotar gráfico de barras do total de proventos distribuídos por ano
                 fig_proventos = go.Figure()
@@ -792,7 +794,7 @@ with aba1:
                     title='Total de Proventos Distribuídos por Ano',
                 )
 
-                for i, ano in enumerate(somatoria_por_ano_fii['Ano']):
+                for i, ano in enumerate(somatoria_por_ano['Ano']):
                     fig_proventos.add_annotation(
                         x=ano,
                         y=somatoria_por_ano['Valor'].iloc[i],
@@ -803,20 +805,9 @@ with aba1:
 
                 st.plotly_chart(fig_proventos)
 
-                for i in range(len(somatoria_por_ano)):
-                    fig_proventos.add_annotation(
-                        x=somatoria_por_ano['Ano'].astype(str).iloc[i],
-                        y=somatoria_por_ano['Valor'].iloc[i],
-                        text=f"R$ {somatoria_por_ano['Valor'].iloc[i]:,.2f}",
-                        showarrow=True,
-                        arrowhead=1
-                    )
-
-                st.plotly_chart(fig_proventos)
-
                 with st.expander("Histórico de dividendos:"):
                     st.dataframe(proventos, width=850, height=350)
-                        
+                 
             elif tipo == "Fundos Imobiliários":
                     
                 # Plotar gráfico de barras do total de proventos distribuídos por ano
