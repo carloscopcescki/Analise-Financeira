@@ -265,7 +265,7 @@ with aba1:
     # Verificando se a requisição foi bem-sucedida
     if ativo != '' and tipo == 'Ações':
         # Parseando o conteúdo HTML
-        ativos_url = (f'https://www.dadosdemercado.com.br/bolsa/acoes/{ativo}/dividendos')
+        ativos_url = (f'https://www.fundamentus.com.br/proventos.php?papel={ativo}&tipo=2')
         response = requests.get(ativos_url, headers=headers)
         soup = BeautifulSoup(response.text, 'html.parser')
         soup_valuation = BeautifulSoup(dados_fundamentus, 'html.parser')
@@ -320,23 +320,37 @@ with aba1:
         pl_dict[ativo] = preco_lucro
            
         # Encontrando a tabela diretamente usando pandas
-        tabela = pd.read_html(str(soup), decimal=',', thousands='.')[0]
-        tabela = tabela.drop(["Ex"], axis=1)
-        tabela.set_index('Tipo', inplace=True)
-
-        # Criando uma nova coluna "Ano" para extrair o ano da coluna "Pagamento"
-        tabela['Ano'] = pd.to_datetime(tabela['Registro'], format='%d/%m/%Y').dt.year.astype(str)
-        tabela['Ano'] = tabela['Ano'].str.replace(',', '')
         
-        dados_div[ativo] = pd.DataFrame(tabela) 
+        tabela = soup.find('table')
+        proventos = pd.DataFrame(columns=['Data', 'Valor', 'Tipo', 'Data de Pagamento', 'Por quantas ações'])
+
+        for row in tabela.tbody.find_all('tr'):
+            columns = row.find_all('td')
+            if (columns != []):
+                ult_data_table = columns[0].text.strip(' ')
+                valor_table = columns[1].text.strip(' ')
+                tipo_table = columns[2].text.strip(' ')
+                data_pag_table = columns[3].text.strip(' ')
+                proventos = pd.concat([proventos, pd.DataFrame.from_records([{'Data': ult_data_table, 'Valor': valor_table, 'Tipo': tipo_table, 'Data de Pagamento': data_pag_table}])])
+        
+        proventos.head(20)
+        proventos['Valor'] = [x.replace(',','.') for x in proventos['Valor']]
+        proventos = proventos.astype({'Valor': float})
+        proventos.set_index('Tipo', inplace=True)
+        proventos = proventos.rename(columns={'Data': 'Registro', 'Data de Pagamento': 'Pagamento'})
+
+        proventos['Ano'] = pd.to_datetime(proventos['Registro']).dt.year.astype(str) 
+        proventos['Ano'] = proventos['Ano'].str.replace(',', '')
             
-        # Atualizando a variável com os dados da tabela
-        somatoria_por_ano = tabela.groupby('Ano')['Valor'].sum().reset_index()
+        # Calcular o preço teto
+        
+        somatoria_por_ano = proventos.groupby('Ano')['Valor'].sum().reset_index()
 
         # Mantendo apenas as últimas linhas
         somatoria_por_ano = somatoria_por_ano.tail(6)
 
-        # Calcular o preco_teto para cada ativo e armazenar no dicionário    
+        # Calcular o preco_teto para cada ativo e armazenar no dicionário
+            
         media_prov = (somatoria_por_ano['Valor'].sum()) / 6
         preco_teto = (media_prov * 100) / 5
         preco_teto_dict[ativo] = preco_teto
@@ -394,6 +408,7 @@ with aba1:
         yield_dict[ativo] = dividend_yield
         pvp_dict[ativo] = preco_vp 
         pl_dict[ativo] = preco_lucro
+        
     
     elif ativo != '' and tipo == 'Fundos Imobiliários': 
         stock_fii_url = (f'https://www.fundamentus.com.br/fii_proventos.php?papel={ativo}&tipo=2')
@@ -767,18 +782,26 @@ with aba1:
             if ativo in dados_div and tipo == "Ações":           
 
                 # Plotar gráfico de barras do total de proventos distribuídos por ano
-                somatoria_por_ano = somatoria_por_ano[somatoria_por_ano['Ano'].astype(str).str.match(r'^\d{4}$')]
-            
                 fig_proventos = go.Figure()
-                fig_proventos.add_bar(x=somatoria_por_ano['Ano'].astype(str), y=somatoria_por_ano['Valor'], marker_color='palegreen')
+
+                fig_proventos.add_bar(x=somatoria_por_ano['Ano'], y=somatoria_por_ano['Valor'], marker_color='palegreen')
+
                 fig_proventos.update_layout(
                     xaxis_title='Ano',
                     yaxis_title='Valor (R$)',
                     title='Total de Proventos Distribuídos por Ano',
-                    yaxis_tickprefix='R$',
-                    yaxis_tickformat=',.2f',
-                    xaxis=dict(tickvals=somatoria_por_ano['Ano'].astype(str))
                 )
+
+                for i, ano in enumerate(somatoria_por_ano_fii['Ano']):
+                    fig_proventos.add_annotation(
+                        x=ano,
+                        y=somatoria_por_ano['Valor'].iloc[i],
+                        text=f"R$ {somatoria_por_ano['Valor'].iloc[i]:,.2f}",
+                        showarrow=True,
+                        arrowhead=1
+                    )
+
+                st.plotly_chart(fig_proventos)
 
                 for i in range(len(somatoria_por_ano)):
                     fig_proventos.add_annotation(
@@ -792,9 +815,8 @@ with aba1:
                 st.plotly_chart(fig_proventos)
 
                 with st.expander("Histórico de dividendos:"):
-                    st.dataframe(tabela, width=850, height=350)
-                    tabela = dados_div[ativo]   
-                
+                    st.dataframe(proventos, width=850, height=350)
+                        
             elif tipo == "Fundos Imobiliários":
                     
                 # Plotar gráfico de barras do total de proventos distribuídos por ano
