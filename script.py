@@ -552,7 +552,7 @@ with aba1:
 
     elif ativo != '' and tipo == 'Cripto':
 
-        name_cripto = symbol.info['longName']
+        name_cripto = ativo.info['longName']
 
         name_dict_cripto[ativo] = name_cripto
     
