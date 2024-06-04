@@ -239,8 +239,6 @@ with aba1:
     
     relatorio_investidor = {}
 
-    name_dict_cripto = {}
-
     # Construir a URL dinâmica para cada ativo
     url_fundamentus = (f'https://investidor10.com.br/acoes/{ativo}/')
     url_fundamentus_fii = (f'https://investidor10.com.br/fiis/{ativo}/')
@@ -549,12 +547,6 @@ with aba1:
         capital_dict_etf[ativo] = capitalizacao
         variacao_12_dict_etf[ativo] = variacao_12m    
         variacao_60_dict_etf[ativo] = variacao_60m
-
-    elif ativo != '' and tipo == 'Cripto':
-
-        name_cripto = ativo.info['longName']
-
-        name_dict_cripto[ativo] = name_cripto
     
     if ativo != '' and tipo != '':
         for ativo, df in dados_ativos.items():
@@ -594,8 +586,6 @@ with aba1:
                         st.subheader(f'{name_dict_bdr[ativo]}')
                     elif ativo in name_dict_etf:
                         st.subheader(f'{name_dict_etf[ativo]}')
-                    elif ativo in name_dict_cripto:
-                        st.subheader(f'{name_dict_cripto[ativo]}')
                     else:
                         st.write("")     
 
