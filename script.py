@@ -547,7 +547,7 @@ with aba1:
         capital_dict_etf[ativo] = capitalizacao
         variacao_12_dict_etf[ativo] = variacao_12m    
         variacao_60_dict_etf[ativo] = variacao_60m
-
+    
     if ativo != '' and tipo != '':
         for ativo, df in dados_ativos.items():
             
