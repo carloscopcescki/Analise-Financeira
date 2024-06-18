@@ -574,6 +574,10 @@ with aba1:
                         st.image(f"https://raw.githubusercontent.com/nvstly/icons/main/ticker_icons/{ativo}.png", width=85)
                     elif tipo == 'Cripto':
                         st.image(f"https://raw.githubusercontent.com/nvstly/icons/main/crypto_icons/{ativo}.png", width=85)
+                    elif ativo == 'ROXO34':
+                        st.image("https://cdn.worldvectorlogo.com/logos/nubank-3.svg", width=85)
+                    elif ativo == 'INBR32':
+                        st.image("https://www.idinheiro.com.br/wp-content/uploads/2021/02/inter.jpg", width=85)
                     else:
                         st.image(f'https://raw.githubusercontent.com/thefintz/icones-b3/main/icones/{ativo}.png', width=85)
  
