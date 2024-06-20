@@ -140,7 +140,7 @@ with aba1:
     st.sidebar.info('Aplicativo simples utilizando Streamlit para realizar o'
                     '\nmonitoramento de ativos financeiros, simulação de carteira'
                     '\ne cálculo de juros compostos.\n'
-                    '\nVeja o código em: https://github.com/carloscopcescki/analise-financeira/blob/main/script.py')
+                    '\nVeja o código em: https://github.com/carloscopcescki/Analise-Financeira/tree/main')
 
     # Condição para evitar conflito de datas
 
