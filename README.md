@@ -6,6 +6,10 @@ Aplicativo desenvolvido em Python para acompanhar e estudar ativos financeiros (
 
 [https://monitor-ativos.streamlit.app/](https://monitor-ativos.streamlit.app/)
 
+## Layout Web
+
+![Web 1](https://github.com/carloscopcescki/Analise-Financeira/blob/main/img/monitor-ativo.png)
+
 ## Linguagem Utilizada
 
 - Python
