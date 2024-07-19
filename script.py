@@ -141,6 +141,8 @@ with aba1:
                     '\ne cálculo de juros compostos.\n'
                     '\nVeja o código em: https://github.com/carloscopcescki/Analise-Financeira/tree/main')
 
+    st.sidebar.info('Veja também: https://investmentofthefuture.netlify.app')
+    
     # Condição para evitar conflito de datas
 
     if de_data > para_data:
