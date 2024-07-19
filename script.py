@@ -136,7 +136,6 @@ with aba1:
 
     # Sobre
     st.sidebar.write("\n---\n")
-    st.sidebar.title("Sobre")
     st.sidebar.info('Aplicativo simples utilizando Streamlit para realizar o'
                     '\nmonitoramento de ativos financeiros, simulação de carteira'
                     '\ne cálculo de juros compostos.\n'
