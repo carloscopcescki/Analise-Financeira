@@ -325,25 +325,29 @@ with aba1:
         tabela = soup.find('table')
         proventos = pd.DataFrame(columns=['Data', 'Valor', 'Tipo', 'Data de Pagamento', 'Por quantas ações'])
 
-        for row in tabela.tbody.find_all('tr'):
-            columns = row.find_all('td')
-            if (columns != []):
-                ult_data_table = columns[0].text.strip(' ')
-                valor_table = columns[1].text.strip(' ')
-                tipo_table = columns[2].text.strip(' ')
-                data_pag_table = columns[3].text.strip(' ')
-                qtd_açao = columns[4].text.strip(' ')
-                proventos = pd.concat([proventos, pd.DataFrame.from_records([{'Data': ult_data_table, 'Valor': valor_table, 'Tipo': tipo_table, 'Data de Pagamento': data_pag_table, 'Por quantas ações': qtd_açao}])])
-        
-        proventos.head(20)
-        proventos['Valor'] = [x.replace(',','.') for x in proventos['Valor']]
-        proventos = proventos.astype({'Valor': float})
-        proventos = proventos.drop(columns=['Por quantas ações'])
-        proventos.set_index('Tipo', inplace=True)
-        proventos = proventos.rename(columns={'Data': 'Registro', 'Data de Pagamento': 'Pagamento'})
+        if tabela:
+            for row in tabela.tbody.find_all('tr'):
+                columns = row.find_all('td')
+                if (columns != []):
+                    ult_data_table = columns[0].text.strip(' ')
+                    valor_table = columns[1].text.strip(' ')
+                    tipo_table = columns[2].text.strip(' ')
+                    data_pag_table = columns[3].text.strip(' ')
+                    qtd_açao = columns[4].text.strip(' ')
+                    proventos = pd.concat([proventos, pd.DataFrame.from_records([{'Data': ult_data_table, 'Valor': valor_table, 'Tipo': tipo_table, 'Data de Pagamento': data_pag_table, 'Por quantas ações': qtd_açao}])])
+            
+            proventos.head(20)
+            proventos['Valor'] = [x.replace(',','.') for x in proventos['Valor']]
+            proventos = proventos.astype({'Valor': float})
+            proventos = proventos.drop(columns=['Por quantas ações'])
+            proventos.set_index('Tipo', inplace=True)
+            proventos = proventos.rename(columns={'Data': 'Registro', 'Data de Pagamento': 'Pagamento'})
 
-        proventos['Ano'] = pd.to_datetime(proventos['Registro'], dayfirst=True).dt.year.astype(str) 
-        proventos['Ano'] = proventos['Ano'].str.replace(',', '')
+            proventos['Ano'] = pd.to_datetime(proventos['Registro'], dayfirst=True).dt.year.astype(str) 
+            proventos['Ano'] = proventos['Ano'].str.replace(',', '')
+        else:
+            st.warning(f"Não foi possível obter dados de {ativo}")
+            st.stop()
             
         # Calcular o preço teto
         
