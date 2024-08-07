@@ -1,0 +1,4 @@
+http_cache.sqlite
+__pycache__
+.devcontainer
+.vscode
