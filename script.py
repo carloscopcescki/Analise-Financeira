@@ -1057,13 +1057,13 @@ with aba1:
             st.subheader(f"Sobre {ativo}")
             
             if sobre_ativo is None:
-                #st.write(f"**Razão social:** {text_razao}")
+                st.write(f"**Razão social:** {text_razao}")
                 st.write(f"**CNJP:** {text_cnpj}")
                 st.write(f"**Código ISIN:** {text_isin}")
                 st.write(f"**Classificação setorial B3:** {text_setorial}")
             else:
                 st.write(sobre_ativo)
-                #st.write(f"**Razão social:** {text_razao}")
+                st.write(f"**Razão social:** {text_razao}")
                 st.write(f"**CNJP:** {text_cnpj}")
                 st.write(f"**Código ISIN:** {text_isin}")
                 st.write(f"**Classificação setorial B3:** {text_setorial}")
