@@ -1,7 +1,6 @@
 import pandas as pd
 import yfinance as yf
 import streamlit as st
-from PIL import Image
 
 class Page:
     """Criar dashboard para monitoramento de ativos"""
@@ -10,10 +9,9 @@ class Page:
     
     def webpage(self) -> None:
         """Elaboração da page"""
-        icon = Image.open("img/icon-monitor.png")
         st.set_page_config(
             page_title="Monitor Financeiro",
-            page_icon=icon,
+            page_icon="💰",
             layout="wide",
         )
         st.sidebar.empty()

@@ -23,3 +23,9 @@ class Fundamental:
     def sector(self) -> str:
         ticker_sector = self.df_fundamental['Setor'].values[0]
         return str(ticker_sector)
+
+    def price(self) -> str:
+        ticker_price = self.df_fundamental['Cotacao'].values[0]
+        return str(ticker_price)
+    
+    

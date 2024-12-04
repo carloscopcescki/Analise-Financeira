@@ -10,13 +10,11 @@ import matplotlib.ticker as mtick
 from bs4 import BeautifulSoup
 from streamlit_extras.metric_cards import style_metric_cards
 from streamlit_extras.grid import grid
-from PIL import Image
 
 # Definindo o ícone e título da página
-icon = Image.open("img/icon-monitor.png")
 st.set_page_config(
     page_title="Monitor Financeiro",
-    page_icon=icon,
+    page_icon="💰",
     layout="wide",
 )
 
@@ -579,6 +577,10 @@ with aba1:
                         st.image(f"https://raw.githubusercontent.com/nvstly/icons/main/ticker_icons/{ativo}.png", width=85)
                     elif tipo == 'Cripto':
                         st.image(f"https://raw.githubusercontent.com/nvstly/icons/main/crypto_icons/{ativo}.png", width=85)
+                    elif ativo == 'ISAE4':
+                        st.image("https://investidor10.com.br/storage/companies/673b2f70c4356.jpg", width=85)
+                    elif ativo == 'ISAE3':
+                        st.image("https://investidor10.com.br/storage/companies/673b2f70c4356.jpg", width=85)
                     elif ativo == 'ROXO34':
                         st.image("https://cdn.worldvectorlogo.com/logos/nubank-3.svg", width=85)
                     elif ativo == 'INBR32':
@@ -1057,17 +1059,9 @@ with aba1:
             st.subheader(f"Sobre {ativo}")
             
             if sobre_ativo is None:
-                st.write(f"**Razão social:** {text_razao}")
-                st.write(f"**CNJP:** {text_cnpj}")
-                st.write(f"**Código ISIN:** {text_isin}")
-                st.write(f"**Classificação setorial B3:** {text_setorial}")
+                st.write(f"{text_razao}")
             else:
-                st.write(sobre_ativo)
-                st.write(f"**Razão social:** {text_razao}")
-                st.write(f"**CNJP:** {text_cnpj}")
-                st.write(f"**Código ISIN:** {text_isin}")
-                st.write(f"**Classificação setorial B3:** {text_setorial}")
-
+                st.warning("Não foi possível obter dados")
             
 # Aba da calculadora de juros simples        
 
