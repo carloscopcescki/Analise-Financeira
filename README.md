@@ -1,8 +1,6 @@
 # Análise Financeira
 
-# Sobre o projeto
-
-Aplicativo desenvolvido em Python para acompanhar e estudar ativos financeiros (Ações, Fiis, ETF's, BDR's, Stock's e Criptomoedas).
+Aplicativo desenvolvido para acompanhar e estudar ativos financeiros (Ações, Fiis, ETF's, BDR's, Stock's e Criptomoedas).
 
 [https://monitor-ativos.streamlit.app/](https://monitor-ativos.streamlit.app/)
 
