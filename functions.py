@@ -14,6 +14,23 @@ class Page:
             page_icon="💰",
             layout="wide",
         )
+        
+        st.html('''
+        <style>
+        hr {
+            border-color: #880808;
+        }
+        </style>
+        ''')
+        
+        st.markdown(
+        """
+        <div style="background-color:#880808";padding:10px;border-radius:20px">
+        </div>
+        """,
+        unsafe_allow_html=True,
+        )
+        
         st.sidebar.empty()
         st.sidebar.title("Stock Value")
         st.sidebar.header("Insira os dados")

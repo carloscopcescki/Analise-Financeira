@@ -28,4 +28,14 @@ class Fundamental:
         ticker_price = self.df_fundamental['Cotacao'].values[0]
         return str(ticker_price)
     
+    def pl(self) -> str:
+        ticker_pl = float(self.df_fundamental['PL'].values[0])
+        ticker_pl = ticker_pl / 100
+        return f"{ticker_pl:.2f}"
+    
+    def pvp(self) -> str:
+        ticker_pvp = float(self.df_fundamental['PVP'].values[0])
+        ticker_pvp = ticker_pvp / 100
+        return f"{ticker_pvp:.2f}"
+    
     
