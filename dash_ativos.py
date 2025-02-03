@@ -2,6 +2,7 @@ from functions import *
 from fundamentals import Fundamental
 import streamlit as st
 from streamlit_extras.metric_cards import style_metric_cards
+from streamlit_extras.grid import grid
 
 stock_dashboard = Page()
 stock_dashboard.webpage()
@@ -35,11 +36,16 @@ if get_market:
             pl = fundamental_data.pl()
             pvp = fundamental_data.pvp()
             
-            col_img, col_name = st.columns(2)
+            my_grid = grid(2)
+            c = my_grid.container(border=True)
+            colImage, colStock = c.columns(2)
             
-            with col_img:  
-                img = st.image(f"https://raw.githubusercontent.com/thecartera/B3-Assets-Images/refs/heads/main/imgs/{stock}.png", width=85)
-            with col_name:
+            with colImage:
+                if stock != "ISAE4" and stock != "ISAE3":
+                    img = st.image(f"https://raw.githubusercontent.com/thecartera/B3-Assets-Images/refs/heads/main/imgs/{stock}.png", width=100)
+                else:
+                    img = st.image(f"https://raw.githubusercontent.com/thecartera/B3-Assets-Images/refs/heads/main/imgs/TRPL4.png", width=100)
+            with colStock:    
                 st.header(name)
             
             col1, col2, col3, col4 = st.columns(4)
