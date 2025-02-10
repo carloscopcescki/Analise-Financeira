@@ -53,14 +53,19 @@ if get_market:
             col3.metric(label="PL", value=pl)
             col4.metric(label="PVP", value=pvp)
 
-            style_metric_cards(border_left_color='#0047AB',
+            style_metric_cards(background_color='#FFF', border_left_color='#0047AB',
                                border_color='#0047AB')
 
-            market.price_chart(stock)
-            market.dividends_chart(stock)
+            colPrice, colDividend = st.columns(2)
+
+            with colPrice:
+                market.price_chart(stock)
+            with colDividend:
+                market.dividends(stock)
+                market.dividends_chart(stock)
             
-            st.dataframe(stock_data, width=850, height=350)
-            st.dataframe(fundamental_data.table(stock), width=850, height=350)
+            #st.dataframe(stock_data, width=850, height=350)
+            #st.dataframe(fundamental_data.table(stock), width=850, height=350)
         else:
             st.warning("Selecione um ativo")
     except Exception as e:
