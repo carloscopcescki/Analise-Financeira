@@ -73,8 +73,8 @@ class Market:
 
     def get_ticker_name(self, symbol: str) -> str:
         self.ticker_name = yf.Ticker(f'{symbol}.SA').info['shortName']
-        return self.ticker_name
-
+        return str(self.ticker_name)
+        
     def price_chart(self, symbol: str) -> None:
         """Gera gráfico de preço"""
         fig_cotacoes = go.Figure()
