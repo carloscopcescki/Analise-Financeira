@@ -62,7 +62,7 @@ class Market:
             stock_list.sort()
             return [stock for stock in stock_list]
         return []
-
+    
     def stock_data(self, symbol: str) -> pd.DataFrame:
         """Gera dataframe com os dados dos ativos"""
         self.symbol_data = {}
@@ -71,9 +71,12 @@ class Market:
         df = self.symbol_data[symbol]
         return df
 
+    def get_ticker_name(self, symbol: str) -> str:
+        self.ticker_name = yf.Ticker(f'{symbol}.SA').info['shortName']
+        return self.ticker_name
+
     def price_chart(self, symbol: str) -> None:
         """Gera gráfico de preço"""
-        st.subheader(f"Cotação {symbol}")
         fig_cotacoes = go.Figure()
 
         for symbol, df in self.symbol_data.items():
@@ -167,8 +170,6 @@ class Market:
 
     def dividends_chart(self, symbol: str) -> None:
         """Gera gráfico de dividendos"""
-        st.subheader(f"Dividendos {symbol}")
-
         fig_dividends = go.Figure()
         fig_dividends.add_bar(x=self.total_dv_year['Ano'],
                               y=self.total_dv_year['Valor'],
@@ -177,6 +178,8 @@ class Market:
         fig_dividends.update_layout(
             xaxis_title='Ano',
             yaxis_title='Valor (R$)',
+            yaxis_tickprefix='R$',
+            yaxis_tickformat=',.2f',
         )
 
         for i, ano in enumerate(self.total_dv_year['Ano']):
@@ -188,5 +191,8 @@ class Market:
                 arrowhead=1,
                 font=dict(size=13))
         st.plotly_chart(fig_dividends)
-        with st.expander("Histórico de dividendos"):
-            st.dataframe(self.dv, width=850, height=350)
+
+    def dividends_table(self) -> None:
+        """Gera tabela de dividendos"""
+        st.subheader("")
+        st.dataframe(self.dv, width=850, height=350)
