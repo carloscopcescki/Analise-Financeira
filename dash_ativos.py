@@ -37,6 +37,8 @@ if get_market:
             pl = fundamental_data.pl()
             pvp = fundamental_data.pvp()
 
+            name = market.get_ticker_name(stock)
+            
             col_img, col_name = st.columns(2)
 
             with col_img:
@@ -56,16 +58,20 @@ if get_market:
             style_metric_cards(background_color='#FFF', border_left_color='#0047AB',
                                border_color='#0047AB')
 
-            colPrice, colDividend = st.columns(2)
-
-            with colPrice:
-                market.price_chart(stock)
-            with colDividend:
-                market.dividends(stock)
+            st.subheader(f"Cotação {stock}")
+            market.price_chart(stock)
+            
+            st.subheader(f"Dividendos {stock}") 
+            market.dividends(stock)
+            
+            colDividendChart, colDividendTable = st.columns(2)
+            with colDividendChart:
                 market.dividends_chart(stock)
+            with colDividendTable:
+                market.dividends_table()
             
             #st.dataframe(stock_data, width=850, height=350)
-            #st.dataframe(fundamental_data.table(stock), width=850, height=350)
+            st.dataframe(fundamental_data.table(stock), width=850, height=350)
         else:
             st.warning("Selecione um ativo")
     except Exception as e:
