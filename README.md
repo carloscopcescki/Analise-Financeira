@@ -2,6 +2,8 @@
 
 Aplicativo desenvolvido para acompanhar e estudar ativos financeiros (Ações, Fiis, ETF's, BDR's, Stock's e Criptomoedas).
 
+OBS: Estou trabalhando no projeto para implementar POO e reduzir o excesso de condicionais (If Else).
+
 [https://monitor-ativos.streamlit.app/](https://monitor-ativos.streamlit.app/)
 
 ## Layout Web
