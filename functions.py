@@ -1,10 +1,10 @@
 import pandas as pd
-import yfinance as yf
 import streamlit as st
 import requests
 import matplotlib.pyplot as plt
 import plotly.graph_objs as go
 import matplotlib.ticker as mtick
+#import yfinance as yf
 from bs4 import BeautifulSoup
 
 
@@ -63,39 +63,39 @@ class Market:
             return [stock for stock in stock_list]
         return []
     
-    def stock_data(self, symbol: str) -> pd.DataFrame:
-        """Gera dataframe com os dados dos ativos"""
-        self.symbol_data = {}
-        self.stock = yf.Ticker(f'{symbol}.SA').history(period='1y')
-        self.symbol_data[symbol] = pd.DataFrame(self.stock)
-        df = self.symbol_data[symbol]
-        return df
+    #def stock_data(self, symbol: str) -> pd.DataFrame:
+    #    """Gera dataframe com os dados dos ativos"""
+    #    self.symbol_data = {}
+    #    self.stock = yf.Ticker(f'{symbol}.SA').history(period='1y')
+    #    self.symbol_data[symbol] = pd.DataFrame(self.stock)
+    #    df = self.symbol_data[symbol]
+    #    return df
 
-    def get_ticker_name(self, symbol: str) -> str:
-        self.ticker_name = yf.Ticker(f'{symbol}.SA').info['shortName']
-        return str(self.ticker_name)
-        
-    def price_chart(self, symbol: str) -> None:
-        """Gera gráfico de preço"""
-        fig_cotacoes = go.Figure()
+    #def get_ticker_name(self, symbol: str) -> str:
+    #    self.ticker_name = yf.Ticker(f'{symbol}.SA').info['shortName']
+    #    return self.ticker_name
 
-        for symbol, df in self.symbol_data.items():
-            fig_cotacoes.add_trace(
-                go.Scatter(x=pd.to_datetime(df.index),
-                           y=df['Close'],
-                           mode='lines',
-                           name=symbol))
+    #def price_chart(self, symbol: str) -> None:
+    #    """Gera gráfico de preço"""
+    #    fig_cotacoes = go.Figure()
 
-        fig_cotacoes.update_layout(legend=dict(orientation="h",
-                                               yanchor="bottom",
-                                               y=1.02,
-                                               xanchor="right",
-                                               x=1),
-                                   yaxis_tickprefix='R$',
-                                   yaxis_tickformat=',.2f',
-                                   xaxis_title='Data',
-                                   yaxis_title='Preço de Fechamento')
-        st.plotly_chart(fig_cotacoes)
+    #    for symbol, df in self.symbol_data.items():
+    #        fig_cotacoes.add_trace(
+    #            go.Scatter(x=pd.to_datetime(df.index),
+    #                       y=df['Close'],
+    #                       mode='lines',
+    #                       name=symbol))
+    
+    #    fig_cotacoes.update_layout(legend=dict(orientation="h",
+    #                                           yanchor="bottom",
+    #                                           y=1.02,
+    #                                           xanchor="right",
+    #                                           x=1),
+    #                               yaxis_tickprefix='R$',
+    #                               yaxis_tickformat=',.2f',
+    #                               xaxis_title='Data',
+    #                               yaxis_title='Preço de Fechamento')
+    #    st.plotly_chart(fig_cotacoes)
 
     def dividends(self, symbol: str) -> None:
         """Coleta os dividendos distribúidos pela empresa"""
