@@ -29,7 +29,7 @@ if get_market:
         stock = str(st.sidebar.selectbox("Escolha um ativo",
                                          [''] + stock_list))
         if stock:
-            stock_data = market.stock_data(stock)
+            #stock_data = market.stock_data(stock)
             fundamental_data = Fundamental(stock)
             name = fundamental_data.name()
             dy = fundamental_data.dividend_yield()
@@ -37,7 +37,7 @@ if get_market:
             pl = fundamental_data.pl()
             pvp = fundamental_data.pvp()
 
-            name = market.get_ticker_name(stock)
+            #name = market.get_ticker_name(stock)
             
             col_img, col_name = st.columns(2)
 
@@ -58,8 +58,8 @@ if get_market:
             style_metric_cards(background_color='#FFF', border_left_color='#0047AB',
                                border_color='#0047AB')
 
-            st.subheader(f"Cotação {stock}")
-            market.price_chart(stock)
+            #st.subheader(f"Cotação {stock}")
+            #market.price_chart(stock)
             
             st.subheader(f"Dividendos {stock}") 
             market.dividends(stock)
