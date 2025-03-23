@@ -15,6 +15,7 @@ indices = {
     'DÓLAR': 'BRL=X',
     'EURO': 'EURBRL=X',
     'S&P 500': '^GSPC',
+    
     'DOW JONES': '^DJI',
     'NASDAQ': '^IXIC',
 }

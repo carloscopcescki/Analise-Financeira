@@ -7,7 +7,6 @@ import matplotlib.ticker as mtick
 #import yfinance as yf
 from bs4 import BeautifulSoup
 
-
 class Page:
     """Criar dashboard para monitoramento de ativos"""
 
