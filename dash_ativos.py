@@ -37,20 +37,25 @@ if get_market == "Ações":
             with col_img:
                 if fundamental_data.ticker() == "ISAE4" or fundamental_data.ticker() == "ISAE3":
                     img = st.image(f"https://raw.githubusercontent.com/thecartera/B3-Assets-Images/refs/heads/main/imgs/TRPL4.png",
-                                  width=85)
+                                  width=120)
                 else:
                     img = st.image(
                         f"https://raw.githubusercontent.com/thecartera/B3-Assets-Images/refs/heads/main/imgs/{stock}.png",
-                        width=85)
+                        width=120)
             with col_name:
                 st.header(fundamental_data.name())
 
             col1, col2, col3, col4 = st.columns(4)
-
-            col1.metric(label="Valor da cotação", value=f"R$ {fundamental_data.price()}")
-            col2.metric(label="Dividend Yield", value=fundamental_data.dividend_yield())
-            col3.metric(label="PL", value=fundamental_data.pl())
-            col4.metric(label="PVP", value=fundamental_data.pvp())
+            with col1:
+                col1.metric(label="Valor da cotação", value=f"R$ {fundamental_data.price()}")
+                st.link_button(f"Dados de {stock}", url=f"https://investidor10.com.br/acoes/{stock}/")
+            with col2:
+                col2.metric(label="Dividend Yield", value=fundamental_data.dividend_yield())
+                st.link_button(f"Notícias sobre {stock}", url=f"https://investidor10.com.br/noticias/ativo/{stock}/")
+            with col3:
+                col3.metric(label="PL", value=fundamental_data.pl())
+            with col4:
+                col4.metric(label="PVP", value=fundamental_data.pvp())
 
             style_metric_cards(border_left_color='#292D34',
                                border_color='#292D34')
@@ -109,7 +114,7 @@ if get_market == "Fundos Imobiliários":
             ticker = fundamental_data.fii_ticker()
             col_img, col_name = st.columns(2)
             with col_img:
-                img = st.image("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQRz2D2twD0bV62AwgI4vG6NXPrgt-rmw86XA&s", width=85)
+                img = st.image("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQRz2D2twD0bV62AwgI4vG6NXPrgt-rmw86XA&s", width=120)
             with col_name:
                 st.header(fundamental_data.fii_name())
             col1, col2, col3 = st.columns(3)
@@ -121,13 +126,13 @@ if get_market == "Fundos Imobiliários":
                    border_color='#292D34')
 
             st.header(f"Dividendos {stock}", divider="grey")
-            market.dividends(stock)
+            market.fii_dividends(stock)
 
             colDividendChart, colDividendTable = st.columns(2)
             with colDividendChart:
-                market.dividends_chart(stock)
+                market.fii_dividends_chart(stock)
             with colDividendTable:
-                market.dividends_table()
+                market.fii_dividends_table()
 
             st.header(f"Indicadores Fundamentalistas {stock}", divider="grey")
         else:
