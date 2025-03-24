@@ -109,7 +109,7 @@ class Market:
         }
 
         stock_dv_urls = f'https://www.fundamentus.com.br/proventos.php?papel={symbol}&tipo=2'
-
+        
         response = requests.get(stock_dv_urls, headers=headers)
         soup = BeautifulSoup(response.text, 'html.parser')
 
@@ -192,6 +192,102 @@ class Market:
         st.plotly_chart(fig_dividends)
 
     def dividends_table(self) -> None:
+        """Gera tabela de dividendos"""
+        st.subheader("")
+        st.dataframe(self.dv, width=850, height=350)
+
+    def fii_dividends(self, symbol: str) -> None:
+        """Coleta os dividendos distribúidos pelo fundo imobiliário"""
+        headers = {
+            'User-Agent':
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36',
+            'Accept':
+            'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+            'Accept-Language': 'en-US,en;q=0.5',
+            'DNT': '1',  # Do Not Track Request Header 
+            'Connection': 'close'
+        }
+    
+        stock_dv_urls = f'https://www.fundamentus.com.br/fii_proventos.php?papel={symbol}&tipo=2'
+    
+        response = requests.get(stock_dv_urls, headers=headers)
+        soup = BeautifulSoup(response.text, 'html.parser')
+    
+        dividend_table = soup.find('table')
+        dividends = pd.DataFrame(columns=[
+            'Última Data Com', 'Tipo', 'Data de Pagamento', 'Valor'
+        ])
+    
+        if dividend_table:
+            for row in dividend_table.tbody.find_all('tr'):
+                columns = row.find_all('td')
+                if columns:
+                    ult_data_table = columns[0].text.strip()
+                    type_table = columns[1].text.strip()
+                    data_pag_table = columns[2].text.strip()
+                    valor_table = columns[3].text.strip()
+                    dividends = pd.concat([
+                        dividends,
+                        pd.DataFrame.from_records([{
+                            'Última Data Com':
+                            ult_data_table,
+                            'Tipo':
+                            type_table,
+                            'Data de Pagamento':
+                            data_pag_table,
+                            'Valor':
+                            valor_table,
+                        }])
+                    ])
+    
+            dividends['Valor'] = dividends['Valor'].str.replace(
+                ',', '.').astype(float)
+            dividends.set_index('Tipo', inplace=True)
+            dividends = dividends.rename(columns={
+                'Última Data Com': 'Registro',
+                'Data de Pagamento': 'Pagamento'
+            })
+    
+            dividends['Ano'] = pd.to_datetime(
+                dividends['Registro'], dayfirst=True).dt.year.astype(str)
+            dividends['Ano'] = dividends['Ano'].str.replace(',', '')
+    
+            self.dv = dividends
+    
+            # Obtendo o total de dividendos por ano
+            self.total_dv_year = dividends.groupby(
+                'Ano')['Valor'].sum().reset_index()
+    
+            self.total_dv_year = self.total_dv_year.tail(8)
+        else:
+            st.warning(f"Não foi possível obter dividendos de {symbol}")
+            st.stop()
+    
+    def fii_dividends_chart(self, symbol: str) -> None:
+        """Gera gráfico de dividendos"""
+        fig_dividends = go.Figure()
+        fig_dividends.add_bar(x=self.total_dv_year['Ano'],
+                              y=self.total_dv_year['Valor'],
+                              marker_color='palegreen')
+    
+        fig_dividends.update_layout(
+            xaxis_title='Ano',
+            yaxis_title='Valor (R$)',
+            yaxis_tickprefix='R$',
+            yaxis_tickformat=',.2f',
+        )
+    
+        for i, ano in enumerate(self.total_dv_year['Ano']):
+            fig_dividends.add_annotation(
+                x=ano,
+                y=self.total_dv_year['Valor'].iloc[i],
+                text=f"R$ {self.total_dv_year['Valor'].iloc[i]:,.2f}",
+                showarrow=True,
+                arrowhead=1,
+                font=dict(size=13))
+        st.plotly_chart(fig_dividends)
+    
+    def fii_dividends_table(self) -> None:
         """Gera tabela de dividendos"""
         st.subheader("")
         st.dataframe(self.dv, width=850, height=350)
