@@ -61,7 +61,7 @@ class Market:
             stock_list.sort()
             return [stock for stock in stock_list]
         return []
-    
+
     #def stock_data(self, symbol: str) -> pd.DataFrame:
     #    """Gera dataframe com os dados dos ativos"""
     #    self.symbol_data = {}
@@ -84,7 +84,7 @@ class Market:
     #                       y=df['Close'],
     #                       mode='lines',
     #                       name=symbol))
-    
+
     #    fig_cotacoes.update_layout(legend=dict(orientation="h",
     #                                           yanchor="bottom",
     #                                           y=1.02,
