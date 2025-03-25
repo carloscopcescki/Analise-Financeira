@@ -45,13 +45,16 @@ if get_market == "Ações":
             with col_name:
                 st.header(fundamental_data.name())
 
+            st.markdown(f"**Código de negociação:** {fundamental_data.ticker()}")
+            st.markdown(f"**Setor:** {fundamental_data.sector()}")
+            
             col1, col2, col3, col4 = st.columns(4)
             with col1:
-                col1.metric(label="Valor da cotação", value=f"R$ {fundamental_data.price()}")
+                col1.metric(label="Valor da cotação", value=f"R$ {fundamental_data.price()}", delta=f"{fundamental_data.variation()}")
                 st.link_button(f"Dados de {stock}", url=f"https://investidor10.com.br/acoes/{stock}/")
+                st.link_button(f"Notícias sobre {stock}", url=f"https://investidor10.com.br/noticias/ativo/{stock}/")
             with col2:
                 col2.metric(label="Dividend Yield", value=fundamental_data.dividend_yield())
-                st.link_button(f"Notícias sobre {stock}", url=f"https://investidor10.com.br/noticias/ativo/{stock}/")
             with col3:
                 col3.metric(label="PL", value=fundamental_data.pl())
             with col4:
@@ -117,8 +120,12 @@ if get_market == "Fundos Imobiliários":
                 img = st.image("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQRz2D2twD0bV62AwgI4vG6NXPrgt-rmw86XA&s", width=120)
             with col_name:
                 st.header(fundamental_data.fii_name())
+            st.markdown(f"**Código de negociação:** {fundamental_data.fii_ticker()}")
+            st.markdown(f"**Setor:** {fundamental_data.fii_type()}")
             col1, col2, col3 = st.columns(3)
-            col1.metric(label="Valor da cotação", value=f"R$ {fundamental_data.fii_value()}")
+            col1.metric(label="Valor da cotação", value=f"R$ {fundamental_data.fii_value()}", delta=f"{fundamental_data.fii_variation()}")
+            st.link_button(f"Dados de {stock}", url=f"https://investidor10.com.br/fiis/{stock}/")
+            st.link_button(f"Notícias sobre {stock}", url=f"https://investidor10.com.br/noticias/ativo/{stock}/")
             col2.metric(label="Dividend Yield", value=fundamental_data.fii_dy())
             col3.metric(label="P/VP", value=fundamental_data.fii_pvp())
 
@@ -133,8 +140,6 @@ if get_market == "Fundos Imobiliários":
                 market.fii_dividends_chart(stock)
             with colDividendTable:
                 market.fii_dividends_table()
-
-            st.header(f"Indicadores Fundamentalistas {stock}", divider="grey")
         else:
             st.warning("Selecione um tipo de renda variável")
     except Exception as e:
