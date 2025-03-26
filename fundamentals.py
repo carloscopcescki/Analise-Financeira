@@ -33,6 +33,11 @@ class Fundamental:
         ticker_sector = self.df_fundamental['nome_setor'].values[0]
         return str(ticker_sector)
 
+    def sub_sector(self) -> str:
+        """Retorna o segmento do ativo"""
+        ticker_subsector = self.df_fundamental['nome_subsetor'].values[0]
+        return str(ticker_subsector)
+        
     def price(self) -> str:
         """Retorna o preço atual do ativo"""
         ticker_price = self.df_fundamental['vlr_cot'].values[0]
@@ -102,6 +107,67 @@ class Fundamental:
         """Retorna a divida bruta patrimonial"""
         ticker_div_bruta_patrim = self.df_fundamental['vlr_ind_divida_bruta_sobre_patrim'].values[0]
         return str(ticker_div_bruta_patrim)
+
+    def market_value(self) -> str:
+        """Retorna o valor de mercado da empresa"""
+        ticker_market_value = self.df_fundamental['vlr_mercado'].values[0]
+        return str(ticker_market_value)
+
+    def enterprise_value(self) -> str:
+        """Retorna o valor de firma"""
+        ticker_enterprise_value = self.df_fundamental['vlr_firma'].values[0]
+        return str(ticker_enterprise_value)
+
+    def ticker_quantity(self) -> str:
+        """Retorna a quantidade de ações"""
+        ticker_quantity = self.df_fundamental['num_acoes'].values[0]
+        return str(ticker_quantity)
+
+    def ativos(self) -> str:
+        """Retorna a quantidade de bens e direitos"""
+        ticker_ativos = self.df_fundamental['vlr_ativo'].values[0]
+        return str(ticker_ativos)
+
+    def ativos_circulantes(self) -> str:
+        """Retorna a quantidade de bens e direitos a curto prazo"""
+        ticker_ativos_circulantes = self.df_fundamental['vlr_ativ_circulante'].values[0]
+        return str(ticker_ativos_circulantes)
+
+    def debt_liq(self) -> str:
+        """Retorna a dívida líquida da empresa"""
+        ticker_debt_liq = self.df_fundamental['vlr_divida_liq'].values[0]
+        return str(ticker_debt_liq)
+
+    def debt_brut(self) -> str:
+        """Retorna a dívida bruta da empresa"""
+        ticker_debt_liq = self.df_fundamental['vlr_divida_bruta'].values[0]
+        return str(ticker_debt_liq)
+
+    def ticker_patrim(self) -> str:
+        """Retorna o patrimônio líquido da empresa"""
+        ticker_patrim = self.df_fundamental['vlr_patrim_liq'].values[0]
+        return str(ticker_patrim)
+
+    def net_revenue(self) -> str:
+        """Retorna a receita líquida da empresa (últimos 12 meses)"""
+        ticker_revenue = self.df_fundamental['vlr_receita_liq_ult_12m'].values[0]
+        return str(ticker_revenue)
+
+    def ebit(self) -> str:
+        """Retorna o ebit da empresa (últimos 12 meses)"""
+        ticker_ebit = self.df_fundamental['vlr_ebit_ult_12m'].values[0]
+        return str(ticker_ebit)
+
+    def net_profit(self) -> str:
+        """Retorna o lucro líquido da empresa (últimos 12 meses)"""
+        ticker_profit = self.df_fundamental['vlr_patrim_liq'].values[0]
+        return str(ticker_profit)
+
+    def ticker_disp(self) -> str:
+        """Contas que representam bens"""
+        disp = self.df_fundamental['vlr_disponibilidades'].values[0]
+        return str(disp)
+        
 
 class FII_Data:
     """Coletar dados fundamentalistas de fundos imobiliários"""
