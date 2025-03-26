@@ -99,8 +99,24 @@ if get_market == "Ações":
                 st.metric(label="EV/EBITDA", value=fundamental_data.ev_ebitda())
                 st.metric(label="LPA", value=fundamental_data.lpa())
 
+            st.header(f"Informações sobre {fundamental_data.ticker()}", divider="grey")
+
+            colInfo1, colInfo2, colInfo3 = st.columns(3)
+            with colInfo1:
+                st.metric(label="Valor de mercado", value=f"R$ {fundamental_data.market_value()}")
+                st.metric(label="N° de cotas", value=fundamental_data.ticker_quantity())
+                st.metric(label="Dívida Bruta", value=f"R$ {fundamental_data.debt_brut()}")
+            with colInfo2:
+                st.metric(label="Valor de firma", value=f"R$ {fundamental_data.enterprise_value()}")
+                st.metric(label="Ativos", value=f"R$ {fundamental_data.ativos()}")
+                st.metric(label="Dívida Líquida", value=f"R$ {fundamental_data.debt_liq()}")
+            with colInfo3:
+                st.metric(label="Patrimônio Líquido", value=f"R$ {fundamental_data.ticker_patrim()}")
+                st.metric(label="Ativo Circulante", value=f"R$ {fundamental_data.ativos_circulantes()}")
+                st.metric(label="Disponibilidades", value=f"R$ {fundamental_data.ticker_disp()}")
+
             #st.dataframe(stock_data, width=850, height=350)
-            #st.dataframe(fundamental_data.table(stock), width=850, height=350)
+            #st.dataframe(fundamental_data.table(stock), width=850, height=350)    
         else:
             st.warning("Selecione um ativo")
     except Exception as e:
@@ -144,6 +160,6 @@ if get_market == "Fundos Imobiliários":
             st.warning("Selecione um tipo de renda variável")
     except Exception as e:
         st.error(f"Erro ao buscar os dados: {e}")
-
+    
 # Definir indices
 #get_indice = st.sidebar.selectbox("Escolha o indice", list(indices.keys()))
