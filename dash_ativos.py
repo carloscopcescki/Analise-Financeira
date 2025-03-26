@@ -47,6 +47,7 @@ if get_market == "Ações":
 
             st.markdown(f"**Código de negociação:** {fundamental_data.ticker()}")
             st.markdown(f"**Setor:** {fundamental_data.sector()}")
+            st.markdown(f"**Segmento:** {fundamental_data.sub_sector()}")
             
             col1, col2, col3, col4 = st.columns(4)
             with col1:
@@ -101,19 +102,35 @@ if get_market == "Ações":
 
             st.header(f"Informações sobre {fundamental_data.ticker()}", divider="grey")
 
-            colInfo1, colInfo2, colInfo3 = st.columns(3)
+            colInfo1, colInfo2, colInfo3, colInfo4 = st.columns(4)
             with colInfo1:
-                st.metric(label="Valor de mercado", value=f"R$ {fundamental_data.market_value()}")
-                st.metric(label="N° de cotas", value=fundamental_data.ticker_quantity())
-                st.metric(label="Dívida Bruta", value=f"R$ {fundamental_data.debt_brut()}")
+                st.write(f"**Valor de mercado**")
+                st.write(f"R$ {fundamental_data.market_value()}")
+                st.write(f"**N° de cotas**")
+                st.write(fundamental_data.ticker_quantity())
+                st.write(f"**Dívida Bruta**")
+                st.write(f"R$ {fundamental_data.debt_brut()}")
             with colInfo2:
-                st.metric(label="Valor de firma", value=f"R$ {fundamental_data.enterprise_value()}")
-                st.metric(label="Ativos", value=f"R$ {fundamental_data.ativos()}")
-                st.metric(label="Dívida Líquida", value=f"R$ {fundamental_data.debt_liq()}")
+                st.write(f"**Valor de firma**")
+                st.write(f"R$ {fundamental_data.enterprise_value()}")
+                st.write(f"**Ativos**")
+                st.write(f"R$ {fundamental_data.ativos()}")
+                st.write(f"**Dívida Líquida**")
+                st.write(f"R$ {fundamental_data.debt_liq()}")
             with colInfo3:
-                st.metric(label="Patrimônio Líquido", value=f"R$ {fundamental_data.ticker_patrim()}")
-                st.metric(label="Ativo Circulante", value=f"R$ {fundamental_data.ativos_circulantes()}")
-                st.metric(label="Disponibilidades", value=f"R$ {fundamental_data.ticker_disp()}")
+                st.write(f"**Patrimônio Líquido**")
+                st.write(f"R$ {fundamental_data.ticker_patrim()}")
+                st.write(f"**Ativo Circulante**")
+                st.write(f"R$ {fundamental_data.ativos_circulantes()}")
+                st.write(f"**Disponibilidades**")
+                st.write(f"R$ {fundamental_data.ticker_disp()}")
+            with colInfo4:
+                st.write(f"**Receita Líquida**")
+                st.write(f"R$ {fundamental_data.net_revenue()}")
+                st.write(f"**EBIT**")
+                st.write(f"R$ {fundamental_data.ebit()}")
+                st.write(f"**Lucro Líquido**")
+                st.write(f"R$ {fundamental_data.net_profit()}")
 
             #st.dataframe(stock_data, width=850, height=350)
             #st.dataframe(fundamental_data.table(stock), width=850, height=350)    
