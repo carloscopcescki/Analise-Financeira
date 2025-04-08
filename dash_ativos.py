@@ -62,7 +62,7 @@ if get_market == "Ações":
                 col4.metric(label="PVP", value=fundamental_data.pvp())
 
             style_metric_cards(border_left_color='#292D34',
-                               border_color='#292D34')
+                               border_color='#292D34', background_color='#0e1111')
 
             #st.subheader(f"Cotação {stock}")
             #market.price_chart(stock)
@@ -146,21 +146,21 @@ if get_market == "Fundos Imobiliários":
         stock = str(st.sidebar.selectbox("Escolha um ativo",
                                          [''] + stock_list))
         if stock:
-            fundamental_data = FII_Data(stock)
-            ticker = fundamental_data.fii_ticker()
+            fii_data = FII_Data(stock)
+            ticker = fii_data.fii_ticker()
             col_img, col_name = st.columns(2)
             with col_img:
                 img = st.image("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQRz2D2twD0bV62AwgI4vG6NXPrgt-rmw86XA&s", width=120)
             with col_name:
-                st.header(fundamental_data.fii_name())
-            st.markdown(f"**Código de negociação:** {fundamental_data.fii_ticker()}")
-            st.markdown(f"**Setor:** {fundamental_data.fii_type()}")
+                st.header(fii_data.fii_name())
+            st.markdown(f"**Código de negociação:** {fii_data.fii_ticker()}")
+            st.markdown(f"**Setor:** {fii_data.fii_type()}")
             col1, col2, col3 = st.columns(3)
-            col1.metric(label="Valor da cotação", value=f"R$ {fundamental_data.fii_value()}", delta=f"{fundamental_data.fii_variation()}")
+            col1.metric(label="Valor da cotação", value=f"R$ {fii_data.fii_value()}", delta=f"{fii_data.fii_variation()}")
             st.link_button(f"Dados de {stock}", url=f"https://investidor10.com.br/fiis/{stock}/")
             st.link_button(f"Notícias sobre {stock}", url=f"https://investidor10.com.br/noticias/ativo/{stock}/")
-            col2.metric(label="Dividend Yield", value=fundamental_data.fii_dy())
-            col3.metric(label="P/VP", value=fundamental_data.fii_pvp())
+            col2.metric(label="Dividend Yield", value=fii_data.fii_dy())
+            col3.metric(label="P/VP", value=fii_data.fii_pvp())
 
             style_metric_cards(border_left_color='#292D34',
                    border_color='#292D34')
